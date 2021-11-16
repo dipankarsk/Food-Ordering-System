@@ -1,8 +1,5 @@
 package com.fooddelivery;
 
-/**
- * Hello world!
- */
 public final class foodappp {
    
 
