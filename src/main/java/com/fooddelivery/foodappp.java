@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import com.fooddelivery.Authentication.registration;
 import com.fooddelivery.Authentication.login;
 import com.fooddelivery.Database.dbconnection;
+import org.json.simple.JSONObject;
 
 public final class foodappp {
    
@@ -22,6 +23,7 @@ public final class foodappp {
         {
            System.out.println("Login Successful....");
            System.out.println("Welcome "+log.getEmailId());
+           JSONObject jsonObject = new JSONObject();
            
         }else{
             System.out.println("Wrong Credentials");
@@ -42,6 +44,9 @@ public final class foodappp {
             InputStreamReader ir =  new InputStreamReader(System.in);
             BufferedReader br = new BufferedReader(ir);
             int choice = Integer.parseInt(br.readLine());
+            boolean flag=true;
+
+            if(flag){
             switch (choice)
             {
             case 1 :
@@ -76,7 +81,26 @@ public final class foodappp {
 
             default:
             continue;
+            
             }
+        }else{
+            //session stored
+            switch (choice)
+            {
+            
+
+            case 1:
+               System.exit(0);
+               break;
+            case 2:
+                //pass
+                break;
+
+            default:
+            continue;
+            
+            }
+          }
         }
 
     }
