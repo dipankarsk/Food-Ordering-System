@@ -1,12 +1,17 @@
 package com.fooddelivery;
 
 import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import com.fooddelivery.Authentication.registration;
 import com.fooddelivery.Authentication.login;
 import com.fooddelivery.Database.dbconnection;
+
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 public final class foodappp {
    
@@ -24,6 +29,19 @@ public final class foodappp {
            System.out.println("Login Successful....");
            System.out.println("Welcome "+log.getEmailId());
            JSONObject jsonObject = new JSONObject();
+           jsonObject.put("Active", "Y");
+           jsonObject.put("Email", "dipankarsrkr23@gmail.com");
+           try 
+           {
+            FileWriter file = new FileWriter("/Users/dipankar/Desktop/fooddelivery/src/resources/session.json");
+            file.write(jsonObject.toJSONString());
+            file.close();
+           }catch (IOException e) 
+           {
+            
+           System.out.println("Error due to json file creation"+e.getMessage());
+           }
+         System.out.println("JSON file created: "+jsonObject);
            
         }else{
             System.out.println("Wrong Credentials");
@@ -45,6 +63,20 @@ public final class foodappp {
             BufferedReader br = new BufferedReader(ir);
             int choice = Integer.parseInt(br.readLine());
             boolean flag=true;
+            
+            JSONParser jsonParser = new JSONParser();
+            try{
+
+                FileReader reader = new FileReader("/Users/dipankar/Desktop/fooddelivery/src/resources/session.json");
+                Object obj = jsonParser.parse(reader);
+                JSONArray sessionList = (JSONArray) obj;
+                System.out.println("Session List"+sessionList);
+
+            }
+            catch(Exception e)
+            {
+                 System.out.println("Error due to json reading");
+            }
 
             if(flag){
             switch (choice)
