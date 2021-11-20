@@ -21,6 +21,8 @@ public final class foodappp {
         if(credentialStatus)
         {
            System.out.println("Login Successful....");
+           System.out.println("Welcome "+log.getEmailId());
+           
         }else{
             System.out.println("Wrong Credentials");
         }
@@ -31,7 +33,12 @@ public final class foodappp {
         System.out.println("Welcom to XYZ food delivery system");
         while(true)
         {
-            System.out.println("Do you want to 1)Login 2)Register3)exit application");
+            
+            System.out.println("####################");
+            System.out.println("1. For Sinin ");
+            System.out.println("2. For SignUp  ");
+            System.out.println("3. To Close the Apllication");
+            System.out.println("####################");
             InputStreamReader ir =  new InputStreamReader(System.in);
             BufferedReader br = new BufferedReader(ir);
             int choice = Integer.parseInt(br.readLine());
