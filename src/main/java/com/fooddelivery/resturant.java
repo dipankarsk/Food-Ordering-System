@@ -5,7 +5,6 @@ public class resturant {
     private String resturant_name="";
     private int latitude=0;
     private int longitude=0;
-    private String food_items="";
     private String resturant_address="";
     private Double estimated_time=0.0;
     private Double resturant_distance=0.0;
@@ -16,9 +15,7 @@ public class resturant {
     public String getResturant_city() {
         return resturant_city;
     }
-    public void setFood_items(String food_items) {
-        this.food_items = food_items;
-    }
+  
     public void setResturant_name(String resturant_name) {
         this.resturant_name = resturant_name;
     }
@@ -34,9 +31,7 @@ public class resturant {
     public void setResturant_address(String resturant_address) {
         this.resturant_address = resturant_address;
     }
-    public String getFood_items() {
-        return food_items;
-    }
+   
     public int getLatitude() {
         return latitude;
     }

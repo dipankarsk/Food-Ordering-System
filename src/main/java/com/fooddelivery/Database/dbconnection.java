@@ -1,21 +1,58 @@
 package com.fooddelivery.Database;
-
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
+import com.fooddelivery.food;
 import com.fooddelivery.resturant;
 import com.fooddelivery.Authentication.login;
 import com.fooddelivery.Authentication.registration;
+
 public class dbconnection {
+    public static List<food> fetchFoodItems(int resturant_id)
+    {
+        List<food> foodList = new ArrayList<food>();
+        String sql = "SELECT * " + "FROM Food WHERE resturant_id = ?";
+        Connection con =  Dbconnection("test.db");
+        try{
+        PreparedStatement pstmt  = con.prepareStatement(sql);
+        pstmt.setInt(1, resturant_id);
+        ResultSet rs  = pstmt.executeQuery();
+        if(rs==null)
+        {
+            return foodList;
+        }
+        while (rs.next()) {
+                food f= new food();
+                f.setFood_id(rs.getInt(1));
+                f.setFood_name(rs.getString(2));
+                f.setFood_price(rs.getInt(3));
+                foodList.add(f);
+            }
+        }catch(SQLException e)
+        {
+            System.out.println("Error due select query for fetching food " + e.getMessage());
+        }
+        finally
+        {
+            if(con!=null)
+            {
+                try {
+                    con.close();
+                } catch (SQLException e) {
+                    
+                    e.printStackTrace();
+                }
+            }
+        }
+        return foodList;
+    }
     public static List<resturant> fetchResturantDetils(String city,int lat,int lon)
     {
-        List<resturant> arrayList = new ArrayList<resturant>();
+        List<resturant> resturantList = new ArrayList<resturant>();
         String sql = "SELECT * " + "FROM Resturants WHERE resturant_city = ?";
         Connection con =  Dbconnection("test.db");
         try{
@@ -24,7 +61,7 @@ public class dbconnection {
         ResultSet rs  = pstmt.executeQuery();
         if(rs==null)
         {
-            return arrayList;
+            return resturantList;
         }
         while (rs.next()) {
                 resturant r= new resturant();
@@ -32,13 +69,12 @@ public class dbconnection {
                 r.setLatitude(rs.getInt(2));
                 r.setLongitude(rs.getInt(3));
                 r.setResturant_name(rs.getString(4));
-                r.setFood_items(rs.getString(5));
-                r.setResturant_city(rs.getString(6));
-                r.setResturant_address(rs.getString(7));
+                r.setResturant_city(rs.getString(5));
+                r.setResturant_address(rs.getString(6));
                 Double distanceBetweenSrcRes=Math.sqrt(Math.pow(r.getLatitude()-lat,2)+Math.pow(r.getLongitude()-lon, 2));
                 r.setResturant_distance(distanceBetweenSrcRes);
-                r.setEstimated_time(distanceBetweenSrcRes+1);
-                arrayList.add(r);
+                r.setEstimated_time(distanceBetweenSrcRes*0.01);
+                resturantList.add(r);
             }
         }catch(SQLException e)
         {
@@ -56,7 +92,7 @@ public class dbconnection {
                 }
             }
         }
-        return arrayList;
+        return resturantList;
     }
     public static boolean logincheck(login log)
     {
@@ -83,7 +119,6 @@ public class dbconnection {
         }
         return false;
     }
-
     public static void insertUserData (registration reg)
     {
         Connection con =  Dbconnection("test.db");
@@ -114,8 +149,8 @@ public class dbconnection {
             }
         }
     }
-
-    public static Connection Dbconnection(String name_file) {
+    public static Connection Dbconnection(String name_file)
+     {
 
         String u = "jdbc:sqlite:./" + name_file;
 
@@ -132,7 +167,4 @@ public class dbconnection {
         }
         return null ;
     }
-
-    
-    
 }
