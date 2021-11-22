@@ -1,6 +1,7 @@
 package com.fooddelivery;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -12,6 +13,7 @@ import com.fooddelivery.Database.dbconnection;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 public final class foodappp {
    
@@ -31,10 +33,13 @@ public final class foodappp {
            JSONObject jsonObject = new JSONObject();
            jsonObject.put("Active", "Y");
            jsonObject.put("Email", "dipankarsrkr23@gmail.com");
+           JSONArray sessionList = new JSONArray();
+           sessionList.add(jsonObject);
+           
            try 
            {
             FileWriter file = new FileWriter("/Users/dipankar/Desktop/fooddelivery/src/resources/session.json");
-            file.write(jsonObject.toJSONString());
+            file.write(sessionList.toJSONString());
             file.close();
            }catch (IOException e) 
            {
@@ -55,7 +60,7 @@ public final class foodappp {
         {
             
             System.out.println("####################");
-            System.out.println("1. For Sinin ");
+            System.out.println("1. For LogIn ");
             System.out.println("2. For SignUp  ");
             System.out.println("3. To Close the Apllication");
             System.out.println("####################");
@@ -65,18 +70,20 @@ public final class foodappp {
             boolean flag=true;
             
             JSONParser jsonParser = new JSONParser();
-            try{
-
-                FileReader reader = new FileReader("/Users/dipankar/Desktop/fooddelivery/src/resources/session.json");
-                Object obj = jsonParser.parse(reader);
-                JSONArray sessionList = (JSONArray) obj;
-                System.out.println("Session List"+sessionList);
-
-            }
-            catch(Exception e)
+            try (FileReader reader = new FileReader("/Users/dipankar/Desktop/fooddelivery/src/resources/session.json"))
             {
-                 System.out.println("Error due to json reading");
+                Object obj = jsonParser.parse(reader);
+                JSONArray sessionList1 = (JSONArray) obj;
+                System.out.println("Session List"+sessionList1);
+                
             }
+            catch (FileNotFoundException e) {
+               e.printStackTrace();
+            } catch (IOException e) {
+               e.printStackTrace();
+            } catch (ParseException e) {
+            e.printStackTrace();
+           }
 
             if(flag){
             switch (choice)
