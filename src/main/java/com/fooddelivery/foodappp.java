@@ -38,7 +38,7 @@ public final class foodappp {
            
            try 
            {
-            FileWriter file = new FileWriter("/Users/dipankar/Desktop/fooddelivery/src/resources/session.json");
+            FileWriter file = new FileWriter("./resources/session.json");
             file.write(sessionList.toJSONString());
             file.close();
            }catch (IOException e) 
@@ -70,7 +70,7 @@ public final class foodappp {
             boolean flag=true;
             
             JSONParser jsonParser = new JSONParser();
-            try (FileReader reader = new FileReader("/Users/dipankar/Desktop/fooddelivery/src/resources/session.json"))
+            try (FileReader reader = new FileReader("./resources/session.json"))
             {
                 Object obj = jsonParser.parse(reader);
                 JSONArray sessionList1 = (JSONArray) obj;
