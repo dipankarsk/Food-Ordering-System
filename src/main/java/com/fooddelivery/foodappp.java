@@ -32,14 +32,12 @@ public final class foodappp {
            System.out.println("Welcome "+log.getEmailId());
            JSONObject jsonObject = new JSONObject();
            jsonObject.put("Active", "Y");
-           jsonObject.put("Email", "dipankarsrkr23@gmail.com");
-           JSONArray sessionList = new JSONArray();
-           sessionList.add(jsonObject);
+           jsonObject.put("Email", log.getEmailId());
            
            try 
            {
             FileWriter file = new FileWriter("./resources/session.json");
-            file.write(sessionList.toJSONString());
+            file.write(jsonObject.toJSONString());
             file.close();
            }catch (IOException e) 
            {
@@ -73,8 +71,8 @@ public final class foodappp {
             try (FileReader reader = new FileReader("./resources/session.json"))
             {
                 Object obj = jsonParser.parse(reader);
-                JSONArray sessionList1 = (JSONArray) obj;
-                System.out.println("Session List"+sessionList1);
+                JSONObject sessionList1 = (JSONObject) obj;
+                System.out.println("Session List"+sessionList1.get("Active"));
                 
             }
             catch (FileNotFoundException e) {
