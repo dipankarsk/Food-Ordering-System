@@ -35,7 +35,7 @@ public final class foodappp {
            jsonObject.put("Email", log.getEmailId());
            jsonObject.put("Location", "");
            jsonObject.put("Resturant_id", "");
-           
+           jsonObject.put("food_items", "");
            try 
            {
             FileWriter file = new FileWriter("./resources/session.json");
@@ -60,9 +60,11 @@ public final class foodappp {
         while(true)
         {
             Boolean flag_view=true;
-            boolean flag=true;
+            boolean flag_authentication=true;
+            boolean flag_menu=true;
             String sessionEmail="";
             String sessionLocation="";
+            String food_items_id="";
             JSONParser jsonParser = new JSONParser();
             try (FileReader reader = new FileReader("./resources/session.json"))
             {
@@ -73,12 +75,18 @@ public final class foodappp {
                 if (sessionList1.get("Active").equals("Y"))
                 {
                     sessionEmail=sessionList1.get("Email").toString();
-                    flag = false;
+                    flag_authentication = false;
                 }
                 if(!sessionList1.get("Location").equals(""))
                 {
                     sessionLocation=sessionList1.get("Location").toString();
                     flag_view=false;
+                }
+                if(!sessionList1.get("food_items").equals(""))
+                {
+                    food_items_id=sessionList1.get("food_items").toString();
+                    flag_menu=false;
+
                 }
             }
             catch (FileNotFoundException e) {
@@ -88,8 +96,8 @@ public final class foodappp {
             } catch (ParseException e) {
             e.printStackTrace();
            }
-           if(flag)
-           {
+           if(flag_authentication)
+           { //authentication flag
             System.out.println("\n                               Welcome to XYZ food delivery system                              \n");
             System.out.println("                  #################### Authentication ########################                    \n");
             System.out.println("1. For LogIn ");
@@ -168,6 +176,7 @@ public final class foodappp {
             jsonObject.put("Email", "");
             jsonObject.put("Location", "");
             jsonObject.put("Resturant_id", "");
+            jsonObject.put("food_items", "");
             try 
             {
              FileWriter file = new FileWriter("./resources/session.json");
@@ -218,7 +227,7 @@ public final class foodappp {
             jsonObject1.put("Email", sessionEmail);
             jsonObject1.put("Location", cityChoice);
             jsonObject1.put("Resturant_id", "");
-           
+            jsonObject1.put("food_items", "");
            try 
            {
             FileWriter file = new FileWriter("./resources/session.json");
@@ -230,7 +239,6 @@ public final class foodappp {
            System.out.println("Error due to json file creation"+e.getMessage());
            }
             System.out.println("                   #############  The List of Available Resturants  #################"+"\n");
-            
             System.out.print("Resturant Id "+" "+"ResturantName"+" "
             +"ResturantCity"+" "+"ResturantAddress"+" "+"Estimated Distance"+" "+"Estimated Time of Delivery"+"\n\n");
             System.out.println();
@@ -240,9 +248,7 @@ public final class foodappp {
             System.out.print(r.getResturant_id()+"\t\t"+r.getResturant_name()+"\t\t"
             +r.getResturant_city()+"\t\t"+r.getResturant_address()+"\t\t"+String.format("%.2f",r.getResturant_distance())+" Metres "+String.format("%.2f",r.getEstimated_time())+" Minutes ");
             System.out.println("\n");
-
             }
-
             }
             else
             { //else starts
@@ -277,8 +283,8 @@ public final class foodappp {
               
                 System.out.println("                   #############  The List of Available Resturants  #################"+"\n");
                 
-                System.out.print("Resturant Id "+" "+"ResturantName"+" "
-                +"ResturantCity"+" "+"ResturantAddress"+" "+"Estimated Distance"+" "+"Estimated Time of Delivery"+"\n\n");
+                System.out.print("Resturant Id "+"\t"+"Resturant Name"+"\t"
+                +"Resturant City"+"\t"+"Resturant Address"+"\t"+"Estimated Distance"+"\t"+"Estimated Time of Delivery"+"\n\n");
                 System.out.println();
                 for(int i=0;i<arrayList.size();i++)
                 {
@@ -297,23 +303,31 @@ public final class foodappp {
 
             System.out.println("                   #############  The Food Menu #################"+"\n");
                 
-                System.out.print("Food Id"+" "+"FoodName"+" "+"FoodPrice"+" "+"\n\n");
+                System.out.print("Food Id"+"\t\t"+"Food Name"+"\t\t"+"Food Price"+"\t\t"+"\n\n");
                 System.out.println();
                 for(int i=0;i<foodList.size();i++)
                 {
                 food f=foodList.get(i);
-                System.out.print(f.getFood_id()+"\t\t"+f.getFood_name()+"\t\t"+f.getFood_price()+"\t\t"+"in Rs");
+                System.out.print(f.getFood_id()+"\t\t"+f.getFood_name()+"\t\t"+f.getFood_price()+"  in Rs");
                 System.out.println("\n");
     
                 } 
+            
+            System.out.println("####################");
+            System.out.println("Choose the food items from the menu to cart by entering food id seperated by comma");
+            String food_items=br.readLine();
+            System.out.println("####################\n");
+
+
+
             System.out.println("                              ####################");
             JSONObject jsonObject1 = new JSONObject();
             jsonObject1.put("Active", "Y");
             jsonObject1.put("Email", sessionEmail);
             jsonObject1.put("Location", sessionLocation);
             jsonObject1.put("Resturant_id", resturant_id);
-
-
+            jsonObject1.put("food_items", food_items);
+            
             try 
             {
              FileWriter file = new FileWriter("./resources/session.json");
