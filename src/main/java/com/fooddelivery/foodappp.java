@@ -246,7 +246,7 @@ public final class foodappp {
             {
             resturant r=arrayList.get(i);
             System.out.print(r.getResturant_id()+"\t\t"+r.getResturant_name()+"\t\t"
-            +r.getResturant_city()+"\t\t"+r.getResturant_address()+"\t\t"+String.format("%.2f",r.getResturant_distance())+" Metres "+String.format("%.2f",r.getEstimated_time())+" Minutes ");
+            +r.getResturant_city()+"\t\t"+r.getResturant_address()+"\t\t"+String.format("%.2f",r.getResturant_distance())+" Km "+String.format("%.2f",r.getEstimated_time())+" Minutes ");
             System.out.println("\n");
             }
             }
@@ -290,7 +290,7 @@ public final class foodappp {
                 {
                 resturant r=arrayList.get(i);
                 System.out.print(r.getResturant_id()+"\t\t"+r.getResturant_name()+"\t\t"
-                +r.getResturant_city()+"\t\t"+r.getResturant_address()+"\t\t"+String.format("%.2f",r.getResturant_distance())+" Metres "+String.format("%.2f",r.getEstimated_time())+" Minutes ");
+                +r.getResturant_city()+"\t\t"+r.getResturant_address()+"\t\t"+String.format("%.2f",r.getResturant_distance())+" Km "+String.format("%.2f",r.getEstimated_time())+" Minutes ");
                 System.out.println("\n");
     
                 } 

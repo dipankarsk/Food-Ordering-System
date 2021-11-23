@@ -71,9 +71,9 @@ public class dbconnection {
                 r.setResturant_name(rs.getString(4));
                 r.setResturant_city(rs.getString(5));
                 r.setResturant_address(rs.getString(6));
-                Double distanceBetweenSrcRes=Math.sqrt(Math.pow(r.getLatitude()-lat,2)+Math.pow(r.getLongitude()-lon, 2));
-                r.setResturant_distance(distanceBetweenSrcRes);
-                r.setEstimated_time(distanceBetweenSrcRes*0.01);
+                Double distanceBetweenSrcRes=(double)((r.getLatitude()-lat) + (r.getLongitude()-lon));
+                r.setResturant_distance(distanceBetweenSrcRes/40);
+                r.setEstimated_time((distanceBetweenSrcRes/40)*10);
                 resturantList.add(r);
             }
         }catch(SQLException e)
