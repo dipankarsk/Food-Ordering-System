@@ -367,9 +367,10 @@ public final class foodappp {
                 }
                 if(!sessionList1.get("food_items").equals(""))
                 {
-                    food_items_id=sessionList1.get("food_items").toString();
-                    flag_menu=false;
+                    food_items_id=sessionList1.get("food_items").toString();                   
 
+                }else{
+                    flag_menu=true;
                 }
             }
             catch (FileNotFoundException e) {
@@ -427,6 +428,62 @@ public final class foodappp {
                        System.out.println("Error due to json file creation"+e.getMessage());
                        }
                        break;
+                case 3:
+                      System.out.println("Enter the SL no of the items to be deleted");
+                      String food_items_to_delete=br.readLine();
+                      String food_items_to_delete_split[]=food_items_to_delete.split(",");
+                      String new_food_items="";
+                      
+                      for(int i=0;i<food_items_split.length-1;i++)
+                          {
+                              for(int j=i+1;j<food_items_to_delete_split.length;j++)
+                              {
+                                 if(!food_items_split[i].equals(food_items_to_delete_split[j]))
+                                 {
+                                    new_food_items=food_items_split[j]+",";
+                                 }
+                              }
+                          }
+                          System.out.println("The latest items"+new_food_items);
+                      break;
+                case 4:
+                    JSONObject jsonObject1 = new JSONObject();
+                    jsonObject1.put("Active", "Y");
+                    jsonObject1.put("Email", sessionEmail);
+                    jsonObject1.put("Location", sessionLocation);
+                    jsonObject1.put("Resturant_id", resturant_id);
+                    jsonObject1.put("food_items", "");
+                
+                    try 
+                    {
+                    FileWriter file = new FileWriter("./resources/session.json");
+                    file.write(jsonObject1.toJSONString());
+                    file.close();
+                    }catch (IOException e) 
+                    {
+                    System.out.println("Error due to json file creation"+e.getMessage());
+                    }
+                    food_items_split=null;
+                    break;
+                case 5:
+                    JSONObject jsonObject4 = new JSONObject();
+                    jsonObject4.put("Active", "Y");
+                    jsonObject4.put("Email", sessionEmail);
+                    jsonObject4.put("Location", sessionLocation);
+                    jsonObject4.put("Resturant_id", resturant_id);
+                    jsonObject4.put("food_items", "");
+                
+                     try 
+                     {
+                     FileWriter file = new FileWriter("./resources/session.json");
+                     file.write(jsonObject4.toJSONString());
+                     file.close();
+                    }catch (IOException e) 
+                    {
+                    System.out.println("Error due to json file creation"+e.getMessage());
+                    }
+                    food_items_split=null;
+                    break;
               }                   
             }
           }
