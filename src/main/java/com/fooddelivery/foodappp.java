@@ -15,14 +15,67 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 public final class foodappp {
-   
+    public void authenticationDisplay()
+    {
+        System.out.println("\n                               Welcome to XYZ food delivery system                              \n");
+        System.out.println("                  #################### Authentication ########################                    \n");
+        System.out.println("1. For LogIn ");
+        System.out.println("2. For SignUp  ");
+        System.out.println("3. To Close the Apllication\n");
+        System.out.println("                                      ####################                     ");
+    }
+    public void resturantDisplay(List resturantList)
+    {
+        System.out.println("                   #############  The List of Available Resturants  #################"+"\n");
+        System.out.print("Resturant Id "+" "+"ResturantName"+" "
+        +"ResturantCity"+" "+"ResturantAddress"+" "+"Estimated Distance"+" "+"Estimated Time of Delivery"+"\n\n");
+        System.out.println();
+        for(int i=0;i<resturantList.size();i++)
+        {
+        resturant r=(resturant) resturantList.get(i);
+        System.out.print(r.getResturant_id()+"\t\t"+r.getResturant_name()+"\t\t"
+        +r.getResturant_city()+"\t\t"+r.getResturant_address()+"\t\t"+String.format("%.2f",r.getResturant_distance())+" Km "+String.format("%.2f",r.getEstimated_time())+" Minutes ");
+        System.out.println("\n");
+        }
+    }
+    public void foodMenuDisplay(List foodList)
+    {
+                System.out.println("                   #############  The Food Menu #################"+"\n");
+                
+                System.out.print("SL"+"\t\t"+"Food Name"+"\t\t"+"Food Price"+"\t\t"+"\n\n");
+                System.out.println();
+                for(int i=0;i<foodList.size();i++)
+                {
+                food f=(food) foodList.get(i);
+                System.out.print(i+"\t\t"+f.getFood_name()+"\t\t"+f.getFood_price()+"  in Rs");
+                System.out.println("\n");
+    
+                } 
+    }
+    public static void addToCache(String cacheStatus, String cacheEmail,String cacheLocation, String cachefoodItems, String cacheResturantId)
+    {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("Active", cacheStatus);
+            jsonObject.put("Email", cacheEmail);
+            jsonObject.put("Location", cacheLocation);
+            jsonObject.put("Resturant_id", cacheResturantId);
+            jsonObject.put("food_items", cachefoodItems);
+            try 
+            {
+             FileWriter file = new FileWriter("./resources/session.json");
+             file.write(jsonObject.toJSONString());
+             file.close();
+            }catch (IOException e) 
+            {
+            System.out.println("Error due to json file creation"+e.getMessage());
+            }
 
+    }
     public static void register (registration reg)
     {
         dbconnection.insertUserData(reg);
 
     }
-   
     public static void login (login log)
     {
         boolean credentialStatus=dbconnection.logincheck(log);
@@ -30,24 +83,7 @@ public final class foodappp {
         {
            System.out.println("Login Successful....\n");
            System.out.println("Welcome "+log.getEmailId()+"\n");
-           JSONObject jsonObject = new JSONObject();
-           jsonObject.put("Active", "Y");
-           jsonObject.put("Email", log.getEmailId());
-           jsonObject.put("Location", "");
-           jsonObject.put("Resturant_id", "");
-           jsonObject.put("food_items", "");
-           try 
-           {
-            FileWriter file = new FileWriter("./resources/session.json");
-            file.write(jsonObject.toJSONString());
-            file.close();
-           }catch (IOException e) 
-           {
-            
-           System.out.println("Error due to json file creation"+e.getMessage());
-           }
-         //System.out.println("JSON file created: "+jsonObject);
-           
+           addToCache("Y", log.getEmailId(), "", "", "");
         }else{
             System.out.println("Wrong Credentials\n");
         }
@@ -55,21 +91,23 @@ public final class foodappp {
     
     public static void main(String[] args) throws IOException
     {
-        
-        
+        foodappp foodapppObj=new foodappp();
+        InputStreamReader ir =  new InputStreamReader(System.in);
+        BufferedReader br = new BufferedReader(ir);
         while(true)
         {
-            Boolean flag_view=true;
+            boolean flag_view=true;
             boolean flag_authentication=true;
             boolean flag_menu=true;
             String sessionEmail="";
             String sessionLocation="";
             String food_items_id="";
             String food_items="";
-            List<resturant> resturantList = new ArrayList<resturant>();
-            List<food> foodList = new ArrayList<food>();
-            InputStreamReader ir =  new InputStreamReader(System.in);
-            BufferedReader br = new BufferedReader(ir);
+            
+            List<resturant> resturantList = new ArrayList<resturant>();// to store array of objects for the resturants table
+            List<food> foodList = new ArrayList<food>();// to store array of objects for food database table
+
+            
             JSONParser jsonParser = new JSONParser();
             try (FileReader reader = new FileReader("./resources/session.json"))
             {
@@ -103,50 +141,42 @@ public final class foodappp {
            }
            if(flag_authentication)
            { //authentication flag
-
-            System.out.println("\n                               Welcome to XYZ food delivery system                              \n");
-            System.out.println("                  #################### Authentication ########################                    \n");
-            System.out.println("1. For LogIn ");
-            System.out.println("2. For SignUp  ");
-            System.out.println("3. To Close the Apllication\n");
-            System.out.println("                                      ####################                     ");
-          
-            int choice = Integer.parseInt(br.readLine());
-         
+               foodapppObj.authenticationDisplay();
+               int choice = Integer.parseInt(br.readLine());
             switch (choice)
             {
-            case 1 :
-            System.out.println("Email : ");
-            String email = br.readLine();
-            System.out.println("Password : ");
-            String password = br.readLine();
-            login log=new login();
-            log.setPassword(password);
-            log.setEmailId(email);
-            login(log);
-            break;
+             case 1 :
+                System.out.println("Email : ");
+                String email = br.readLine();
+                System.out.println("Password : ");
+                String password = br.readLine();
+                login log=new login();
+                log.setPassword(password);
+                log.setEmailId(email);
+                login(log);
+                break;
 
             case 2 :
-            registration reg = new registration();
-            System.out.println("Username : ");
-            String f_user = br.readLine();
-            System.out.println("EmailId : ");
-            String f_emailId = br.readLine();
-            System.out.println("Password : ");
-            String f_password = br.readLine();
-            System.out.println("Confirm Password : ");
-            String f_cPassword = br.readLine();
-            reg.setUserName(f_user);
-            reg.setEmailId(f_emailId);
-            reg.setPassword(f_password);
-            register(reg);
-            break;
+                registration reg = new registration();
+                System.out.println("Username : ");
+                String f_user = br.readLine();
+                System.out.println("EmailId : ");
+                String f_emailId = br.readLine();
+                System.out.println("Password : ");
+                String f_password = br.readLine();
+                System.out.println("Confirm Password : ");
+                String f_cPassword = br.readLine();
+                reg.setUserName(f_user);
+                reg.setEmailId(f_emailId);
+                reg.setPassword(f_password);
+                register(reg);
+                break;
 
             case 3:
-               System.exit(0);
+                System.exit(0);
 
             default:
-            continue;
+                continue;
             
             }
         }
@@ -175,22 +205,8 @@ public final class foodappp {
                System.exit(0);
                break;
             case 2:
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("Active", "N");
-            jsonObject.put("Email", "");
-            jsonObject.put("Location", "");
-            jsonObject.put("Resturant_id", "");
-            jsonObject.put("food_items", "");
-            try 
-            {
-             FileWriter file = new FileWriter("./resources/session.json");
-             file.write(jsonObject.toJSONString());
-             file.close();
-            }catch (IOException e) 
-            {
-            System.out.println("Error due to json file creation"+e.getMessage());
-            }
-            break;
+               addToCache("N", "", "", "", "");
+                break;
             case 3:
             if(flag_view)
             {
@@ -226,33 +242,10 @@ public final class foodappp {
 
             
             resturantList=dbconnection.fetchResturantDetils(cityChoice,lat,lon);
-            JSONObject jsonObject1 = new JSONObject();
-            jsonObject1.put("Active", "Y");
-            jsonObject1.put("Email", sessionEmail);
-            jsonObject1.put("Location", cityChoice);
-            jsonObject1.put("Resturant_id", "");
-            jsonObject1.put("food_items", "");
-           try 
-           {
-            FileWriter file = new FileWriter("./resources/session.json");
-            file.write(jsonObject1.toJSONString());
-            file.close();
-           }catch (IOException e) 
-           {
+
+            addToCache("Y", sessionEmail, cityChoice, "", "");
+
             
-           System.out.println("Error due to json file creation"+e.getMessage());
-           }
-            System.out.println("                   #############  The List of Available Resturants  #################"+"\n");
-            System.out.print("Resturant Id "+" "+"ResturantName"+" "
-            +"ResturantCity"+" "+"ResturantAddress"+" "+"Estimated Distance"+" "+"Estimated Time of Delivery"+"\n\n");
-            System.out.println();
-            for(int i=0;i<resturantList.size();i++)
-            {
-            resturant r=resturantList.get(i);
-            System.out.print(r.getResturant_id()+"\t\t"+r.getResturant_name()+"\t\t"
-            +r.getResturant_city()+"\t\t"+r.getResturant_address()+"\t\t"+String.format("%.2f",r.getResturant_distance())+" Km "+String.format("%.2f",r.getEstimated_time())+" Minutes ");
-            System.out.println("\n");
-            }
             }
             else
             { //else starts
@@ -284,22 +277,7 @@ public final class foodappp {
             }
                 
             resturantList=dbconnection.fetchResturantDetils(sessionLocation,lat,lon);
-                
-               
-              
-                System.out.println("                   #############  The List of Available Resturants  #################"+"\n");
-                
-                System.out.print("Resturant Id "+"\t"+"Resturant Name"+"\t"
-                +"Resturant City"+"\t"+"Resturant Address"+"\t"+"Estimated Distance"+"\t"+"Estimated Time of Delivery"+"\n\n");
-                System.out.println();
-                for(int i=0;i<resturantList.size();i++)
-                {
-                resturant r=resturantList.get(i);
-                System.out.print(r.getResturant_id()+"\t\t"+r.getResturant_name()+"\t\t"
-                +r.getResturant_city()+"\t\t"+r.getResturant_address()+"\t\t"+String.format("%.2f",r.getResturant_distance())+" Km "+String.format("%.2f",r.getEstimated_time())+" Minutes ");
-                System.out.println("\n");
-    
-                } 
+            foodapppObj.resturantDisplay(resturantList);
             System.out.println("####################");
             System.out.println("Choose a resturant of your choice by entering the resturant id in the left");
             String resturant_id=br.readLine();
@@ -307,42 +285,28 @@ public final class foodappp {
             
             foodList=dbconnection.fetchFoodItems(Integer.parseInt(resturant_id));
 
-            System.out.println("                   #############  The Food Menu #################"+"\n");
-                
-                System.out.print("SL"+"\t\t"+"Food Id"+"\t\t"+"Food Name"+"\t\t"+"Food Price"+"\t\t"+"\n\n");
-                System.out.println();
-                for(int i=0;i<foodList.size();i++)
-                {
-                food f=foodList.get(i);
-                System.out.print(i+"\t\t"+f.getFood_id()+"\t\t"+f.getFood_name()+"\t\t"+f.getFood_price()+"  in Rs");
-                System.out.println("\n");
-    
-                } 
+            foodapppObj.foodMenuDisplay(foodList);
             
             System.out.println("####################");
             System.out.println("Choose the food items from the menu to cart by entering Sl seperated by comma");
             food_items=br.readLine();
+            String food_items_new="";
+            String food_items_id_extractor[]=food_items.split(",");
+            for(int i=0;i<food_items_id_extractor.length;i++)
+            {
+
+               System.out.println(food_items_id_extractor[i]);
+               food f1=foodList.get(Integer.parseInt(food_items_id_extractor[i]));
+               food_items_new=food_items_new+f1.getFood_id()+",";
+               System.out.println(food_items_new);
+            }
+           
             System.out.println("####################\n");
 
 
 
             System.out.println("                              ####################");
-            JSONObject jsonObject1 = new JSONObject();
-            jsonObject1.put("Active", "Y");
-            jsonObject1.put("Email", sessionEmail);
-            jsonObject1.put("Location", sessionLocation);
-            jsonObject1.put("Resturant_id", resturant_id);
-            jsonObject1.put("food_items", food_items);
-            
-            try 
-            {
-             FileWriter file = new FileWriter("./resources/session.json");
-             file.write(jsonObject1.toJSONString());
-             file.close();
-            }catch (IOException e) 
-             {
-            System.out.println("Error due to json file creation"+e.getMessage());
-             }
+            addToCache("Y", sessionEmail, sessionLocation, food_items, resturant_id);
 
              ///////// end
          
@@ -352,8 +316,9 @@ public final class foodappp {
             continue;
             
             }
-          }else
-          {
+          }
+          else
+          {   //Code for part 3
             String resturant_id="";
             try (FileReader reader = new FileReader("./resources/session.json"))
             {
@@ -384,17 +349,23 @@ public final class foodappp {
             foodList=dbconnection.fetchFoodItems(Integer.parseInt(resturant_id));
             
             while(food_items_split!=null)
-            {
+            { 
+               //part 3 work area 2
+               //food_items_split contains the id of the food 
+               //foodList contains the objects of the food table
                System.out.println("                   #############  Your order cart #################"+"\n");
                
                System.out.print("Sl"+"\t\t"+"Food Name"+"\t\t"+"Food Price"+"\t\t"+"\n\n");
                System.out.println();
                for(int i=0;i<food_items_split.length;i++)
                {
+               if(food_items_split[i].equals(""))
+               {
+                   continue;
+               }
                food f=foodList.get(Integer.parseInt(food_items_split[i]));
-               System.out.print(i+"\t\t"+f.getFood_name()+"\t\t"+f.getFood_price()+"  in Rs");
+               System.out.print(food_items_split[i]+"\t\t"+f.getFood_name()+"\t\t"+f.getFood_price()+"  in Rs");
                System.out.println("\n");
-   
                }
               
                System.out.println("####################");
@@ -411,81 +382,45 @@ public final class foodappp {
                       System.exit(0);
                       break;
                case 2:
-                       JSONObject jsonObject3 = new JSONObject();
-                       jsonObject3.put("Active", "N");
-                       jsonObject3.put("Email", "");
-                       jsonObject3.put("Location", "");
-                       jsonObject3.put("Resturant_id", "");
-                       jsonObject3.put("food_items", "");
+                       addToCache("N", "", "", "", "");
                        food_items_split=null;
-                       try 
-                       {
-                       FileWriter file = new FileWriter("./resources/session.json");
-                       file.write(jsonObject3.toJSONString());
-                       file.close();
-                       }catch (IOException e) 
-                       {
-                       System.out.println("Error due to json file creation"+e.getMessage());
-                       }
                        break;
-                case 3:
+               case 3:
                       System.out.println("Enter the SL no of the items to be deleted");
                       String food_items_to_delete=br.readLine();
                       String food_items_to_delete_split[]=food_items_to_delete.split(",");
-                      String new_food_items="";
+                  
                       
-                      for(int i=0;i<food_items_split.length-1;i++)
+                      for(int i=0;i<food_items_to_delete_split.length;i++)
                           {
-                              for(int j=i+1;j<food_items_to_delete_split.length;j++)
+                              for(int j=0;j<food_items_split.length;j++)
                               {
-                                 if(!food_items_split[i].equals(food_items_to_delete_split[j]))
+                                 if(food_items_split[j].equals(food_items_to_delete_split[i]))
                                  {
-                                    new_food_items=food_items_split[j]+",";
+                                    food_items_split[j]="";
                                  }
                               }
                           }
-                          System.out.println("The latest items"+new_food_items);
+                          for(int j=0;j<food_items_split.length;j++)
+                          {
+                              if(food_items_split[j].equals(""))
+                              {
+                                continue;
+                              }
+                              food_items+=food_items_split[j]+",";
+                          }
+                          addToCache("Y", sessionEmail, sessionLocation, food_items, resturant_id);
                       break;
                 case 4:
-                    JSONObject jsonObject1 = new JSONObject();
-                    jsonObject1.put("Active", "Y");
-                    jsonObject1.put("Email", sessionEmail);
-                    jsonObject1.put("Location", sessionLocation);
-                    jsonObject1.put("Resturant_id", resturant_id);
-                    jsonObject1.put("food_items", "");
-                
-                    try 
-                    {
-                    FileWriter file = new FileWriter("./resources/session.json");
-                    file.write(jsonObject1.toJSONString());
-                    file.close();
-                    }catch (IOException e) 
-                    {
-                    System.out.println("Error due to json file creation"+e.getMessage());
-                    }
+                    addToCache("Y", sessionEmail, sessionLocation, "", resturant_id);
                     food_items_split=null;
                     break;
                 case 5:
-                    JSONObject jsonObject4 = new JSONObject();
-                    jsonObject4.put("Active", "Y");
-                    jsonObject4.put("Email", sessionEmail);
-                    jsonObject4.put("Location", sessionLocation);
-                    jsonObject4.put("Resturant_id", resturant_id);
-                    jsonObject4.put("food_items", "");
-                
-                     try 
-                     {
-                     FileWriter file = new FileWriter("./resources/session.json");
-                     file.write(jsonObject4.toJSONString());
-                     file.close();
-                    }catch (IOException e) 
-                    {
-                    System.out.println("Error due to json file creation"+e.getMessage());
-                    }
+                    addToCache("Y", sessionEmail, sessionLocation, "", resturant_id);
                     food_items_split=null;
                     break;
               }                   
-            }
+            }//part 3 ends here
           }
         }
     }
