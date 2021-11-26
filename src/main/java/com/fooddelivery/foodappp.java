@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+
 
 import com.fooddelivery.Authentication.registration;
 import com.fooddelivery.Authentication.login;
@@ -16,7 +16,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import java.util.Arrays;
-import java.util.HashMap;
+
 public final class foodappp {
     static int totalPrice = 0;
     static List<String> food_items_id_extractor = new ArrayList<String>();
