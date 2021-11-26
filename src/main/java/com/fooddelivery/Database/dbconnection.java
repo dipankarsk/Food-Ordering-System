@@ -117,32 +117,38 @@ public class dbconnection {
         {
             System.out.println("Error due select query for Login " + e.getMessage());
         }
+        finally
+        {
+            if(con!=null)
+            {
+                try {
+                    con.close();
+                } catch (SQLException e) {
+                    
+                    e.printStackTrace();
+                }
+            }
+        }
         return false;
     }
     public static login fetchFlags(login log)
     {   
         login loginObject = new login();
-        //int arrayOfCouponFlags[] = {0, 0};
         String sql1 = "SELECT * " + "FROM User WHERE Email = ?";
-        //String sql2 = "SELECT Save50 " + "FROM User WHERE Email = ?";
         Connection con =  Dbconnection("test.db");
         try{
         PreparedStatement pstmt1  = con.prepareStatement(sql1);
-        //PreparedStatement pstmt2  = con.prepareStatement(sql2);
         pstmt1.setString(1, log.getEmailId());
-        //pstmt2.setString(1, log.getEmailId());
         ResultSet rs1  = pstmt1.executeQuery();    
-        //ResultSet rs2 = pstmt2.executeQuery();
         if(rs1==null)
         {
             return null;
         }
         while (rs1.next()) {
-                //loginObject = new login();
+          
                 loginObject.setSave20(rs1.getInt(4));
                 loginObject.setSave50(rs1.getInt(5));
-                //arrayOfCouponFlags[0]=loginObject.getSave20();
-                //arrayOfCouponFlags[1]=loginObject.getSave50();
+                
             }
         }catch(SQLException e)
         {
@@ -164,35 +170,26 @@ public class dbconnection {
     }
     public static void insertUserData (registration reg)
     {
-        Connection con =  Dbconnection("test.db");
+        
         
         String sql = "INSERT INTO User(UserName,Email,Password,save20,save50) VALUES(?,?,?,?,?)";
 
-        try {
-            PreparedStatement usri = con.prepareStatement(sql);
+        try (Connection con1 =  Dbconnection("test.db");
+             PreparedStatement usri = con1.prepareStatement(sql))
+        {
             usri.setString(1, reg.getUserName());
             usri.setString(2, reg.getEmailId());
             usri.setString(3, reg.getPassword());
             usri.setInt(4, reg.getSave20());
             usri.setInt(5, reg.getSave50());
             usri.executeUpdate();
+            
             System.out.println("Registration Successful.......");
         }
         catch (SQLException e) {
             System.out.println("Error due to insertion " + e.getMessage());
         }
-        finally
-        {
-            if(con!=null)
-            {
-                try {
-                    con.close();
-                } catch (SQLException e) {
-                    
-                    e.printStackTrace();
-                }
-            }
-        }
+        
     }
     public static void insertFlags (registration reg)
     {
@@ -207,7 +204,9 @@ public class dbconnection {
             usri.setInt(2, reg.getSave50());
             usri.setString(3, reg.getEmailId());
             usri.executeUpdate();
+            
             //System.out.println("Registration Successful.......");
+           
         }
         catch (SQLException e) {
             System.out.println("Error due to Updation " + e.getMessage());
@@ -229,10 +228,10 @@ public class dbconnection {
      {
 
         String u = "jdbc:sqlite:./" + name_file;
-
+        Connection connect=null;
         try 
         {
-            Connection connect = DriverManager.getConnection(u);
+             connect = DriverManager.getConnection(u);
             if (connect != null) {
                 
                 return connect;
@@ -241,6 +240,7 @@ public class dbconnection {
         } catch (SQLException e) {
             System.out.println("Error"+e.getMessage());
         }
+       
         return null ;
     }
 }

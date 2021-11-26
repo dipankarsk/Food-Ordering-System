@@ -148,7 +148,29 @@ public final class foodappp {
             default: System.out.println("Invalid Selection");
          }
     }
-    
+    public static List<Integer> returnCount(String array[])
+{   
+    List<Integer> finalCount = new ArrayList<Integer>();
+    boolean visited[] = new boolean[array.length];
+     
+    Arrays.fill(visited, false);
+    for (int i = 0; i < array.length; i++) {
+        if (visited[i] == true)
+            continue;
+ 
+        // Count frequency
+        int count = 1;
+        for (int j = i + 1; j < array.length; j++) {
+            if (array[i].equals(array[j])) {
+                visited[j] = true;
+                count++;
+            }
+        }
+        finalCount.add(count);
+    }
+return finalCount;
+}
+
     public static void main(String[] args) throws IOException
     {
         foodappp foodapppObj=new foodappp();
@@ -566,27 +588,5 @@ public final class foodappp {
           }
         }
     }
-public static List<Integer> returnCount(String array[])
-{   
-    List<Integer> finalCount = new ArrayList<Integer>();
-    boolean visited[] = new boolean[array.length];
-     
-    Arrays.fill(visited, false);
-    for (int i = 0; i < array.length; i++) {
-        if (visited[i] == true)
-            continue;
- 
-        // Count frequency
-        int count = 1;
-        for (int j = i + 1; j < array.length; j++) {
-            if (array[i].equals(array[j])) {
-                visited[j] = true;
-                count++;
-            }
-        }
-        finalCount.add(count);
-    }
-return finalCount;
-}
 }
 
