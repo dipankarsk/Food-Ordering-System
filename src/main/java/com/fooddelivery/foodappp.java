@@ -7,14 +7,20 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
 import com.fooddelivery.Authentication.registration;
 import com.fooddelivery.Authentication.login;
 import com.fooddelivery.Database.dbconnection;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-
+import java.util.Arrays;
+import java.util.HashMap;
 public final class foodappp {
+    static int totalPrice = 0;
+    static List<String> food_items_id_extractor = new ArrayList<String>();
+    static List<Integer> quantity = new ArrayList<Integer>();
     public void authenticationDisplay()
     {
         System.out.println("\n                               Welcome to XYZ food delivery system                              \n");
@@ -272,7 +278,7 @@ public final class foodappp {
             }
             else
             {
-                System.out.println("Sorry we will reach your destination shortly!!!!!!!");
+                System.out.println("Sorry, we are not there yet!!!!!!!");
                 continue;
             }
                 
@@ -291,14 +297,26 @@ public final class foodappp {
             System.out.println("Choose the food items from the menu to cart by entering Sl seperated by comma");
             food_items=br.readLine();
             String food_items_new="";
-            String food_items_id_extractor[]=food_items.split(",");
-            for(int i=0;i<food_items_id_extractor.length;i++)
+            String food_items_id_temporary[]=food_items.split(",");
+            //String food_items_id_extractor[];
+            quantity = returnCount(food_items_id_temporary);
+            for(int i=0; i<food_items_id_temporary.length;i++)
+            {   
+                if(!food_items_id_extractor.contains(food_items_id_temporary[i]))
+                {   
+                    food_items_id_extractor.add(food_items_id_temporary[i]);
+               }
+                
+            }
+            System.out.println(food_items_id_extractor);
+            System.out.println("Quantity:"+ quantity);
+            for(int i=0;i<food_items_id_extractor.size();i++)
             {
 
-               System.out.println(food_items_id_extractor[i]);
-               food f1=foodList.get(Integer.parseInt(food_items_id_extractor[i]));
+               //System.out.println(food_items_id_extractor.get(i));
+               food f1=foodList.get(Integer.parseInt(food_items_id_extractor.get(i)));
                food_items_new=food_items_new+f1.getFood_id()+",";
-               System.out.println(food_items_new);
+               //System.out.println(food_items_new);
             }
            
             System.out.println("####################\n");
@@ -366,14 +384,20 @@ public final class foodappp {
                food f=foodList.get(Integer.parseInt(food_items_split[i]));
                System.out.print(food_items_split[i]+"\t\t"+f.getFood_name()+"\t\t"+f.getFood_price()+"  in Rs");
                System.out.println("\n");
+               
                }
-              
+               for(int i=0; i<food_items_id_extractor.size();i++)
+               {
+                food f2=foodList.get(Integer.parseInt(food_items_id_extractor.get(i)));
+                totalPrice += f2.getFood_price() * quantity.get((i));
+               }
                System.out.println("####################");
                System.out.println("1. Close the application");
                System.out.println("2. Logout");
                System.out.println("3. Remove an item from cart");
                System.out.println("4. Remove all items from cart");
                System.out.println("5. change the resturant");
+               System.out.println("6. Checkout");
                System.out.println("####################");
                int cart_choice=Integer.parseInt(br.readLine());
                switch(cart_choice)
@@ -419,10 +443,67 @@ public final class foodappp {
                     addToCache("Y", sessionEmail, sessionLocation, "", resturant_id);
                     food_items_split=null;
                     break;
+                case 6:
+                    if(totalPrice>=100)
+                    {
+                        System.out.println("Your total cart value is: "+ totalPrice);
+                        System.out.println("1. Continue to the Payment page \n2. Exit");
+                        int checkoutOptions=Integer.parseInt(br.readLine());
+                        switch(checkoutOptions)
+                        {
+                            case 1: System.out.println("Choose a payment mode:\n1. UPI\n2. Debit Card\n3. Credit Card\n4. Net Banking\n5. Exit");
+                                    int paymentModeOptions=Integer.parseInt(br.readLine());
+                                    switch(paymentModeOptions)
+                                    {
+                                        case 1: System.out.println("Payment Done.\nPaid: "+totalPrice+"\nPayment mode: UPI");
+                                                break;
+                                        case 2: System.out.println("Payment Done.\nPaid: "+totalPrice+"\nPayment mode: Debit Card");
+                                                break;
+                                        case 3: System.out.println("Payment Done.\nPaid: "+totalPrice+"\nPayment mode: Credit Card");
+                                                break;
+                                        case 4: System.out.println("Payment Done.\nPaid: "+totalPrice+"\nPayment mode: Net Banking");
+                                                break;
+                                        case 5: System.exit(0);
+                                                break;
+                                        default: System.out.println("Invalid Selection");
+                                    }
+                                    break;
+                            case 2: System.exit(0);;
+                                    break;
+                        }
+
+                    }
+                    else{
+                        System.out.println("Minimum order value should be 100. Your current cart value: "+ totalPrice);
+                    }
+                    break;
+                    
               }                   
             }//part 3 ends here
           }
         }
     }
+public static List<Integer> returnCount(String array[])
+{   
+    List<Integer> finalCount = new ArrayList<Integer>();
+    boolean visited[] = new boolean[array.length];
+     
+    Arrays.fill(visited, false);
+    for (int i = 0; i < array.length; i++) {
+        if (visited[i] == true)
+            continue;
+ 
+        // Count frequency
+        int count = 1;
+        for (int j = i + 1; j < array.length; j++) {
+            if (array[i].equals(array[j])) {
+                visited[j] = true;
+                count++;
+            }
+        }
+        finalCount.add(count);
+    }
+return finalCount;
+}
 }
 
