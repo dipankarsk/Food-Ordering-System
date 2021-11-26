@@ -5,8 +5,8 @@ public class registration
     private String userName="";
     private String password="";
     private String emailId="";
-    private int flag20 = -1;
-    private int flag50 = -1;
+    private int flag20 = 1;
+    private int flag50 = 1;
     public void setUserName(String userName) 
     {
         this.userName = userName;
