@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.fooddelivery.cart;
 import com.fooddelivery.food;
 import com.fooddelivery.resturant;
 import com.fooddelivery.Authentication.login;
@@ -242,5 +244,24 @@ public class dbconnection {
         }
        
         return null ;
+    }
+    public static void insertOrderDetails (cart cartObject)
+    {
+        
+        
+        String sql = "INSERT INTO Orders(Email, FoodId, FinalPrice) VALUES(?,?,?)";
+
+        try (Connection con1 =  Dbconnection("test.db");
+             PreparedStatement usri = con1.prepareStatement(sql))
+        {
+            usri.setString(1, cartObject.getEmail());
+            usri.setString(2, cartObject.getFoodId());
+            usri.setDouble(3, cartObject.getFinalPrice());
+            usri.executeUpdate();
+        }
+        catch (SQLException e) {
+            System.out.println("Error due to insertion " + e.getMessage());
+        }
+        
     }
 }
