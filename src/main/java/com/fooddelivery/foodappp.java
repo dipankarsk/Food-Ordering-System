@@ -18,7 +18,12 @@ import org.json.simple.parser.ParseException;
 import java.util.Arrays;
 import java.util.HashMap;
 public final class foodappp {
-    static int totalPrice = 0;
+    static double totalPrice = 0;
+    static double discount = 0;
+    static double finalPrice = 0;
+    static double distance = 0;
+    static double deliveryCharge = 0;
+    static int flag20, flag50;
     static List<String> food_items_id_extractor = new ArrayList<String>();
     static List<Integer> quantity = new ArrayList<Integer>();
     public void authenticationDisplay()
@@ -30,8 +35,9 @@ public final class foodappp {
         System.out.println("3. To Close the Apllication\n");
         System.out.println("                                      ####################                     ");
     }
-    public void resturantDisplay(List resturantList)
-    {
+    public double resturantDisplay(List resturantList)
+    {   
+        double distanceInKm = 0;
         System.out.println("                   #############  The List of Available Resturants  #################"+"\n");
         System.out.print("Resturant Id "+" "+"ResturantName"+" "
         +"ResturantCity"+" "+"ResturantAddress"+" "+"Estimated Distance"+" "+"Estimated Time of Delivery"+"\n\n");
@@ -41,8 +47,10 @@ public final class foodappp {
         resturant r=(resturant) resturantList.get(i);
         System.out.print(r.getResturant_id()+"\t\t"+r.getResturant_name()+"\t\t"
         +r.getResturant_city()+"\t\t"+r.getResturant_address()+"\t\t"+String.format("%.2f",r.getResturant_distance())+" Km "+String.format("%.2f",r.getEstimated_time())+" Minutes ");
+        distanceInKm = r.getResturant_distance();
         System.out.println("\n");
         }
+        return distanceInKm;
     }
     public void foodMenuDisplay(List foodList)
     {
@@ -82,6 +90,20 @@ public final class foodappp {
         dbconnection.insertUserData(reg);
 
     }
+    public static void getFlags(login log)
+    {
+        /*boolean credentialStatus=dbconnection.logincheck(log);
+        if(credentialStatus)
+        {*/
+            login l = dbconnection.fetchFlags(log);
+            //int flags[] = dbconnection.fetchFlags(log);
+            flag20 = l.getSave20();
+            flag50 = l.getSave50();
+            System.out.println(flag20+" "+flag50);
+        /*}else{
+            System.out.println("Wrong Credentials\n");
+        }*/
+    }
     public static void login (login log)
     {
         boolean credentialStatus=dbconnection.logincheck(log);
@@ -89,10 +111,42 @@ public final class foodappp {
         {
            System.out.println("Login Successful....\n");
            System.out.println("Welcome "+log.getEmailId()+"\n");
+           /*flag20 = log.getSave20();
+           flag50 = log.getSave50();
+           System.out.println(flag20+" "+flag50);*/
+           /*int flags[] = dbconnection.fetchFlags(log);
+           flag20 = flags[0];
+           flag50 = flags[1];*/
            addToCache("Y", log.getEmailId(), "", "", "");
         }else{
             System.out.println("Wrong Credentials\n");
         }
+    }
+    public static void paymentPage(BufferedReader reader) throws NumberFormatException, IOException
+    {
+        int paymentModeOptions=Integer.parseInt(reader.readLine());
+        double price = 0;
+        if(finalPrice == 0)
+        {
+            price = totalPrice;
+        }
+        else{
+            price = finalPrice;
+        }
+        switch(paymentModeOptions)
+        {  
+            case 1: System.out.println("Payment Done.\nPaid: "+price+"\nPayment mode: UPI");
+                    break;
+            case 2: System.out.println("Payment Done.\nPaid: "+price+"\nPayment mode: Debit Card");
+                    break;
+            case 3: System.out.println("Payment Done.\nPaid: "+price+"\nPayment mode: Credit Card");
+                    break;
+            case 4: System.out.println("Payment Done.\nPaid: "+price+"\nPayment mode: Net Banking");
+                    break;
+            case 5: System.exit(0);
+                    break;
+            default: System.out.println("Invalid Selection");
+         }
     }
     
     public static void main(String[] args) throws IOException
@@ -175,6 +229,8 @@ public final class foodappp {
                 reg.setUserName(f_user);
                 reg.setEmailId(f_emailId);
                 reg.setPassword(f_password);
+                reg.setSave20(1);
+                reg.setSave50(1);
                 register(reg);
                 break;
 
@@ -283,10 +339,10 @@ public final class foodappp {
             }
                 
             resturantList=dbconnection.fetchResturantDetils(sessionLocation,lat,lon);
-            foodapppObj.resturantDisplay(resturantList);
+            distance = foodapppObj.resturantDisplay(resturantList);
             System.out.println("####################");
             System.out.println("Choose a resturant of your choice by entering the resturant id in the left");
-            String resturant_id=br.readLine();
+            String resturant_id=br.readLine(); 
             System.out.println("####################");
             
             foodList=dbconnection.fetchFoodItems(Integer.parseInt(resturant_id));
@@ -445,30 +501,57 @@ public final class foodappp {
                     break;
                 case 6:
                     if(totalPrice>=100)
-                    {
+                    {   deliveryCharge = 5 * distance;
                         System.out.println("Your total cart value is: "+ totalPrice);
-                        System.out.println("1. Continue to the Payment page \n2. Exit");
+                        System.out.println("1. Continue to the Payment page \n2. Apply a coupon\n3. Exit");
                         int checkoutOptions=Integer.parseInt(br.readLine());
                         switch(checkoutOptions)
                         {
                             case 1: System.out.println("Choose a payment mode:\n1. UPI\n2. Debit Card\n3. Credit Card\n4. Net Banking\n5. Exit");
-                                    int paymentModeOptions=Integer.parseInt(br.readLine());
-                                    switch(paymentModeOptions)
-                                    {
-                                        case 1: System.out.println("Payment Done.\nPaid: "+totalPrice+"\nPayment mode: UPI");
-                                                break;
-                                        case 2: System.out.println("Payment Done.\nPaid: "+totalPrice+"\nPayment mode: Debit Card");
-                                                break;
-                                        case 3: System.out.println("Payment Done.\nPaid: "+totalPrice+"\nPayment mode: Credit Card");
-                                                break;
-                                        case 4: System.out.println("Payment Done.\nPaid: "+totalPrice+"\nPayment mode: Net Banking");
-                                                break;
-                                        case 5: System.exit(0);
-                                                break;
-                                        default: System.out.println("Invalid Selection");
-                                    }
+                                    paymentPage(br);
                                     break;
-                            case 2: System.exit(0);;
+                            case 2: login log1 = new login();
+                                    log1.setEmailId(sessionEmail);
+                                    getFlags(log1);
+                                    String temp1 = flag20==1?"Applicable":"Not Applicable";
+                                    String temp2 = flag50==1?"Applicable":"Not Applicable";
+                                    //System.out.println(flag20+" "+flag50);
+                                    System.out.println("Select a coupon\n1. SAVE20: "+ temp1+"\n2. SAVE50: "+temp2);
+                                    int couponSelector=Integer.parseInt(br.readLine());
+                                    switch(couponSelector)
+                                    {
+                                        case 1: 
+                                                if(flag20==1)
+                                                {
+                                                    discount = totalPrice * 0.2;
+                                                    finalPrice = totalPrice - discount + deliveryCharge;
+                                                    //System.out.println(discount);
+                                                    flag20=0;
+                                                    registration reg = new registration();
+                                                    reg.setSave20(flag20);
+                                                    reg.setSave20(flag50);
+                                                    dbconnection.insertFlags(reg);
+                                                }
+                                                System.out.println("Your total cart value is: "+ totalPrice+"\nCoupon Discount(SAVE20): "+discount+"\nDelivery Charges: "+deliveryCharge+"\nAmount to be paid: "+finalPrice);
+                                                System.out.println("Choose a payment mode:\n1. UPI\n2. Debit Card\n3. Credit Card\n4. Net Banking\n5. Exit");
+                                                paymentPage(br);
+                                                break;
+                                        case 2: if(flag50==1)
+                                                {
+                                                    discount = totalPrice * 0.5;
+                                                    finalPrice = totalPrice - discount+deliveryCharge;
+                                                    //System.out.println(discount);
+                                                    flag50=0;
+                                                    registration reg = new registration();
+                                                    reg.setSave50(flag50);
+                                                    reg.setSave20(flag20);
+                                                    dbconnection.insertFlags(reg);
+                                                }
+                                                System.out.println("Your total cart value is: "+ totalPrice+"\nCoupon Discount(SAVE50): "+discount+"\nDelivery Charges: "+deliveryCharge+"\nAmount to be paid: "+finalPrice);
+                                                System.out.println("Choose a payment mode:\n1. UPI\n2. Debit Card\n3. Credit Card\n4. Net Banking\n5. Exit");
+                                                break;
+                                    }
+                            case 3: System.exit(0);;
                                     break;
                         }
 
