@@ -180,8 +180,8 @@ public class dbconnection {
             usri.setString(1, reg.getUserName());
             usri.setString(2, reg.getEmailId());
             usri.setString(3, reg.getPassword());
-            //usri.setInt(4, reg.getSave20());
-            //usri.setInt(5, reg.getSave50());
+            usri.setInt(4, reg.getSave20());
+            usri.setInt(5, reg.getSave50());
             usri.executeUpdate();
             
             System.out.println("Registration Successful.......");
