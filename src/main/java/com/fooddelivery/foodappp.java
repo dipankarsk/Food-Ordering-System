@@ -538,7 +538,8 @@ return finalCount;
                 case 6:
                     if(totalPrice>=100)
                     {   deliveryCharge = 5 * distance;
-                        System.out.println("Your total cart value is: "+ totalPrice);
+                        finalPrice = totalPrice + deliveryCharge;
+                        System.out.println("Your total cart value is: "+ totalPrice+"\nDelivery charges: "+deliveryCharge);
                         System.out.println("1. Continue to the Payment page \n2. Apply a coupon\n3. Exit");
                         int checkoutOptions=Integer.parseInt(br.readLine());
                         switch(checkoutOptions)
