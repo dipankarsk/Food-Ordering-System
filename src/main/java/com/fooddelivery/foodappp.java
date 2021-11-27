@@ -24,6 +24,7 @@ public final class foodappp {
     static double distance = 0;
     static double deliveryCharge = 0;
     static int flag20, flag50;
+    static int listOfRestaurants;
     static List<String> food_items_id_extractor = new ArrayList<String>();
     static List<Integer> quantity = new ArrayList<Integer>();
     public void authenticationDisplay()
@@ -35,9 +36,8 @@ public final class foodappp {
         System.out.println("3. To Close the Apllication\n");
         System.out.println("                                      ####################                     ");
     }
-    public double resturantDisplay(List resturantList)
+    public void resturantDisplay(List resturantList)
     {   
-        double distanceInKm = 0;
         System.out.println("                   #############  The List of Available Resturants  #################"+"\n");
         System.out.print("Resturant Id "+" "+"ResturantName"+" "
         +"ResturantCity"+" "+"ResturantAddress"+" "+"Estimated Distance"+" "+"Estimated Time of Delivery"+"\n\n");
@@ -47,10 +47,8 @@ public final class foodappp {
         resturant r=(resturant) resturantList.get(i);
         System.out.print(r.getResturant_id()+"\t\t"+r.getResturant_name()+"\t\t"
         +r.getResturant_city()+"\t\t"+r.getResturant_address()+"\t\t"+String.format("%.2f",r.getResturant_distance())+" Km "+String.format("%.2f",r.getEstimated_time())+" Minutes ");
-        distanceInKm = r.getResturant_distance();
         System.out.println("\n");
         }
-        return distanceInKm;
     }
     public void foodMenuDisplay(List foodList)
     {
@@ -375,14 +373,16 @@ return finalCount;
             }
                 
             resturantList=dbconnection.fetchResturantDetils(sessionLocation,lat,lon);
-            distance = foodapppObj.resturantDisplay(resturantList);
+            foodapppObj.resturantDisplay(resturantList);
             System.out.println("####################");
             System.out.println("Choose a resturant of your choice by entering the resturant id in the left");
             String resturant_id=br.readLine(); 
             System.out.println("####################");
             
             foodList=dbconnection.fetchFoodItems(Integer.parseInt(resturant_id));
-
+            resturant r = (resturant) resturantList.get(Integer.parseInt(resturant_id)-1);
+            distance = r.getResturant_distance();
+            System.out.println(distance);
             foodapppObj.foodMenuDisplay(foodList);
             
             System.out.println("####################");
