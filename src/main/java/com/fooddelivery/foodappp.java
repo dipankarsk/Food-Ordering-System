@@ -122,8 +122,22 @@ public final class foodappp {
             System.out.println("Wrong Credentials\n");
         }
     }
-    public static void paymentPage(BufferedReader reader) throws NumberFormatException, IOException
-    {
+    public static void paymentPage(BufferedReader reader, String email) throws NumberFormatException, IOException
+    {   
+        cart cartObject = new cart();
+        cartObject.setEmail(email);
+        cartObject.setFinalPrice(finalPrice);
+        String orderIdsInString = "";
+        for(int i = 0; i<food_items_id_extractor.size();i++)
+        {
+            orderIdsInString = orderIdsInString + food_items_id_extractor.get(i);
+            if(i!=food_items_id_extractor.size()-1)
+            {
+                orderIdsInString = orderIdsInString + ",";
+            }
+        }
+        cartObject.setFoodId(orderIdsInString);
+        dbconnection.insertOrderDetails(cartObject);
         int paymentModeOptions=Integer.parseInt(reader.readLine());
         double price = 0;
         if(finalPrice == 0)
@@ -530,7 +544,7 @@ return finalCount;
                         switch(checkoutOptions)
                         {
                             case 1: System.out.println("Choose a payment mode:\n1. UPI\n2. Debit Card\n3. Credit Card\n4. Net Banking\n5. Exit");
-                                    paymentPage(br);
+                                    paymentPage(br, sessionEmail);
                                     break;
                             case 2: login log1 = new login();
                                     log1.setEmailId(sessionEmail);
@@ -556,7 +570,7 @@ return finalCount;
                                                 }
                                                 System.out.println("Your total cart value is: "+ totalPrice+"\nCoupon Discount(SAVE20): "+discount+"\nDelivery Charges: "+deliveryCharge+"\nAmount to be paid: "+finalPrice);
                                                 System.out.println("Choose a payment mode:\n1. UPI\n2. Debit Card\n3. Credit Card\n4. Net Banking\n5. Exit");
-                                                paymentPage(br);
+                                                paymentPage(br, sessionEmail);
                                                 break;
                                         case 2: if(flag50==1)
                                                 {
@@ -571,6 +585,7 @@ return finalCount;
                                                 }
                                                 System.out.println("Your total cart value is: "+ totalPrice+"\nCoupon Discount(SAVE50): "+discount+"\nDelivery Charges: "+deliveryCharge+"\nAmount to be paid: "+finalPrice);
                                                 System.out.println("Choose a payment mode:\n1. UPI\n2. Debit Card\n3. Credit Card\n4. Net Banking\n5. Exit");
+                                                paymentPage(br, sessionEmail);
                                                 break;
                                     }
                             case 3: System.exit(0);;
