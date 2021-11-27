@@ -193,7 +193,7 @@ public class dbconnection {
         }
         
     }
-    public static void insertFlags (registration reg)
+    public static void insertFlags (login loginObject)
     {
         Connection con =  Dbconnection("test.db");
         
@@ -202,9 +202,9 @@ public class dbconnection {
 
         try {
             PreparedStatement usri = con.prepareStatement(sql);
-            usri.setInt(1, reg.getSave20());
-            usri.setInt(2, reg.getSave50());
-            usri.setString(3, reg.getEmailId());
+            usri.setInt(1, loginObject.getSave20());
+            usri.setInt(2, loginObject.getSave50());
+            usri.setString(3, loginObject.getEmailId());
             usri.executeUpdate();
             
             //System.out.println("Registration Successful.......");
