@@ -24,6 +24,7 @@ public final class foodappp {
     static double distance = 0;
     static double deliveryCharge = 0;
     static int flag20, flag50;
+    static int listOfRestaurants;
     static List<String> food_items_id_extractor = new ArrayList<String>();
     static List<Integer> quantity = new ArrayList<Integer>();
     public void authenticationDisplay()
@@ -35,9 +36,8 @@ public final class foodappp {
         System.out.println("3. To Close the Apllication\n");
         System.out.println("                                      ####################                     ");
     }
-    public double resturantDisplay(List resturantList)
+    public void resturantDisplay(List resturantList)
     {   
-        double distanceInKm = 0;
         System.out.println("                   #############  The List of Available Resturants  #################"+"\n");
         System.out.print("Resturant Id "+" "+"ResturantName"+" "
         +"ResturantCity"+" "+"ResturantAddress"+" "+"Estimated Distance"+" "+"Estimated Time of Delivery"+"\n\n");
@@ -47,10 +47,8 @@ public final class foodappp {
         resturant r=(resturant) resturantList.get(i);
         System.out.print(r.getResturant_id()+"\t\t"+r.getResturant_name()+"\t\t"
         +r.getResturant_city()+"\t\t"+r.getResturant_address()+"\t\t"+String.format("%.2f",r.getResturant_distance())+" Km "+String.format("%.2f",r.getEstimated_time())+" Minutes ");
-        distanceInKm = r.getResturant_distance();
         System.out.println("\n");
         }
-        return distanceInKm;
     }
     public void foodMenuDisplay(List foodList)
     {
@@ -375,14 +373,16 @@ return finalCount;
             }
                 
             resturantList=dbconnection.fetchResturantDetils(sessionLocation,lat,lon);
-            distance = foodapppObj.resturantDisplay(resturantList);
+            foodapppObj.resturantDisplay(resturantList);
             System.out.println("####################");
             System.out.println("Choose a resturant of your choice by entering the resturant id in the left");
             String resturant_id=br.readLine(); 
             System.out.println("####################");
             
             foodList=dbconnection.fetchFoodItems(Integer.parseInt(resturant_id));
-
+            resturant r = (resturant) resturantList.get(Integer.parseInt(resturant_id)-1);
+            distance = r.getResturant_distance();
+            System.out.println(distance);
             foodapppObj.foodMenuDisplay(foodList);
             
             System.out.println("####################");
@@ -538,7 +538,8 @@ return finalCount;
                 case 6:
                     if(totalPrice>=100)
                     {   deliveryCharge = 5 * distance;
-                        System.out.println("Your total cart value is: "+ totalPrice);
+                        finalPrice = totalPrice + deliveryCharge;
+                        System.out.println("Your total cart value is: "+ totalPrice+"\nDelivery charges: "+deliveryCharge);
                         System.out.println("1. Continue to the Payment page \n2. Apply a coupon\n3. Exit");
                         int checkoutOptions=Integer.parseInt(br.readLine());
                         switch(checkoutOptions)
@@ -563,10 +564,11 @@ return finalCount;
                                                     finalPrice = totalPrice - discount + deliveryCharge;
                                                     //System.out.println(discount);
                                                     flag20=0;
-                                                    registration reg = new registration();
-                                                    reg.setSave20(flag20);
-                                                    reg.setSave20(flag50);
-                                                    dbconnection.insertFlags(reg);
+                                                    login lg = new login();
+                                                    lg.setSave20(flag20);
+                                                    lg.setSave50(flag50);
+                                                    lg.setEmailId(sessionEmail);
+                                                    dbconnection.insertFlags(lg);
                                                 }
                                                 System.out.println("Your total cart value is: "+ totalPrice+"\nCoupon Discount(SAVE20): "+discount+"\nDelivery Charges: "+deliveryCharge+"\nAmount to be paid: "+finalPrice);
                                                 System.out.println("Choose a payment mode:\n1. UPI\n2. Debit Card\n3. Credit Card\n4. Net Banking\n5. Exit");
@@ -578,10 +580,11 @@ return finalCount;
                                                     finalPrice = totalPrice - discount+deliveryCharge;
                                                     //System.out.println(discount);
                                                     flag50=0;
-                                                    registration reg = new registration();
-                                                    reg.setSave50(flag50);
-                                                    reg.setSave20(flag20);
-                                                    dbconnection.insertFlags(reg);
+                                                    login lg1 = new login();
+                                                    lg1.setSave50(flag50);
+                                                    lg1.setSave20(flag20);
+                                                    lg1.setEmailId(sessionEmail);
+                                                    dbconnection.insertFlags(lg1);
                                                 }
                                                 System.out.println("Your total cart value is: "+ totalPrice+"\nCoupon Discount(SAVE50): "+discount+"\nDelivery Charges: "+deliveryCharge+"\nAmount to be paid: "+finalPrice);
                                                 System.out.println("Choose a payment mode:\n1. UPI\n2. Debit Card\n3. Credit Card\n4. Net Banking\n5. Exit");
