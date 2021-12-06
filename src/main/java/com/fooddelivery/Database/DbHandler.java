@@ -7,16 +7,16 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fooddelivery.cart;
-import com.fooddelivery.food;
-import com.fooddelivery.resturant;
-import com.fooddelivery.Authentication.login;
-import com.fooddelivery.Authentication.registration;
+import com.fooddelivery.cartDao;
+import com.fooddelivery.foodDao;
+import com.fooddelivery.resturantDao;
+import com.fooddelivery.Authentication.loginDao;
+import com.fooddelivery.Authentication.registrationDao;
 
-public class dbconnection {
-    public static List<food> fetchFoodItems(int resturant_id)
+public class DbHandler extends Dboperation{
+    public List<foodDao> fetchFoodItems(int resturant_id)
     {
-        List<food> foodList = new ArrayList<food>();
+        List<foodDao> foodList = new ArrayList<foodDao>();
         String sql = "SELECT * " + "FROM Food WHERE resturant_id = ?";
         Connection con =  Dbconnection("test.db");
         try{
@@ -28,7 +28,7 @@ public class dbconnection {
             return foodList;
         }
         while (rs.next()) {
-                food f= new food();
+                foodDao f= new foodDao();
                 f.setFood_id(rs.getInt(1));
                 f.setFood_name(rs.getString(2));
                 f.setFood_price(rs.getInt(3));
@@ -52,9 +52,9 @@ public class dbconnection {
         }
         return foodList;
     }
-    public static List<resturant> fetchResturantDetils(String city,int lat,int lon)
+    public List<resturantDao> fetchResturantDetils(String city,int lat,int lon)
     {
-        List<resturant> resturantList = new ArrayList<resturant>();
+        List<resturantDao> resturantList = new ArrayList<resturantDao>();
         String sql = "SELECT * " + "FROM Resturants WHERE resturant_city = ?";
         Connection con =  Dbconnection("test.db");
         try{
@@ -66,7 +66,7 @@ public class dbconnection {
             return resturantList;
         }
         while (rs.next()) {
-                resturant r= new resturant();
+                resturantDao r= new resturantDao();
                 r.setResturant_id(rs.getInt(1));
                 r.setLatitude(rs.getInt(2));
                 r.setLongitude(rs.getInt(3));
@@ -96,7 +96,8 @@ public class dbconnection {
         }
         return resturantList;
     }
-    public static boolean logincheck(login log)
+    @Override
+    public boolean logincheck(loginDao log)
     {
         String sql = "SELECT Password " + "FROM User WHERE Email = ?";
         Connection con =  Dbconnection("test.db");
@@ -133,9 +134,9 @@ public class dbconnection {
         }
         return false;
     }
-    public static login fetchFlags(login log)
+    public loginDao fetchFlags(loginDao log)
     {   
-        login loginObject = new login();
+        loginDao loginObject = new loginDao();
         String sql1 = "SELECT * " + "FROM User WHERE Email = ?";
         Connection con =  Dbconnection("test.db");
         try{
@@ -170,7 +171,8 @@ public class dbconnection {
         }
         return loginObject;
     }
-    public static void insertUserData (registration reg)
+    @Override
+    public void insertUserData (registrationDao reg)
     {
         
         
@@ -193,7 +195,7 @@ public class dbconnection {
         }
         
     }
-    public static void insertFlags (login loginObject)
+    public void insertFlags (loginDao loginObject)
     {
         Connection con =  Dbconnection("test.db");
         
@@ -226,7 +228,8 @@ public class dbconnection {
             }
         }
     }
-    public static Connection Dbconnection(String name_file)
+    @Override
+    public Connection Dbconnection(String name_file)
      {
 
         String u = "jdbc:sqlite:./" + name_file;
@@ -245,7 +248,7 @@ public class dbconnection {
        
         return null ;
     }
-    public static void insertOrderDetails (cart cartObject)
+    public void insertOrderDetails (cartDao cartObject)
     {
         
         

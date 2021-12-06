@@ -9,9 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-import com.fooddelivery.Authentication.registration;
-import com.fooddelivery.Authentication.login;
-import com.fooddelivery.Database.dbconnection;
+import com.fooddelivery.Authentication.registrationDao;
+import com.fooddelivery.Authentication.loginDao;
+import com.fooddelivery.Database.DbHandler;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -25,8 +25,9 @@ public final class foodappp {
     static double deliveryCharge = 0;
     static int flag20, flag50;
     static int listOfRestaurants;
-    static List<String> food_items_id_extractor = new ArrayList<String>();
-    static List<Integer> quantity = new ArrayList<Integer>();
+    static List<String> food_items_id_extractor = new ArrayList<String>();// arraylist to store the food ids stored at any instance
+    static List<Integer> quantity = new ArrayList<Integer>(); // arraylist to store quantities of each food items inside the cart
+    static DbHandler dbconnection=new DbHandler();
     public void authenticationDisplay()
     {
         System.out.println("\n                               Welcome to XYZ food delivery system                              \n");
@@ -44,7 +45,7 @@ public final class foodappp {
         System.out.println();
         for(int i=0;i<resturantList.size();i++)
         {
-        resturant r=(resturant) resturantList.get(i);
+        resturantDao r=(resturantDao) resturantList.get(i);
         System.out.print(r.getResturant_id()+"\t\t"+r.getResturant_name()+"\t\t"
         +r.getResturant_city()+"\t\t"+r.getResturant_address()+"\t\t"+String.format("%.2f",r.getResturant_distance())+" Km "+String.format("%.2f",r.getEstimated_time())+" Minutes ");
         System.out.println("\n");
@@ -58,7 +59,7 @@ public final class foodappp {
                 System.out.println();
                 for(int i=0;i<foodList.size();i++)
                 {
-                food f=(food) foodList.get(i);
+                foodDao f=(foodDao) foodList.get(i);
                 System.out.print(i+"\t\t"+f.getFood_name()+"\t\t"+f.getFood_price()+"  in Rs");
                 System.out.println("\n");
     
@@ -85,17 +86,17 @@ public final class foodappp {
             }
 
     }
-    public static void register (registration reg)
+    public static void register (registrationDao reg)
     {
         dbconnection.insertUserData(reg);
 
     }
-    public static void getFlags(login log)
+    public static void getFlags(loginDao log)
     {
         /*boolean credentialStatus=dbconnection.logincheck(log);
         if(credentialStatus)
         {*/
-            login l = dbconnection.fetchFlags(log);
+            loginDao l = dbconnection.fetchFlags(log);
             //int flags[] = dbconnection.fetchFlags(log);
             flag20 = l.getSave20();
             flag50 = l.getSave50();
@@ -104,7 +105,7 @@ public final class foodappp {
             System.out.println("Wrong Credentials\n");
         }*/
     }
-    public static void login (login log)
+    public static void login (loginDao log)
     {
         boolean credentialStatus=dbconnection.logincheck(log);
         if(credentialStatus)
@@ -124,7 +125,7 @@ public final class foodappp {
     }
     public static void paymentPage(BufferedReader reader, String email) throws NumberFormatException, IOException
     {   
-        cart cartObject = new cart();
+        cartDao cartObject = new cartDao();
         cartObject.setEmail(email);
         cartObject.setFinalPrice(finalPrice);
         String orderIdsInString = "";
@@ -201,10 +202,11 @@ return finalCount;
             String food_items_id="";
             String food_items="";
             String food_order_quantity="";
-            List<resturant> resturantList = new ArrayList<resturant>();// to store array of objects for the resturants table
-            List<food> foodList = new ArrayList<food>();// to store array of objects for food database table
 
-            
+            List<resturantDao> resturantList = new ArrayList<resturantDao>();// to store array of objects for the resturants table
+            List<foodDao> foodList = new ArrayList<foodDao>();// to store array of objects for food database table
+           
+
             JSONParser jsonParser = new JSONParser();
             try (FileReader reader = new FileReader("./resources/session.json"))
             {
@@ -248,14 +250,14 @@ return finalCount;
                 String email = br.readLine();
                 System.out.println("Password : ");
                 String password = br.readLine();
-                login log=new login();
+                loginDao log=new loginDao();
                 log.setPassword(password);
                 log.setEmailId(email);
                 login(log);
                 break;
 
             case 2 :
-                registration reg = new registration();
+                registrationDao reg = new registrationDao();
                 System.out.println("Username : ");
                 String f_user = br.readLine();
                 System.out.println("EmailId : ");
@@ -384,9 +386,9 @@ return finalCount;
             System.out.println("####################");
             
             foodList=dbconnection.fetchFoodItems(Integer.parseInt(resturant_id));
-            resturant r = (resturant) resturantList.get(Integer.parseInt(resturant_id)-1);
+            resturantDao r = (resturantDao) resturantList.get(Integer.parseInt(resturant_id)-1);
             distance = r.getResturant_distance();
-            System.out.println(distance);
+            //System.out.println(distance);
             foodapppObj.foodMenuDisplay(foodList);
             
             System.out.println("####################");
@@ -439,8 +441,6 @@ return finalCount;
             {
                 Object obj = jsonParser.parse(reader);
                 JSONObject sessionList1 = (JSONObject) obj;
-
-                
                 if(!sessionList1.get("Resturant_id").equals(""))
                 {
                     resturant_id=sessionList1.get("Resturant_id").toString();
@@ -449,7 +449,9 @@ return finalCount;
                 {
                     food_items_id=sessionList1.get("food_items").toString();                   
                     food_order_quantity=sessionList1.get("quantity").toString();
-                }else{
+                }
+                else
+                {
                     flag_menu=true;
                 }
             }
@@ -460,9 +462,19 @@ return finalCount;
             } catch (ParseException e) {
             e.printStackTrace();
            }
-            String food_items_split[]=food_items_id.split(",");
+
+            String food_items_split[]=food_items_id.split(","); 
+            String food_items_quantity_split[]=food_order_quantity.split(","); 
             foodList=dbconnection.fetchFoodItems(Integer.parseInt(resturant_id));
             
+            for(int i=0; i<food_items_split.length;i++)
+            {   
+                if(!food_items_id_extractor.contains(food_items_split[i]))
+                {   
+                    food_items_id_extractor.add(food_items_split[i]);
+                }
+            }
+
             while(food_items_split!=null)
             { 
                //part 3 work area 2
@@ -478,14 +490,19 @@ return finalCount;
                   {
                    continue;
                   }
-                  food f=foodList.get(Integer.parseInt(food_items_split[i]));
-                  System.out.print(food_items_split[i]+"\t\t"+f.getFood_name()+"\t\t"+f.getFood_price()+"  in Rs"+"\t\t"+food_order_quantity.split(",")[i]);
+                  foodDao f=foodList.get(Integer.parseInt(food_items_split[i]));
+                  System.out.print(food_items_split[i]+"\t\t"+f.getFood_name()+"\t\t"+f.getFood_price()+"  in Rs"+"\t\t"+food_items_quantity_split[i]);
                   System.out.println("\n");
                }
-               for(int i=0; i<food_items_id_extractor.size();i++)
+               totalPrice=0.0;
+               for(int i=0; i<food_items_split.length;i++)
                {
-                food f2=foodList.get(Integer.parseInt(food_items_id_extractor.get(i)));
-                totalPrice += f2.getFood_price() * quantity.get((i));
+                if(food_items_split[i].equals(""))
+                  {
+                   continue;
+                  }
+                foodDao f2=foodList.get(Integer.parseInt(food_items_split[i]));
+                totalPrice += f2.getFood_price() * Integer.parseInt(food_items_quantity_split[i]);
                }
                System.out.println("####################");
                System.out.println("1. Close the application");
@@ -507,12 +524,12 @@ return finalCount;
                        break;
                case 3:
                       System.out.println("Enter the SL no of the items to be deleted");
-                      System.out.println(food_items_id);
-                      System.out.println(food_order_quantity);
+                      //System.out.println(food_items);
+                      //System.out.println(food_order_quantity);
                       String food_items_to_delete=br.readLine();
                       String food_items_to_delete_split[]=food_items_to_delete.split(",");
                       food_items="";
-                      
+                      food_order_quantity="";
                       for(int i=0;i<food_items_to_delete_split.length;i++)
                           {
                               for(int j=0;j<food_items_split.length;j++)
@@ -520,6 +537,7 @@ return finalCount;
                                  if(food_items_split[j].equals(food_items_to_delete_split[i]))
                                  {
                                     food_items_split[j]="";
+                                    food_items_quantity_split[j]="";
                                  }
                               }
                           }
@@ -527,13 +545,15 @@ return finalCount;
                           {
                               if(food_items_split[j].equals(""))
                               {
+                                //food_items_id_extractor.remove(j);
                                 continue;
                               }
                               food_items+=food_items_split[j]+",";
+                              food_order_quantity+=food_items_quantity_split[j]+",";
                           }
-                          System.out.println(food_items);
-                          addToCache("Y", sessionEmail, sessionLocation, food_items, resturant_id,"","");
-                      break;
+                          //System.out.println("After removal  "+food_items);
+                    addToCache("Y", sessionEmail, sessionLocation, food_items, resturant_id,"",food_order_quantity);
+                    break;
                 case 4:
                     addToCache("Y", sessionEmail, sessionLocation, "", resturant_id,"","");
                     food_items_split=null;
@@ -546,6 +566,8 @@ return finalCount;
                     if(totalPrice>=100)
                     {   
                         //code for part4 
+                        System.out.println("The resturant id is "+resturant_id);
+                        
                         deliveryCharge = 5 * distance;
                         finalPrice = totalPrice + deliveryCharge;
                         System.out.println("Your total cart value is: "+ totalPrice+"\nDelivery charges: "+deliveryCharge);
@@ -557,12 +579,11 @@ return finalCount;
                                     paymentPage(br, sessionEmail);
                                     System.exit(0);
                                     break;
-                            case 2: login log1 = new login();
+                            case 2: loginDao log1 = new loginDao();
                                     log1.setEmailId(sessionEmail);
                                     getFlags(log1);
                                     String temp1 = flag20==1?"Applicable":"Not Applicable";
                                     String temp2 = flag50==1?"Applicable":"Not Applicable";
-                                    //System.out.println(flag20+" "+flag50);
                                     System.out.println("Select a coupon\n1. SAVE20: "+ temp1+"\n2. SAVE50: "+temp2);
                                     int couponSelector=Integer.parseInt(br.readLine());
                                     switch(couponSelector)
@@ -574,7 +595,7 @@ return finalCount;
                                                     finalPrice = totalPrice - discount + deliveryCharge;
                                                     //System.out.println(discount);
                                                     flag20=0;
-                                                    login lg = new login();
+                                                    loginDao lg = new loginDao();
                                                     lg.setSave20(flag20);
                                                     lg.setSave50(flag50);
                                                     lg.setEmailId(sessionEmail);
@@ -590,7 +611,7 @@ return finalCount;
                                                     finalPrice = totalPrice - discount+deliveryCharge;
                                                     //System.out.println(discount);
                                                     flag50=0;
-                                                    login lg1 = new login();
+                                                    loginDao lg1 = new loginDao();
                                                     lg1.setSave50(flag50);
                                                     lg1.setSave20(flag20);
                                                     lg1.setEmailId(sessionEmail);
@@ -603,16 +624,15 @@ return finalCount;
                                     }
                                     System.exit(0);
                                     break;
-                                       case 3: System.exit(0);
-                                               break;
+                            case 3: System.exit(0);
+                                    break;
                         }
-
                     }
-                    else{
+                    else
+                    {
                         System.out.println("Minimum order value should be 100. Your current cart value: "+ totalPrice);
                     }
                     break;
-                    
               }                   
             }//part 3 ends here
           }

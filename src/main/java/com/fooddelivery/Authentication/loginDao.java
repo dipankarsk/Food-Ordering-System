@@ -1,5 +1,5 @@
 package com.fooddelivery.Authentication;
-public class login 
+public class loginDao 
 {
     private String emailId="";
     private String password="";

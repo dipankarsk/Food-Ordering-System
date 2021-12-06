@@ -1,6 +1,6 @@
 package com.fooddelivery;
 
-public class resturant {
+public class resturantDao {
     private int resturant_id=0;
     private String resturant_name="";
     private int latitude=0;

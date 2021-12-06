@@ -1,6 +1,6 @@
 package com.fooddelivery;
 
-public class cart {
+public class cartDao {
     private int orderId;
     private String foodId;
     private String email;

@@ -1,6 +1,6 @@
 package com.fooddelivery.Authentication;
 
-public class registration 
+public class registrationDao 
 {
     private String userName="";
     private String password="";
@@ -47,4 +47,6 @@ public class registration
     {
         return flag50;
     }
+  
+
 }
