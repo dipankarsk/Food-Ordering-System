@@ -28,6 +28,7 @@ public final class foodappp {
     static List<String> food_items_id_extractor = new ArrayList<String>();// arraylist to store the food ids stored at any instance
     static List<Integer> quantity = new ArrayList<Integer>(); // arraylist to store quantities of each food items inside the cart
     static DbHandler dbconnection=new DbHandler();
+    static cacheHandler cacheObject=new cacheHandler();
     public void authenticationDisplay()
     {
         System.out.println("\n                               Welcome to XYZ food delivery system                              \n");
@@ -65,27 +66,7 @@ public final class foodappp {
     
                 } 
     }
-    public static void addToCache(String cacheStatus, String cacheEmail,String cacheLocation, String cachefoodItems, String cacheResturantId,String totalPrice,String quantity)
-    {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("Active", cacheStatus);
-            jsonObject.put("Email", cacheEmail);
-            jsonObject.put("Location", cacheLocation);
-            jsonObject.put("Resturant_id", cacheResturantId);
-            jsonObject.put("food_items", cachefoodItems);
-            jsonObject.put("total_price", totalPrice);
-            jsonObject.put("quantity", quantity);
-            try 
-            {
-             FileWriter file = new FileWriter("./resources/session.json");
-             file.write(jsonObject.toJSONString());
-             file.close();
-            }catch (IOException e) 
-            {
-            System.out.println("Error due to json file creation"+e.getMessage());
-            }
-
-    }
+    
     public static void register (registrationDao reg)
     {
         dbconnection.insertUserData(reg);
@@ -118,7 +99,7 @@ public final class foodappp {
            /*int flags[] = dbconnection.fetchFlags(log);
            flag20 = flags[0];
            flag50 = flags[1];*/
-           addToCache("Y", log.getEmailId(), "", "", "","","");
+           cacheObject.addToCache("Y", log.getEmailId(), "", "", "","","");
         }else{
             System.out.println("Wrong Credentials\n");
         }
@@ -206,39 +187,29 @@ return finalCount;
             List<resturantDao> resturantList = new ArrayList<resturantDao>();// to store array of objects for the resturants table
             List<foodDao> foodList = new ArrayList<foodDao>();// to store array of objects for food database table
            
-
-            JSONParser jsonParser = new JSONParser();
-            try (FileReader reader = new FileReader("./resources/session.json"))
-            {
-                Object obj = jsonParser.parse(reader);
-                JSONObject sessionList1 = (JSONObject) obj;
-                //System.out.println("Session List"+sessionList1.get("Active"));
+            cacheHandler cacheHandlerOBJ=new cacheHandler();
+            cacheDao  cacheDaoObj=cacheHandlerOBJ.readFromCache();
+            
                 
-                if (sessionList1.get("Active").equals("Y"))
-                {
-                    sessionEmail=sessionList1.get("Email").toString();
+            if (cacheDaoObj.getCacheStatus().equals("Y"))
+            {
+                    sessionEmail=cacheDaoObj.getCacheEmail();
                     flag_authentication = false;
-                }
-                if(!sessionList1.get("Location").equals(""))
-                {
-                    sessionLocation=sessionList1.get("Location").toString();
+            }
+            if(!cacheDaoObj.getCacheLocation().equals(""))
+            {
+                    sessionLocation=cacheDaoObj.getCacheLocation().toString();
                     flag_view=false;
-                }
-                if(!sessionList1.get("food_items").equals(""))
-                {
-                    food_items_id=sessionList1.get("food_items").toString();
-                    food_order_quantity=sessionList1.get("quantity").toString();
+            }
+            if(!cacheDaoObj.getCachefoodItems().equals(""))
+            {
+                    food_items_id=cacheDaoObj.getCachefoodItems().toString();
+                    food_order_quantity=cacheDaoObj.getCacheQuantity().toString();
                     flag_menu=false;
 
-                }
             }
-            catch (FileNotFoundException e) {
-               e.printStackTrace();
-            } catch (IOException e) {
-               e.printStackTrace();
-            } catch (ParseException e) {
-            e.printStackTrace();
-           }
+           
+           
            if(flag_authentication)
            { //authentication flag
                foodapppObj.authenticationDisplay();
@@ -283,7 +254,7 @@ return finalCount;
             }
         }
         else if (flag_menu)
-        {
+         {
             
             //session stored locally on machine using Json object using file writting
             
@@ -307,7 +278,7 @@ return finalCount;
                System.exit(0);
                break;
             case 2:
-               addToCache("N", "", "", "", "","","");
+               cacheObject.addToCache("N", "", "", "", "","","");
                 break;
             case 3:
             if(flag_view)
@@ -345,7 +316,7 @@ return finalCount;
             
             resturantList=dbconnection.fetchResturantDetils(cityChoice,lat,lon);
 
-            addToCache("Y", sessionEmail, cityChoice, "", "","","");
+            cacheObject.addToCache("Y", sessionEmail, cityChoice, "", "","","");
 
             
             }
@@ -423,7 +394,7 @@ return finalCount;
 
 
             System.out.println("                              ####################");
-            addToCache("Y", sessionEmail,sessionLocation,food_items, resturant_id,"",quantity_items);
+            cacheObject.addToCache("Y", sessionEmail,sessionLocation,food_items, resturant_id,"",quantity_items);
 
              ///////// end
          
@@ -437,31 +408,21 @@ return finalCount;
           else
           {   //Code for part 3
             String resturant_id="";
-            try (FileReader reader = new FileReader("./resources/session.json"))
+           
+            if(!cacheDaoObj.getCacheResturantId().equals(""))
             {
-                Object obj = jsonParser.parse(reader);
-                JSONObject sessionList1 = (JSONObject) obj;
-                if(!sessionList1.get("Resturant_id").equals(""))
-                {
-                    resturant_id=sessionList1.get("Resturant_id").toString();
-                }
-                if(!sessionList1.get("food_items").equals(""))
-                {
-                    food_items_id=sessionList1.get("food_items").toString();                   
-                    food_order_quantity=sessionList1.get("quantity").toString();
-                }
-                else
-                {
-                    flag_menu=true;
-                }
+                resturant_id=cacheDaoObj.getCacheResturantId().toString();
             }
-            catch (FileNotFoundException e) {
-               e.printStackTrace();
-            } catch (IOException e) {
-               e.printStackTrace();
-            } catch (ParseException e) {
-            e.printStackTrace();
-           }
+            if(!cacheDaoObj.getCachefoodItems().equals(""))
+            {
+                food_items_id=cacheDaoObj.getCachefoodItems().toString();                   
+                food_order_quantity=cacheDaoObj.getCacheQuantity().toString();
+            }
+            else
+            {
+                flag_menu=true;
+            }
+            
 
             String food_items_split[]=food_items_id.split(","); 
             String food_items_quantity_split[]=food_order_quantity.split(","); 
@@ -519,7 +480,7 @@ return finalCount;
                       System.exit(0);
                       break;
                case 2:
-                       addToCache("N", "", "", "", "","","");
+                       cacheObject.addToCache("N", "", "", "", "","","");
                        food_items_split=null;
                        break;
                case 3:
@@ -552,14 +513,14 @@ return finalCount;
                               food_order_quantity+=food_items_quantity_split[j]+",";
                           }
                           //System.out.println("After removal  "+food_items);
-                    addToCache("Y", sessionEmail, sessionLocation, food_items, resturant_id,"",food_order_quantity);
+                          cacheObject.addToCache("Y", sessionEmail, sessionLocation, food_items, resturant_id,"",food_order_quantity);
                     break;
                 case 4:
-                    addToCache("Y", sessionEmail, sessionLocation, "", resturant_id,"","");
+                    cacheObject.addToCache("Y", sessionEmail, sessionLocation, "", resturant_id,"","");
                     food_items_split=null;
                     break;
                 case 5:
-                    addToCache("Y", sessionEmail, sessionLocation, "", resturant_id,"","");
+                    cacheObject.addToCache("Y", sessionEmail, sessionLocation, "", resturant_id,"","");
                     food_items_split=null;
                     break;
                 case 6:
