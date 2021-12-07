@@ -24,4 +24,7 @@ The following features of the Application
    1. Tracking the order time with the origibnal estimated time and if order time exceeds than cancelation available.
    2.  Rating the food and the app.
 
-# 
+# How to Install the Project.
+
+ cd foodordering
+ git clone https://github.com/dipankarsk/oopd_project_2021.git
