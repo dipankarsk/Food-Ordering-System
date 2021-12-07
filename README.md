@@ -24,10 +24,16 @@ The following features of the Application
    - Tracking the order time with the origibnal estimated time and if order time exceeds than cancelation available.
    -  Rating the food and the app.
 
-# How to Install the Project.
+# Pre-Requisites
+
+  - java 17.0.1
+  - Java(TM) SE Runtime Environment (build 17.0.1+12-LTS-39)
+  - Java HotSpot(TM) 64-Bit Server VM (build 17.0.1+12-LTS-39, mixed mode, sharing)
+  - IDE Visual Studio Code Version: 1.62.3
+  - Maveen v0.34.1
+# How to Install the Project
 
 
  - cd foodordering
  - git clone https://github.com/dipankarsk/oopd_project_2021.git
-
 
