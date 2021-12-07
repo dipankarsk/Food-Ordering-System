@@ -26,5 +26,8 @@ The following features of the Application
 
 # How to Install the Project.
 
+
  - cd foodordering
  - git clone https://github.com/dipankarsk/oopd_project_2021.git
+
+
