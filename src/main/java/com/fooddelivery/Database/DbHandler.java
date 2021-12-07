@@ -252,7 +252,7 @@ public class DbHandler extends Dboperation{
     {
         
         
-        String sql = "INSERT INTO Orders(Email, FoodId, FinalPrice) VALUES(?,?,?)";
+        String sql = "INSERT INTO Orders(Email, FoodId, FinalPrice, TimeStamp) VALUES(?,?,?,?)";
 
         try (Connection con1 =  Dbconnection("test.db");
              PreparedStatement usri = con1.prepareStatement(sql))
@@ -260,6 +260,7 @@ public class DbHandler extends Dboperation{
             usri.setString(1, cartObject.getEmail());
             usri.setString(2, cartObject.getFoodId());
             usri.setDouble(3, cartObject.getFinalPrice());
+            usri.setLong(4, cartObject.getTimeStamp());
             usri.executeUpdate();
         }
         catch (SQLException e) {

@@ -5,9 +5,10 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Random;
 
 import com.fooddelivery.Authentication.registrationDao;
 import com.fooddelivery.Authentication.loginDao;
@@ -25,6 +26,11 @@ public final class foodappp {
     static double deliveryCharge = 0;
     static int flag20, flag50;
     static int listOfRestaurants;
+    static double estimatedTime=0;
+    static double actualTime=0;
+    static double time=0;
+    static long tStamp=0;
+    static boolean toCancel;
     static List<String> food_items_id_extractor = new ArrayList<String>();// arraylist to store the food ids stored at any instance
     static List<Integer> quantity = new ArrayList<Integer>(); // arraylist to store quantities of each food items inside the cart
     static DbHandler dbconnection=new DbHandler();
@@ -128,6 +134,8 @@ public final class foodappp {
         cartDao cartObject = new cartDao();
         cartObject.setEmail(email);
         cartObject.setFinalPrice(finalPrice);
+        tStamp=  System.currentTimeMillis();
+        cartObject.setTimeStamp(tStamp);
         String orderIdsInString = "";
         for(int i = 0; i<food_items_id_extractor.size();i++)
         {
@@ -151,19 +159,67 @@ public final class foodappp {
         switch(paymentModeOptions)
         {  
             case 1: System.out.println("Payment Done.\nPaid: "+price+"\nPayment mode: UPI");
+                    toCancel= trackingPage(reader);
                     break;
             case 2: System.out.println("Payment Done.\nPaid: "+price+"\nPayment mode: Debit Card");
+                    toCancel= trackingPage(reader);
                     break;
             case 3: System.out.println("Payment Done.\nPaid: "+price+"\nPayment mode: Credit Card");
+                    toCancel= trackingPage(reader);
                     break;
             case 4: System.out.println("Payment Done.\nPaid: "+price+"\nPayment mode: Net Banking");
+                    toCancel= trackingPage(reader);
                     break;
             case 5: System.exit(0);
                     break;
             default: System.out.println("Invalid Selection");
         }
+
+        if(toCancel== true){
+            System.out.println("Current time has exceeded the estimated time by 10%, so do you wanna cancel the order? \n1. Yes\n2. No ");
+            int option= Integer.parseInt(reader.readLine());
+
+            switch(option){
+                case 1: System.out.println("Your order has been cancelled!!!!!");
+                        System.exit(0);
+                case 2: toCancel= trackingPage(reader);
+                        break;
+            }
+
+        }
         dbconnection.insertOrderDetails(cartObject);
     }
+
+    public static boolean trackingPage(BufferedReader reader) throws NumberFormatException, IOException{
+
+        long timeElp=0;
+        boolean check = false;
+        
+        System.out.println("1. Track your order" + "\n2. Exit");
+        
+        int option= Integer.parseInt(reader.readLine());
+
+        switch(option){
+            case 1: Random randomNo= new Random();
+                    int x= Math.abs(randomNo.nextInt(40-5)+ 5);
+                    estimatedTime= x + time;
+                    System.out.println("Estimated time for your order is: "+ estimatedTime + " minutes.");
+                    
+                    long estimatedTimeInMilli= (long)estimatedTime*60000;
+                    timeElp= System.currentTimeMillis()- tStamp;
+                    
+                    if(estimatedTimeInMilli*0.1< Math.abs(estimatedTimeInMilli-timeElp)){
+                        return true;
+                    }
+                    return false;
+
+            case 2: System.exit(0);
+                    break;
+        }
+        return check;
+
+    }
+
     public static List<Integer> returnCount(String array[])
 {   
     List<Integer> finalCount = new ArrayList<Integer>();
@@ -388,6 +444,7 @@ return finalCount;
             foodList=dbconnection.fetchFoodItems(Integer.parseInt(resturant_id));
             resturantDao r = (resturantDao) resturantList.get(Integer.parseInt(resturant_id)-1);
             distance = r.getResturant_distance();
+            time = r.getEstimated_time();
             //System.out.println(distance);
             foodapppObj.foodMenuDisplay(foodList);
             
