@@ -1,6 +1,9 @@
 package com.fooddelivery.Authentication;
 public class loginDao 
 {
+
+    /* Using Encapsulation for login data */
+    
     private String emailId="";
     private String password="";
     private int flag20;

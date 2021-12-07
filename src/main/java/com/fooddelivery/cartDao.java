@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.fooddelivery.Authentication.loginDao;
-import com.fooddelivery.Database.DbHandler;
+
 
 public class cartDao extends foodDao {
     private int orderId;

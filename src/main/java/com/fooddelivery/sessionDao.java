@@ -1,7 +1,9 @@
 package com.fooddelivery;
 
-public class cacheDao {
+public class sessionDao {
 
+    /* Encapsulation for Session Data Read and write */
+    
     private String cacheStatus;
     private String cacheEmail;
     private String cacheLocation;
@@ -10,7 +12,7 @@ public class cacheDao {
     private String cacheTotalPrice;
     private String cacheQuantity;
 
-    public cacheDao()
+    public sessionDao()
     {
       this.cacheEmail="";
       this.cacheLocation="";

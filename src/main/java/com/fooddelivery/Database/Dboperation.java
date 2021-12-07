@@ -4,6 +4,8 @@ import com.fooddelivery.Authentication.loginDao;
 import com.fooddelivery.Authentication.registrationDao;
 
 public abstract class Dboperation {
+
+    /* abstract class for Database Operation */
     final String dbPath = "jdbc:sqlite:./" + "test.db";
     abstract public void insertUserData (registrationDao reg);
     abstract public boolean logincheck(loginDao log);

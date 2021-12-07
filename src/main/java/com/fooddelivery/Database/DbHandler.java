@@ -14,6 +14,9 @@ import com.fooddelivery.Authentication.loginDao;
 import com.fooddelivery.Authentication.registrationDao;
 
 public class DbHandler extends Dboperation{
+
+    /* class for handling the different database operations */
+    
     public List<foodDao> fetchFoodItems(int resturant_id)
     {
         List<foodDao> foodList = new ArrayList<foodDao>();

@@ -2,6 +2,9 @@ package com.fooddelivery.Authentication;
 
 public class registrationDao 
 {
+
+    /* Using Encapsulation for registration data */
+    
     private String userName="";
     private String password="";
     private String emailId="";

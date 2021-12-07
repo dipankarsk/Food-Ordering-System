@@ -27,7 +27,7 @@ public final class foodappp {
     static List<String> food_items_id_extractor = new ArrayList<String>();// arraylist to store the food ids stored at any instance
     static List<Integer> quantity = new ArrayList<Integer>(); // arraylist to store quantities of each food items inside the cart
     static DbHandler dbconnection=new DbHandler();
-    static cacheHandler cacheObject=new cacheHandler();
+    static sessionHandler cacheObject=new sessionHandler();
     public void authenticationDisplay()
     {
         System.out.println("\n                               Welcome to XYZ food delivery system                              \n");
@@ -184,8 +184,8 @@ public final class foodappp {
             List<resturantDao> resturantList = new ArrayList<resturantDao>();// to store array of objects for the resturants table
             List<foodDao> foodList = new ArrayList<foodDao>();// to store array of objects for food database table
            
-            cacheHandler cacheHandlerOBJ=new cacheHandler();
-            cacheDao  cacheDaoObj=cacheHandlerOBJ.readFromCache();
+            sessionHandler cacheHandlerOBJ=new sessionHandler();
+            sessionDao  cacheDaoObj=cacheHandlerOBJ.readFromCache();
             
                 
             if (cacheDaoObj.getCacheStatus().equals("Y"))

@@ -7,8 +7,9 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-public class cacheHandler extends Cache{
+public class sessionHandler extends Session{
 
+    /* Class to handle Session related operations read and write */
     @Override
     void addToCache(String cacheStatus, String cacheEmail, String cacheLocation, String cachefoodItems,
             String cacheResturantId, String cacheTotalPrice, String cacheQuantity) {
@@ -33,9 +34,9 @@ public class cacheHandler extends Cache{
     }
 
     @Override
-    cacheDao readFromCache() {
+    sessionDao readFromCache() {
         JSONParser jsonParser = new JSONParser();
-        cacheDao cacheDaoObj=new cacheDao();
+        sessionDao cacheDaoObj=new sessionDao();
         try (FileReader reader = new FileReader(cachePath))
         {
             Object obj = jsonParser.parse(reader);
