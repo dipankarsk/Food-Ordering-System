@@ -5,6 +5,7 @@ public class cartDao {
     private String foodId;
     private String email;
     private double finalPrice;
+    private long timeStamp;
     public void setOrderId(int orderId)
     {
         this.orderId = orderId;
@@ -37,4 +38,13 @@ public class cartDao {
     {
         return finalPrice;
     }
+
+    public void setTimeStamp(long timeStamp){
+        this.timeStamp= timeStamp;
+    }
+
+    public long getTimeStamp(){
+        return timeStamp;
+    }
+    
 }
