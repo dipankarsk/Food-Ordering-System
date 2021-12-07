@@ -1,6 +1,8 @@
 package com.fooddelivery;
 
-public class foodDao {
+import java.util.List;
+
+public class foodDao extends resturantDao {
     private int food_id=0;
     private String food_name="";
     private int food_price=0;
@@ -21,5 +23,25 @@ public class foodDao {
     }
     public String getFood_name() {
         return food_name;
+    }
+    @Override
+    void display() 
+    {
+       
+        System.out.println("                   #############  The Food Menu #################"+"\n");
+                    
+        System.out.print("SL"+"\t\t"+"Food Name"+"\t\t"+"Food Price"+"\t\t"+"\n\n");
+        System.out.println();        
+                    
+    }
+    public void foodMenuDisplay(List foodList)
+    {
+                    display();
+                    for(int i=0;i<foodList.size();i++)
+                    {
+                        foodDao f=(foodDao) foodList.get(i);
+                        System.out.print(i+"\t\t"+f.getFood_name()+"\t\t"+f.getFood_price()+"  in Rs");
+                        System.out.println("\n");
+                    } 
     }
 }

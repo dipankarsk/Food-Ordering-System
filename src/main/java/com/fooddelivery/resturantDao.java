@@ -1,6 +1,8 @@
 package com.fooddelivery;
 
-public class resturantDao {
+import java.util.List;
+
+public class resturantDao extends Resturant {
     private int resturant_id=0;
     private String resturant_name="";
     private int latitude=0;
@@ -58,5 +60,25 @@ public class resturantDao {
     }
     public Double getResturant_distance() {
         return resturant_distance;
+    }
+    @Override
+    void display() {
+
+        System.out.println("                   #############  The List of Available Resturants  #################"+"\n");
+        System.out.print("Resturant Id "+" "+"ResturantName"+" "
+        +"ResturantCity"+" "+"ResturantAddress"+" "+"Estimated Distance"+" "+"Estimated Time of Delivery"+"\n\n");
+        System.out.println();
+        
+    }
+    public void resturantDisplay(List resturantList)
+    {   
+        display();
+        for(int i=0;i<resturantList.size();i++)
+        {
+            resturantDao r=(resturantDao) resturantList.get(i);
+            System.out.print(r.getResturant_id()+"\t\t"+r.getResturant_name()+"\t\t"
+            +r.getResturant_city()+"\t\t"+r.getResturant_address()+"\t\t"+String.format("%.2f",r.getResturant_distance())+" Km "+String.format("%.2f",r.getEstimated_time())+" Minutes ");
+            System.out.println("\n");
+        }
     }
 }

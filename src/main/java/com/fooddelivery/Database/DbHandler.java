@@ -18,7 +18,7 @@ public class DbHandler extends Dboperation{
     {
         List<foodDao> foodList = new ArrayList<foodDao>();
         String sql = "SELECT * " + "FROM Food WHERE resturant_id = ?";
-        Connection con =  Dbconnection("test.db");
+        Connection con =  Dbconnection();
         try{
         PreparedStatement pstmt  = con.prepareStatement(sql);
         pstmt.setInt(1, resturant_id);
@@ -56,7 +56,7 @@ public class DbHandler extends Dboperation{
     {
         List<resturantDao> resturantList = new ArrayList<resturantDao>();
         String sql = "SELECT * " + "FROM Resturants WHERE resturant_city = ?";
-        Connection con =  Dbconnection("test.db");
+        Connection con =  Dbconnection();
         try{
         PreparedStatement pstmt  = con.prepareStatement(sql);
         pstmt.setString(1, city);
@@ -100,7 +100,7 @@ public class DbHandler extends Dboperation{
     public boolean logincheck(loginDao log)
     {
         String sql = "SELECT Password " + "FROM User WHERE Email = ?";
-        Connection con =  Dbconnection("test.db");
+        Connection con =  Dbconnection();
         try{
         PreparedStatement pstmt  = con.prepareStatement(sql);
         pstmt.setString(1, log.getEmailId());
@@ -138,7 +138,7 @@ public class DbHandler extends Dboperation{
     {   
         loginDao loginObject = new loginDao();
         String sql1 = "SELECT * " + "FROM User WHERE Email = ?";
-        Connection con =  Dbconnection("test.db");
+        Connection con =  Dbconnection();
         try{
         PreparedStatement pstmt1  = con.prepareStatement(sql1);
         pstmt1.setString(1, log.getEmailId());
@@ -178,7 +178,7 @@ public class DbHandler extends Dboperation{
         
         String sql = "INSERT INTO User(UserName,Email,Password,save20,save50) VALUES(?,?,?,?,?)";
 
-        try (Connection con1 =  Dbconnection("test.db");
+        try (Connection con1 =  Dbconnection();
              PreparedStatement usri = con1.prepareStatement(sql))
         {
             usri.setString(1, reg.getUserName());
@@ -197,7 +197,7 @@ public class DbHandler extends Dboperation{
     }
     public void insertFlags (loginDao loginObject)
     {
-        Connection con =  Dbconnection("test.db");
+        Connection con =  Dbconnection();
         
         //String sql = "INSERT INTO User(save20,save50) VALUES(?,?)";
         String sql = "UPDATE User SET save20 = ?, save50 = ? WHERE Email = ?";
@@ -229,14 +229,12 @@ public class DbHandler extends Dboperation{
         }
     }
     @Override
-    public Connection Dbconnection(String name_file)
+    public Connection Dbconnection()
      {
-
-        String u = "jdbc:sqlite:./" + name_file;
         Connection connect=null;
         try 
         {
-             connect = DriverManager.getConnection(u);
+             connect = DriverManager.getConnection(dbPath);
             if (connect != null) {
                 
                 return connect;
@@ -250,11 +248,9 @@ public class DbHandler extends Dboperation{
     }
     public void insertOrderDetails (cartDao cartObject)
     {
-        
-        
         String sql = "INSERT INTO Orders(Email, FoodId, FinalPrice, TimeStamp) VALUES(?,?,?,?)";
 
-        try (Connection con1 =  Dbconnection("test.db");
+        try (Connection con1 =  Dbconnection();
              PreparedStatement usri = con1.prepareStatement(sql))
         {
             usri.setString(1, cartObject.getEmail());
@@ -268,4 +264,5 @@ public class DbHandler extends Dboperation{
         }
         
     }
+   
 }

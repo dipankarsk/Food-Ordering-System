@@ -1,23 +1,13 @@
 package com.fooddelivery;
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
 import com.fooddelivery.Authentication.registrationDao;
 import com.fooddelivery.Authentication.loginDao;
 import com.fooddelivery.Database.DbHandler;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-import java.util.Arrays;
-
 public final class foodappp {
     static double totalPrice = 0;
     static double discount = 0;
@@ -30,6 +20,9 @@ public final class foodappp {
     static double actualTime=0;
     static double time=0;
     static long tStamp=0;
+    static int lat=0;
+    static int lon=0;
+    static String resturant_id="";
     static boolean toCancel;
     static List<String> food_items_id_extractor = new ArrayList<String>();// arraylist to store the food ids stored at any instance
     static List<Integer> quantity = new ArrayList<Integer>(); // arraylist to store quantities of each food items inside the cart
@@ -44,35 +37,7 @@ public final class foodappp {
         System.out.println("3. To Close the Apllication\n");
         System.out.println("                                      ####################                     ");
     }
-    public void resturantDisplay(List resturantList)
-    {   
-        System.out.println("                   #############  The List of Available Resturants  #################"+"\n");
-        System.out.print("Resturant Id "+" "+"ResturantName"+" "
-        +"ResturantCity"+" "+"ResturantAddress"+" "+"Estimated Distance"+" "+"Estimated Time of Delivery"+"\n\n");
-        System.out.println();
-        for(int i=0;i<resturantList.size();i++)
-        {
-        resturantDao r=(resturantDao) resturantList.get(i);
-        System.out.print(r.getResturant_id()+"\t\t"+r.getResturant_name()+"\t\t"
-        +r.getResturant_city()+"\t\t"+r.getResturant_address()+"\t\t"+String.format("%.2f",r.getResturant_distance())+" Km "+String.format("%.2f",r.getEstimated_time())+" Minutes ");
-        System.out.println("\n");
-        }
-    }
-    public void foodMenuDisplay(List foodList)
-    {
-                System.out.println("                   #############  The Food Menu #################"+"\n");
-                
-                System.out.print("SL"+"\t\t"+"Food Name"+"\t\t"+"Food Price"+"\t\t"+"\n\n");
-                System.out.println();
-                for(int i=0;i<foodList.size();i++)
-                {
-                foodDao f=(foodDao) foodList.get(i);
-                System.out.print(i+"\t\t"+f.getFood_name()+"\t\t"+f.getFood_price()+"  in Rs");
-                System.out.println("\n");
-    
-                } 
-    }
-    
+
     public static void register (registrationDao reg)
     {
         dbconnection.insertUserData(reg);
@@ -80,17 +45,9 @@ public final class foodappp {
     }
     public static void getFlags(loginDao log)
     {
-        /*boolean credentialStatus=dbconnection.logincheck(log);
-        if(credentialStatus)
-        {*/
             loginDao l = dbconnection.fetchFlags(log);
-            //int flags[] = dbconnection.fetchFlags(log);
             flag20 = l.getSave20();
             flag50 = l.getSave50();
-            System.out.println(flag20+" "+flag50);
-        /*}else{
-            System.out.println("Wrong Credentials\n");
-        }*/
     }
     public static void login (loginDao log)
     {
@@ -201,45 +158,29 @@ public final class foodappp {
 
     }
 
-    public static List<Integer> returnCount(String array[])
-{   
-    List<Integer> finalCount = new ArrayList<Integer>();
-    boolean visited[] = new boolean[array.length];
-     
-    Arrays.fill(visited, false);
-    for (int i = 0; i < array.length; i++) {
-        if (visited[i] == true)
-            continue;
- 
-        // Count frequency
-        int count = 1;
-        for (int j = i + 1; j < array.length; j++) {
-            if (array[i].equals(array[j])) {
-                visited[j] = true;
-                count++;
-            }
-        }
-        finalCount.add(count);
-    }
-return finalCount;
-}
 
     public static void main(String[] args) throws IOException
     {
         foodappp foodapppObj=new foodappp();
+        resturantDao resturantDaoObj=new resturantDao();
+        cartDao cartDaoObj=new cartDao();
+        foodDao foodDaoObj=new foodDao();
         InputStreamReader ir =  new InputStreamReader(System.in);
         BufferedReader br = new BufferedReader(ir);
         while(true)
         {
+            /* The below variabes are used as flags for visuals */
             boolean flag_view=true;
             boolean flag_authentication=true;
             boolean flag_menu=true;
+
+            /* The below variables are session variables for storing progress */
             String sessionEmail="";
             String sessionLocation="";
             String food_items_id="";
             String food_items="";
             String food_order_quantity="";
-
+            
             List<resturantDao> resturantList = new ArrayList<resturantDao>();// to store array of objects for the resturants table
             List<foodDao> foodList = new ArrayList<foodDao>();// to store array of objects for food database table
            
@@ -264,396 +205,319 @@ return finalCount;
                     flag_menu=false;
 
             }
+            if(!cacheDaoObj.getCacheResturantId().equals(""))
+            {
+                    resturant_id=cacheDaoObj.getCacheResturantId().toString();
+            }
+            
            
            
            if(flag_authentication)
            { //authentication flag
-               foodapppObj.authenticationDisplay();
-               int choice = Integer.parseInt(br.readLine());
-            switch (choice)
-            {
-             case 1 :
-                System.out.println("Email : ");
-                String email = br.readLine();
-                System.out.println("Password : ");
-                String password = br.readLine();
-                loginDao log=new loginDao();
-                log.setPassword(password);
-                log.setEmailId(email);
-                login(log);
-                break;
+                  foodapppObj.authenticationDisplay();
+                  int choice = Integer.parseInt(br.readLine());
+                  switch (choice)
+                  {
+                  case 1 :
+                         System.out.println("Email : ");
+                         String email = br.readLine();
+                         System.out.println("Password : ");
+                         String password = br.readLine();
+                         loginDao log=new loginDao();
+                         log.setPassword(password);
+                         log.setEmailId(email);
+                         login(log);
+                         break;
 
-            case 2 :
-                registrationDao reg = new registrationDao();
-                System.out.println("Username : ");
-                String f_user = br.readLine();
-                System.out.println("EmailId : ");
-                String f_emailId = br.readLine();
-                System.out.println("Password : ");
-                String f_password = br.readLine();
-                System.out.println("Confirm Password : ");
-                String f_cPassword = br.readLine();
-                reg.setUserName(f_user);
-                reg.setEmailId(f_emailId);
-                reg.setPassword(f_password);
-                reg.setSave20(1);
-                reg.setSave50(1);
-                register(reg);
-                break;
+                  case 2 :
+                         registrationDao reg = new registrationDao();
+                         System.out.println("Username : ");
+                         String f_user = br.readLine();
+                         System.out.println("EmailId : ");
+                         String f_emailId = br.readLine();
+                         System.out.println("Password : ");
+                         String f_password = br.readLine();
+                         System.out.println("Confirm Password : ");
+                         String f_cPassword = br.readLine();
+                         reg.setUserName(f_user);
+                         reg.setEmailId(f_emailId);
+                         reg.setPassword(f_password);
+                         reg.setSave20(1);
+                         reg.setSave50(1);
+                         register(reg);
+                         break;
 
-            case 3:
-                System.exit(0);
-
-            default:
-                continue;
+                   case 3:
+                         System.exit(0);
+                   default:
+                         continue;
             
+                   }
             }
-        }
-        else if (flag_menu)
-         {
+            else if (flag_menu)
+            {
+                       //session stored locally on machine using Json object using file writting
+                       System.out.println("                     #################### Profile ######################                \n");
+                       System.out.println("1. To Close the Apllication ");
+                       System.out.println("2. Logout ");
+                       if(flag_view)
+                       System.out.println("3. To view your choices of Resturants and food!!!\n");
+                       else
+                       {
+                       System.out.println("3. Pick a resturant of your choice to place orders\n"); 
+                       }
+                       System.out.println("                                #########################                              \n");
+                       int choice = Integer.parseInt(br.readLine());
             
-            //session stored locally on machine using Json object using file writting
+                       switch (choice)
+                       {
+                       case 1:
+                             System.exit(0);
+                             break;
+                       case 2:
+                             cacheObject.addToCache("N", "", "", "", "","","");
+                             break;
+                       case 3:
+                             if(flag_view)
+                                {
+                                    System.out.println("####################");
+                                    System.out.println("Currently we are open in Kolkata , Bangalore");
+                                    System.out.println("Please Enter your city");
+                                    System.out.println("####################");
+                                    String cityChoice=br.readLine().toLowerCase();
+                                   
+                                    if(cityChoice.equalsIgnoreCase("kolkata"))
+                                    {
+                                    lat=10;
+                                    lon=50;
+                                    }else if(cityChoice.equalsIgnoreCase("Bangalore"))
+                                    {
+                                    //
+                                    }
+                                    else
+                                    {
+                                        System.out.println("Sorry we will reach your destination shortly!!!!!!!");
+                                        continue;
+                                    }
+                                    resturantList=dbconnection.fetchResturantDetils(cityChoice,lat,lon);
+                                    cacheObject.addToCache("Y", sessionEmail, cityChoice, "", "","","");
+                               }
+                               else
+                               { 
+                                   //else starts  
+                                   if(sessionLocation.equalsIgnoreCase("kolkata"))
+                                    {
+                                         lat=10;
+                                         lon=50;
+                                    }else if(sessionLocation.equalsIgnoreCase("Bangalore"))
+                                    {
+                                        //
+                                    }
+                                    else
+                                    {
+                                         System.out.println("Sorry, we are not there yet!!!!!!!");
+                                         continue;
+                                    }
+                                 resturantList=dbconnection.fetchResturantDetils(sessionLocation,lat,lon);
+                                 resturantDaoObj.resturantDisplay(resturantList);
+                                 System.out.println("####################");
+                                 System.out.println("Choose a resturant of your choice by entering the resturant id in the left");
+                                 String resturant_id=br.readLine(); 
+                                 System.out.println("####################");
+                                 foodList=dbconnection.fetchFoodItems(Integer.parseInt(resturant_id));
+                                 resturantDao r = (resturantDao) resturantList.get(Integer.parseInt(resturant_id)-1);
+                                 distance = r.getResturant_distance();
+                                 time = r.getEstimated_time();
+                                 foodDaoObj.foodMenuDisplay(foodList);
+                                 System.out.println("####################");
+                                 System.out.println("Choose the food items from the menu to cart by entering Sl seperated by comma");
+                                 food_items=br.readLine();
+                                 String food_items_id_temporary[]=food_items.split(",");
             
-            
-            
-            System.out.println("                     #################### Profile ######################                \n");
-            System.out.println("1. To Close the Apllication ");
-            System.out.println("2. Logout ");
-            if(flag_view)
-            System.out.println("3. To view your choices of Resturants and food!!!\n");
-            else{
-            System.out.println("3. Pick a resturant of your choice to place orders\n"); 
-            }
-            System.out.println("                                #########################                              \n");
-          
-            int choice = Integer.parseInt(br.readLine());
-            
-            switch (choice)
-            {
-            case 1:
-               System.exit(0);
-               break;
-            case 2:
-               cacheObject.addToCache("N", "", "", "", "","","");
-                break;
-            case 3:
-            if(flag_view)
-            {
-            System.out.println("####################");
-            System.out.println("Currently we are open in Kolkata , Delhi , Bangalore , Hyderabad");
-            System.out.println("Please Enter your city");
-            System.out.println("####################");
-            String cityChoice=br.readLine().toLowerCase();
-            int lat=0;
-            int lon=0;
-            if(cityChoice.equalsIgnoreCase("kolkata"))
-            {
-                    lat=10;
-                    lon=50;
-            }else if(cityChoice.equalsIgnoreCase("Delhi"))
-            {
-                   //
-            }
-            else if(cityChoice.equalsIgnoreCase("Bangalore"))
-            {
-                //
-            }
-            else if(cityChoice.equalsIgnoreCase("Hyderabad"))
-            {
-                //
-            }
-            else
-            {
-                System.out.println("Sorry we will reach your destination shortly!!!!!!!");
-                continue;
-            }
-
-
-            
-            resturantList=dbconnection.fetchResturantDetils(cityChoice,lat,lon);
-
-            cacheObject.addToCache("Y", sessionEmail, cityChoice, "", "","","");
-
-            
-            }
-            else
-            { //else starts
-
-            //start    
-            int lat=0;
-            int lon=0;
-
-            if(sessionLocation.equalsIgnoreCase("kolkata"))
-            {
-                    lat=10;
-                    lon=50;
-            }else if(sessionLocation.equalsIgnoreCase("Delhi"))
-            {
-                   //
-            }
-            else if(sessionLocation.equalsIgnoreCase("Bangalore"))
-            {
-                //
-            }
-            else if(sessionLocation.equalsIgnoreCase("Hyderabad"))
-            {
-                //
-            }
-            else
-            {
-                System.out.println("Sorry, we are not there yet!!!!!!!");
-                continue;
-            }
-                
-            resturantList=dbconnection.fetchResturantDetils(sessionLocation,lat,lon);
-            foodapppObj.resturantDisplay(resturantList);
-            System.out.println("####################");
-            System.out.println("Choose a resturant of your choice by entering the resturant id in the left");
-            String resturant_id=br.readLine(); 
-            System.out.println("####################");
-            
-            foodList=dbconnection.fetchFoodItems(Integer.parseInt(resturant_id));
-            resturantDao r = (resturantDao) resturantList.get(Integer.parseInt(resturant_id)-1);
-            distance = r.getResturant_distance();
-            time = r.getEstimated_time();
-            //System.out.println(distance);
-            foodapppObj.foodMenuDisplay(foodList);
-            
-            System.out.println("####################");
-            System.out.println("Choose the food items from the menu to cart by entering Sl seperated by comma");
-            food_items=br.readLine();
-            
-            String food_items_id_temporary[]=food_items.split(",");
-            //String food_items_id_extractor[];
-            quantity = returnCount(food_items_id_temporary);
-            for(int i=0; i<food_items_id_temporary.length;i++)
-            {   
-                if(!food_items_id_extractor.contains(food_items_id_temporary[i]))
-                {   
-                    food_items_id_extractor.add(food_items_id_temporary[i]);
-                }
-            }
-            //System.out.println(food_items_id_extractor);
-            //System.out.println("Quantity:"+ quantity);
-            food_items="";
-            String quantity_items="";
-            for(int i=0;i<food_items_id_extractor.size();i++)
-            {
-              food_items+=food_items_id_extractor.get(i)+",";
-            }
-            for(int i=0;i<quantity.size();i++)
-            {
-              quantity_items+=quantity.get(i)+",";
-            }
-           
-            System.out.println("####################\n");
-
-
-
-            System.out.println("                              ####################");
-            cacheObject.addToCache("Y", sessionEmail,sessionLocation,food_items, resturant_id,"",quantity_items);
-
-             ///////// end
-         
-            }
-            break;
-            default:
-            continue;
-            
-            }
+                                 quantity = cartDaoObj.quantityCount(food_items_id_temporary);
+                                 for(int i=0; i<food_items_id_temporary.length;i++)
+                                 {   
+                                    if(!food_items_id_extractor.contains(food_items_id_temporary[i]))
+                                    {   
+                                        food_items_id_extractor.add(food_items_id_temporary[i]);
+                                    }
+                                 }
+                                food_items="";
+                                String quantity_items="";
+                                for(int i=0;i<food_items_id_extractor.size();i++)
+                                {
+                                    food_items+=food_items_id_extractor.get(i)+",";
+                                }
+                                for(int i=0;i<quantity.size();i++)
+                                {
+                                   quantity_items+=quantity.get(i)+",";
+                                }
+                                System.out.println("####################\n");
+                                cacheObject.addToCache("Y", sessionEmail,sessionLocation,food_items, resturant_id,"",quantity_items);
+                               }
+                               break;
+                        default:
+                               continue;
+                        }
           }
           else
           {   //Code for part 3
-            String resturant_id="";
            
-            if(!cacheDaoObj.getCacheResturantId().equals(""))
-            {
-                resturant_id=cacheDaoObj.getCacheResturantId().toString();
-            }
-            if(!cacheDaoObj.getCachefoodItems().equals(""))
-            {
-                food_items_id=cacheDaoObj.getCachefoodItems().toString();                   
-                food_order_quantity=cacheDaoObj.getCacheQuantity().toString();
-            }
-            else
-            {
-                flag_menu=true;
-            }
-            
-
-            String food_items_split[]=food_items_id.split(","); 
-            String food_items_quantity_split[]=food_order_quantity.split(","); 
-            foodList=dbconnection.fetchFoodItems(Integer.parseInt(resturant_id));
-            
-            for(int i=0; i<food_items_split.length;i++)
-            {   
-                if(!food_items_id_extractor.contains(food_items_split[i]))
-                {   
-                    food_items_id_extractor.add(food_items_split[i]);
-                }
-            }
-
-            while(food_items_split!=null)
-            { 
-               //part 3 work area 2
-               //food_items_split contains the id of the food 
-               //foodList contains the objects of the food table
-               System.out.println("                   #############  Your order cart #################"+"\n");
-               
-               System.out.print("Sl"+"\t\t"+"Food Name"+"\t\t"+"Food Price"+"\t\t"+"Quantity"+"\n\n");
-               System.out.println();
-               for(int i=0;i<food_items_split.length;i++)
-               {
-                   if(food_items_split[i].equals(""))
-                  {
-                   continue;
-                  }
-                  foodDao f=foodList.get(Integer.parseInt(food_items_split[i]));
-                  System.out.print(food_items_split[i]+"\t\t"+f.getFood_name()+"\t\t"+f.getFood_price()+"  in Rs"+"\t\t"+food_items_quantity_split[i]);
-                  System.out.println("\n");
-               }
-               totalPrice=0.0;
-               for(int i=0; i<food_items_split.length;i++)
-               {
-                if(food_items_split[i].equals(""))
-                  {
-                   continue;
-                  }
-                foodDao f2=foodList.get(Integer.parseInt(food_items_split[i]));
-                totalPrice += f2.getFood_price() * Integer.parseInt(food_items_quantity_split[i]);
-               }
-               System.out.println("####################");
-               System.out.println("1. Close the application");
-               System.out.println("2. Logout");
-               System.out.println("3. Remove an item from cart");
-               System.out.println("4. Remove all items from cart");
-               System.out.println("5. change the resturant");
-               System.out.println("6. Checkout");
-               System.out.println("####################");
-               int cart_choice=Integer.parseInt(br.readLine());
-               switch(cart_choice)
-               {
-               case 1:
-                      System.exit(0);
-                      break;
-               case 2:
-                       cacheObject.addToCache("N", "", "", "", "","","");
-                       food_items_split=null;
-                       break;
-               case 3:
-                      System.out.println("Enter the SL no of the items to be deleted");
-                      //System.out.println(food_items);
-                      //System.out.println(food_order_quantity);
-                      String food_items_to_delete=br.readLine();
-                      String food_items_to_delete_split[]=food_items_to_delete.split(",");
-                      food_items="";
-                      food_order_quantity="";
-                      for(int i=0;i<food_items_to_delete_split.length;i++)
-                          {
-                              for(int j=0;j<food_items_split.length;j++)
-                              {
-                                 if(food_items_split[j].equals(food_items_to_delete_split[i]))
-                                 {
-                                    food_items_split[j]="";
-                                    food_items_quantity_split[j]="";
-                                 }
-                              }
-                          }
-                          for(int j=0;j<food_items_split.length;j++)
-                          {
-                              if(food_items_split[j].equals(""))
-                              {
-                                //food_items_id_extractor.remove(j);
-                                continue;
-                              }
-                              food_items+=food_items_split[j]+",";
-                              food_order_quantity+=food_items_quantity_split[j]+",";
-                          }
-                          //System.out.println("After removal  "+food_items);
-                          cacheObject.addToCache("Y", sessionEmail, sessionLocation, food_items, resturant_id,"",food_order_quantity);
-                    break;
-                case 4:
-                    cacheObject.addToCache("Y", sessionEmail, sessionLocation, "", resturant_id,"","");
-                    food_items_split=null;
-                    break;
-                case 5:
-                    cacheObject.addToCache("Y", sessionEmail, sessionLocation, "", resturant_id,"","");
-                    food_items_split=null;
-                    break;
-                case 6:
-                    if(totalPrice>=100)
-                    {   
-                        //code for part4 
-                        System.out.println("The resturant id is "+resturant_id);
-                        
-                        deliveryCharge = 5 * distance;
-                        finalPrice = totalPrice + deliveryCharge;
-                        System.out.println("Your total cart value is: "+ totalPrice+"\nDelivery charges: "+deliveryCharge);
-                        System.out.println("1. Continue to the Payment page \n2. Apply a coupon\n3. Exit");
-                        int checkoutOptions=Integer.parseInt(br.readLine());
-                        switch(checkoutOptions)
-                        {
-                            case 1: System.out.println("Choose a payment mode:\n1. UPI\n2. Debit Card\n3. Credit Card\n4. Net Banking\n5. Exit");
-                                    paymentPage(br, sessionEmail);
-                                    System.exit(0);
-                                    break;
-                            case 2: loginDao log1 = new loginDao();
-                                    log1.setEmailId(sessionEmail);
-                                    getFlags(log1);
-                                    String temp1 = flag20==1?"Applicable":"Not Applicable";
-                                    String temp2 = flag50==1?"Applicable":"Not Applicable";
-                                    System.out.println("Select a coupon\n1. SAVE20: "+ temp1+"\n2. SAVE50: "+temp2);
-                                    int couponSelector=Integer.parseInt(br.readLine());
-                                    switch(couponSelector)
+                                 String food_items_split[]=food_items_id.split(","); 
+                                 String food_items_quantity_split[]=food_order_quantity.split(","); 
+                                 foodList=dbconnection.fetchFoodItems(Integer.parseInt(resturant_id));
+                                 for(int i=0; i<food_items_split.length;i++)
+                                {   
+                                  if(!food_items_id_extractor.contains(food_items_split[i]))
+                                     {   
+                                         food_items_id_extractor.add(food_items_split[i]);
+                                     }
+                                }
+                                while(food_items_split!=null)
+                                { 
+                                    //food_items_split contains the id of the food 
+                                    //foodList contains the objects of the food table
+                                 cartDaoObj.cartDisplay(food_items_split, foodList, food_items_quantity_split);
+                                 totalPrice=0.0;
+                                 for(int i=0; i<food_items_split.length;i++)
+                                {
+                                if(food_items_split[i].equals(""))
                                     {
-                                        case 1: 
-                                                if(flag20==1)
-                                                {
-                                                    discount = totalPrice * 0.2;
-                                                    finalPrice = totalPrice - discount + deliveryCharge;
-                                                    //System.out.println(discount);
-                                                    flag20=0;
-                                                    loginDao lg = new loginDao();
-                                                    lg.setSave20(flag20);
-                                                    lg.setSave50(flag50);
-                                                    lg.setEmailId(sessionEmail);
-                                                    dbconnection.insertFlags(lg);
-                                                }
-                                                System.out.println("Your total cart value is: "+ totalPrice+"\nCoupon Discount(SAVE20): "+discount+"\nDelivery Charges: "+deliveryCharge+"\nAmount to be paid: "+finalPrice);
-                                                System.out.println("Choose a payment mode:\n1. UPI\n2. Debit Card\n3. Credit Card\n4. Net Banking\n5. Exit");
-                                                paymentPage(br, sessionEmail);
-                                                break;
-                                        case 2: if(flag50==1)
-                                                {
-                                                    discount = totalPrice * 0.5;
-                                                    finalPrice = totalPrice - discount+deliveryCharge;
-                                                    //System.out.println(discount);
-                                                    flag50=0;
-                                                    loginDao lg1 = new loginDao();
-                                                    lg1.setSave50(flag50);
-                                                    lg1.setSave20(flag20);
-                                                    lg1.setEmailId(sessionEmail);
-                                                    dbconnection.insertFlags(lg1);
-                                                }
-                                                System.out.println("Your total cart value is: "+ totalPrice+"\nCoupon Discount(SAVE50): "+discount+"\nDelivery Charges: "+deliveryCharge+"\nAmount to be paid: "+finalPrice);
-                                                System.out.println("Choose a payment mode:\n1. UPI\n2. Debit Card\n3. Credit Card\n4. Net Banking\n5. Exit");
-                                                paymentPage(br, sessionEmail);
-                                                break;
+                                    continue;
                                     }
-                                    System.exit(0);
+                                foodDao f2=foodList.get(Integer.parseInt(food_items_split[i]));
+                                totalPrice += f2.getFood_price() * Integer.parseInt(food_items_quantity_split[i]);
+                                }
+                                System.out.println("####################");
+                                System.out.println("1. Close the application");
+                                System.out.println("2. Logout");
+                                System.out.println("3. Remove an item from cart");
+                                System.out.println("4. Remove all items from cart");
+                                System.out.println("5. change the resturant");
+                                System.out.println("6. Checkout");
+                                System.out.println("####################");
+                                int cart_choice=Integer.parseInt(br.readLine());
+                                switch(cart_choice)
+                                {
+                                case 1:
+                                      System.exit(0);
+                                      break;
+                                case 2:
+                                      cacheObject.addToCache("N", "", "", "", "","","");
+                                      food_items_split=null;
+                                      break;
+                                case 3:
+                                      System.out.println("Enter the SL no of the items to be deleted");
+                                      String food_items_to_delete=br.readLine();
+                                      String food_items_to_delete_split[]=food_items_to_delete.split(",");
+                                      food_items="";
+                                      food_order_quantity="";
+                                      for(int i=0;i<food_items_to_delete_split.length;i++)
+                                      {
+                                      for(int j=0;j<food_items_split.length;j++)
+                                        {
+                                         if(food_items_split[j].equals(food_items_to_delete_split[i]))
+                                           {
+                                          food_items_split[j]="";
+                                          food_items_quantity_split[j]="";
+                                           }
+                                        }
+                                      }
+                                     for(int j=0;j<food_items_split.length;j++)
+                                     {
+                                        if(food_items_split[j].equals(""))
+                                          {
+                                           continue;
+                                          }
+                                       food_items+=food_items_split[j]+",";
+                                       food_order_quantity+=food_items_quantity_split[j]+",";
+                                     }
+                          
+                                     cacheObject.addToCache("Y", sessionEmail, sessionLocation, food_items, resturant_id,"",food_order_quantity);
+                                     break;
+                                case 4:
+                                     cacheObject.addToCache("Y", sessionEmail, sessionLocation, "", resturant_id,"","");
+                                     food_items_split=null;
+                                     break;
+                                case 5:
+                                     cacheObject.addToCache("Y", sessionEmail, sessionLocation, "", resturant_id,"","");
+                                     food_items_split=null;
+                                     break;
+                                case 6:
+                                      if(totalPrice>=100)
+                                       {   
+                                       //code for part4 
+                                       deliveryCharge = 5 * distance;
+                                       finalPrice = totalPrice + deliveryCharge;
+                                       System.out.println("Your total cart value is: "+ totalPrice+"\nDelivery charges: "+deliveryCharge);
+                                       System.out.println("1. Continue to the Payment page \n2. Apply a coupon\n3. Exit");
+                                       int checkoutOptions=Integer.parseInt(br.readLine());
+                                       switch(checkoutOptions)
+                                         {
+                                            case 1: 
+                                                  System.out.println("Choose a payment mode:\n1. UPI\n2. Debit Card\n3. Credit Card\n4. Net Banking\n5. Exit");
+                                                  paymentPage(br, sessionEmail);
+                                                  System.exit(0);
+                                                  break;
+
+                                            case 2: 
+                                                  loginDao log1 = new loginDao();
+                                                  log1.setEmailId(sessionEmail);
+                                                  getFlags(log1);
+                                                  String temp1 = flag20==1?"Applicable":"Not Applicable";
+                                                  String temp2 = flag50==1?"Applicable":"Not Applicable";
+                                                  System.out.println("Select a coupon\n1. SAVE20: "+ temp1+"\n2. SAVE50: "+temp2);
+                                                  int couponSelector=Integer.parseInt(br.readLine());
+                                                  switch(couponSelector)
+                                                  {
+                                                    case 1: 
+                                                        if(flag20==1)
+                                                        {
+                                                        discount = totalPrice * 0.2;
+                                                        finalPrice = totalPrice - discount + deliveryCharge;
+                                                        flag20=0;
+                                                        loginDao lg = new loginDao();
+                                                        lg.setSave20(flag20);
+                                                        lg.setSave50(flag50);
+                                                        lg.setEmailId(sessionEmail);
+                                                        dbconnection.insertFlags(lg);
+                                                        }
+                                                       System.out.println("Your total cart value is: "+ totalPrice+"\nCoupon Discount(SAVE20): "+discount+"\nDelivery Charges: "+deliveryCharge+"\nAmount to be paid: "+finalPrice);
+                                                       System.out.println("Choose a payment mode:\n1. UPI\n2. Debit Card\n3. Credit Card\n4. Net Banking\n5. Exit");
+                                                       paymentPage(br, sessionEmail);
+                                                       break;
+                                                    case 2: 
+                                                       if(flag50==1)
+                                                       {
+                                                        discount = totalPrice * 0.5;
+                                                        finalPrice = totalPrice - discount+deliveryCharge;
+                                                        flag50=0;
+                                                        loginDao lg1 = new loginDao();
+                                                        lg1.setSave50(flag50);
+                                                        lg1.setSave20(flag20);
+                                                        lg1.setEmailId(sessionEmail);
+                                                        dbconnection.insertFlags(lg1);
+                                                       }
+                                                       System.out.println("Your total cart value is: "+ totalPrice+"\nCoupon Discount(SAVE50): "+discount+"\nDelivery Charges: "+deliveryCharge+"\nAmount to be paid: "+finalPrice);
+                                                       System.out.println("Choose a payment mode:\n1. UPI\n2. Debit Card\n3. Credit Card\n4. Net Banking\n5. Exit");
+                                                       paymentPage(br, sessionEmail);
+                                                       break;
+                                                  }
+                                                  System.exit(0);
+                                                  break;
+                                            case 3: 
+                                                  System.exit(0);
+                                                  break;
+                                         }
+                                     }
+                                    else
+                                    {
+                                        System.out.println("Minimum order value should be 100. Your current cart value: "+ totalPrice);
+                                    }
                                     break;
-                            case 3: System.exit(0);
-                                    break;
-                        }
-                    }
-                    else
-                    {
-                        System.out.println("Minimum order value should be 100. Your current cart value: "+ totalPrice);
-                    }
-                    break;
-              }                   
-            }//part 3 ends here
-          }
+                                } //outer switch ends                 
+                             }//while loops ends
+          }//part 3 ends
         }
     }
 }

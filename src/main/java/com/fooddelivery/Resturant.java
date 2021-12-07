@@ -4,4 +4,5 @@ public abstract class Resturant
 {
        
        abstract void display();
+       
 }
