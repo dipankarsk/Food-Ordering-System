@@ -35,7 +35,7 @@ public final class foodappp {
     static DbHandler dbconnection=new DbHandler();
     static sessionHandler cacheObject=new sessionHandler();
     static List<resturantDao> resturantList;
-    static  List<foodDao> foodList;
+    static List<foodDao> foodList;
     public void authenticationDisplay()
     {
         System.out.println("\n                               Welcome to Combida food Ordering system                              \n");
@@ -46,18 +46,18 @@ public final class foodappp {
         System.out.println("                                      ####################                     ");
     }
 
-    public static void register (registrationDao reg)
+    public void register (registrationDao reg)
     {
         dbconnection.insertUserData(reg);
 
     }
-    public static void getFlags(loginDao log)
+    public void getFlags(loginDao log)
     {
             loginDao l = dbconnection.fetchFlags(log);
             flag20 = l.getSave20();
             flag50 = l.getSave50();
     }
-    public static void login (loginDao log)
+    public void login (loginDao log)
     {
         boolean credentialStatus=dbconnection.logincheck(log);
         if(credentialStatus)
@@ -75,7 +75,7 @@ public final class foodappp {
             System.out.println("Wrong Credentials\n");
         }
     }
-    public static void paymentPage(BufferedReader reader, String email,Double originalEstimatedTime) throws NumberFormatException, IOException
+    public void paymentPage(BufferedReader reader, String email,Double originalEstimatedTime) throws NumberFormatException, IOException
     {   
         cartDao cartObject = new cartDao();
         cartObject.setEmail(email);
@@ -105,16 +105,31 @@ public final class foodappp {
         }
         switch(paymentModeOptions)
         {  
-            case 1: System.out.println("Payment Done.\nPaid: "+price+"\nPayment mode: UPI");
+            case 1: System.out.println("Enter your upi id");
+                    String upiID=reader.readLine();
+                    System.out.println("Payment Done.\nPaid: "+price+"\nPayment mode: UPI");
                     toCancel= trackingPage(reader,originalEstimatedTime);
                     break;
-            case 2: System.out.println("Payment Done.\nPaid: "+price+"\nPayment mode: Debit Card");
+            case 2: 
+                    System.out.println("Enter your Debit card Number");
+                    String debitCardNumber=reader.readLine();
+                    System.out.println("Enter your Debit card CVV");
+                    String debitCardCVV=reader.readLine();
+                    System.out.println("Payment Done.\nPaid: "+price+"\nPayment mode: Debit Card");
                     toCancel= trackingPage(reader,originalEstimatedTime);
                     break;
-            case 3: System.out.println("Payment Done.\nPaid: "+price+"\nPayment mode: Credit Card");
+            case 3: 
+                    System.out.println("Enter your Credit card Number");
+                    String creditCardNumber=reader.readLine();
+                    System.out.println("Enter your Credit card CVV");
+                    String creditCardCVV=reader.readLine();
+                    System.out.println("Payment Done.\nPaid: "+price+"\nPayment mode: Credit Card");
                     toCancel= trackingPage(reader,originalEstimatedTime);
                     break;
-            case 4: System.out.println("Payment Done.\nPaid: "+price+"\nPayment mode: Net Banking");
+            case 4: 
+                    System.out.println("Enter your netbanking id");
+                    String netbankingID=reader.readLine();
+                    System.out.println("Payment Done.\nPaid: "+price+"\nPayment mode: Net Banking");
                     toCancel= trackingPage(reader,originalEstimatedTime);
                     break;
             case 5: System.exit(0);
@@ -158,7 +173,7 @@ public final class foodappp {
             food_items_split=null;   
         }   
     }
-    public static void tracker(Double EstimatedTime)
+    public void tracker(Double EstimatedTime)
     {
          System.out.println(" Tracking ");
          System.out.println(EstimatedTime);
@@ -180,7 +195,7 @@ public final class foodappp {
          }
         
     }
-    public static boolean trackingPage(BufferedReader reader,Double originalEstimatedTime) throws NumberFormatException, IOException
+    public boolean trackingPage(BufferedReader reader,Double originalEstimatedTime) throws NumberFormatException, IOException
     {
 
         boolean check = false;    
@@ -266,7 +281,7 @@ public final class foodappp {
                          loginDao log=new loginDao();
                          log.setPassword(password);
                          log.setEmailId(email);
-                         login(log);
+                         foodapppObj.login(log);
                          break;
 
                   case 2 :
@@ -279,12 +294,17 @@ public final class foodappp {
                          String f_password = br.readLine();
                          System.out.println("Confirm Password : ");
                          String f_cPassword = br.readLine();
+                         if(!f_cPassword.equals(f_password))
+                         {
+                             System.out.println("Passwords do not match");
+                             continue;
+                         }
                          reg.setUserName(f_user);
                          reg.setEmailId(f_emailId);
                          reg.setPassword(f_password);
                          reg.setSave20(1);
                          reg.setSave50(1);
-                         register(reg);
+                         foodapppObj.register(reg);
                          break;
 
                    case 3:
@@ -467,12 +487,13 @@ public final class foodappp {
                                      {
                                         if(food_items_split[j].equals(""))
                                           {
+                                           food_items_id_extractor.remove(j);
                                            continue;
                                           }
                                        food_items+=food_items_split[j]+",";
                                        food_order_quantity+=food_items_quantity_split[j]+",";
                                      }
-                          
+                                     
                                      cacheObject.addToCache("Y", sessionEmail, sessionLocation, food_items, resturant_id,"",food_order_quantity);
                                      break;
                                 case 4:
@@ -506,19 +527,22 @@ public final class foodappp {
                                        int checkoutOptions=Integer.parseInt(br.readLine());
                                        switch(checkoutOptions)
                                          {
-                                            case 1: 
+                                            case 1:
+                                                  System.out.println("########################################"); 
                                                   System.out.println("Choose a payment mode:\n1. UPI\n2. Debit Card\n3. Credit Card\n4. Net Banking\n5. Exit");
-                                                  paymentPage(br, sessionEmail,originalEstimatedTime);
+                                                  foodapppObj.paymentPage(br, sessionEmail,originalEstimatedTime);
                                                   
                                                   break;
 
                                             case 2: 
                                                   loginDao log1 = new loginDao();
                                                   log1.setEmailId(sessionEmail);
-                                                  getFlags(log1);
+                                                  foodapppObj.getFlags(log1);
                                                   String temp1 = flag20==1?"Applicable":"Not Applicable";
                                                   String temp2 = flag50==1?"Applicable":"Not Applicable";
+                                                  System.out.println("###################################");
                                                   System.out.println("Select a coupon\n1. SAVE20: "+ temp1+"\n2. SAVE50: "+temp2);
+                                                  System.out.println("###################################");
                                                   int couponSelector=Integer.parseInt(br.readLine());
                                                   switch(couponSelector)
                                                   {
@@ -533,9 +557,11 @@ public final class foodappp {
                                                         lg.setSave50(flag50);
                                                         lg.setEmailId(sessionEmail);
                                                         }
+                                                       System.out.println("###################################");
                                                        System.out.println("Your total cart value is: "+ totalPrice+"\nCoupon Discount(SAVE20): "+discount+"\nDelivery Charges: "+deliveryCharge+"\nAmount to be paid: "+finalPrice);
                                                        System.out.println("Choose a payment mode:\n1. UPI\n2. Debit Card\n3. Credit Card\n4. Net Banking\n5. Exit");
-                                                       paymentPage(br, sessionEmail,originalEstimatedTime);
+                                                       System.out.println("###################################");
+                                                       foodapppObj.paymentPage(br, sessionEmail,originalEstimatedTime);
                                                        dbconnection.insertFlags(lg);
                                                        break;
                                                     case 2: 
@@ -549,9 +575,11 @@ public final class foodappp {
                                                         lg1.setSave20(flag20);
                                                         lg1.setEmailId(sessionEmail);
                                                        }
+                                                       System.out.println("###################################");
                                                        System.out.println("Your total cart value is: "+ totalPrice+"\nCoupon Discount(SAVE50): "+discount+"\nDelivery Charges: "+deliveryCharge+"\nAmount to be paid: "+finalPrice);
                                                        System.out.println("Choose a payment mode:\n1. UPI\n2. Debit Card\n3. Credit Card\n4. Net Banking\n5. Exit");
-                                                       paymentPage(br, sessionEmail,originalEstimatedTime);
+                                                       System.out.println("###################################");
+                                                       foodapppObj.paymentPage(br, sessionEmail,originalEstimatedTime);
                                                        dbconnection.insertFlags(lg1);
                                                        break;
                                                   }
