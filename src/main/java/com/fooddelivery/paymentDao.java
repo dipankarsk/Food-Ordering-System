@@ -11,6 +11,13 @@ public class paymentDao extends cartDao{
     private Double toatlPrice=0.0;
     private Double originalEstimateTime=0.0;
     private Double calculatedEstimatedTime=0.0;
+    private String foodRatingValues="";
+    public String getFoodRatingValues() {
+        return foodRatingValues;
+    }
+    public void setFoodRatingValues(String foodRatingValues) {
+        this.foodRatingValues = foodRatingValues;
+    }
     public void setOriginalEstimateTime(Double originalEstimateTime) {
         this.originalEstimateTime = originalEstimateTime;
     }
@@ -164,14 +171,18 @@ public class paymentDao extends cartDao{
             dbconnection.insertRating(rating, p.getEmail());
             cacheObject.addToCache("Y", p.getEmail(), "", "", "", "", "");
             
-
+            String foodRating="";
             for(int i = 0; i<food_items_id_extractor.size();i++)
             {
                 foodDao f=(foodDao) foodList.get(food_items_id_extractor.get(i));
                 f.getFood_id();
-              
+                System.out.println("Please rate "+f.getFood_name());
+                int ratingfood= Integer.parseInt(reader.readLine());
+                foodRating+=ratingfood+",";
             }  
-            
+            System.out.println("Thanks for rating the food");
+            p.setFoodRatingValues(foodRating);
+            dbconnection.insertFoodRating(p);
             food_items_id_extractor=null;
         }
         return food_items_id_extractor;   

@@ -9,6 +9,7 @@ import java.util.List;
 
 import com.fooddelivery.cartDao;
 import com.fooddelivery.foodDao;
+import com.fooddelivery.paymentDao;
 import com.fooddelivery.resturantDao;
 import com.fooddelivery.Authentication.loginDao;
 import com.fooddelivery.Authentication.registrationDao;
@@ -283,6 +284,22 @@ public class DbHandler extends Dboperation{
         }
         catch (SQLException e) {
             System.out.println("Error due to insertion of Rating to AppRating table " + e.getMessage());
+        }
+    }
+    public void insertFoodRating(paymentDao p)
+    {
+        String sql = "INSERT INTO FoodRating(email,foodID,foodRating) VALUES(?,?,?)";
+
+        try (Connection con1 =  Dbconnection();
+             PreparedStatement ratingF = con1.prepareStatement(sql))
+        {
+            ratingF.setString(1, p.getEmail());
+            ratingF.setString(2, p.getFoodId());
+            ratingF.setString(3, p.getFoodRatingValues());
+            ratingF.executeUpdate();
+        }
+        catch (SQLException e) {
+            System.out.println("Error due to insertion of food to FoodRating table " + e.getMessage());
         }
     }
 }

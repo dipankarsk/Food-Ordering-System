@@ -331,16 +331,22 @@ public final class foodappp {
                                         food_items_quantity_extractor=l1.get(1);
                                         break;
                                 case 4:
+                                        List<List<Integer>> l2=new ArrayList<>();
+                                        l2=cartDaoObj.addItems(br,cartDaoObj,food_items_id_extractor,food_items_quantity_extractor,foodList);
+                                        food_items_id_extractor=l2.get(0);
+                                        food_items_quantity_extractor=l2.get(1);
+                                        break;
+                                case 5:
                                         cartDaoObj.removeAllItems(cartDaoObj);
                                         food_items_split=null;
                                         food_items_id_extractor=null;
                                         break;
-                                case 5: 
+                                case 6: 
                                         cartDaoObj.changeResturant(cartDaoObj);
                                         food_items_split=null;
                                         food_items_id_extractor=null;
                                         break;
-                                case 6:
+                                case 7:
                                       if(totalPrice>=100)
                                        {   
                                        //code for payment and tracking

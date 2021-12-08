@@ -81,9 +81,10 @@ public class cartDao extends foodDao {
         System.out.println("1. Close the application");
         System.out.println("2. Logout");
         System.out.println("3. Remove an item from cart");
-        System.out.println("4. Remove all items from cart");
-        System.out.println("5. change the resturant");
-        System.out.println("6. Checkout");
+        System.out.println("4. Add an item to cart");
+        System.out.println("5. Remove all items from cart");
+        System.out.println("6. change the resturant");
+        System.out.println("7. Checkout");
         System.out.println("####################");
     }
     public List<Integer> quantityCount(String array[])
@@ -138,6 +139,37 @@ public class cartDao extends foodDao {
                food_items_quantity_extractor.remove(indexToDelete);
            }
        }
+       for(int j=0;j<food_items_id_extractor.size();j++)
+       {
+               food_items+=food_items_id_extractor.get(j)+",";
+               food_order_quantity+=food_items_quantity_extractor.get(j)+",";
+       }
+       cacheObject.addToCache("Y", c.getEmail(), c.getResturant_address(), food_items, c.getResturant_id()+"","",food_order_quantity);
+       List<List<Integer>> l1=new ArrayList<>();
+       l1.add(food_items_id_extractor);
+       l1.add(food_items_quantity_extractor);
+       return l1;
+    }
+    public List < List <Integer> > addItems(BufferedReader br,cartDao c, List <Integer> food_items_id_extractor,List<Integer> food_items_quantity_extractor,List <foodDao> foodList) throws IOException
+    {
+        sessionHandler cacheObject=new sessionHandler();
+        //foodMenuDisplay(foodList); // using inherited method from foodDao class
+        System.out.println("Enter the SL no of the item to be inserted");
+        String food_item_to_add=br.readLine();
+        
+        String food_items="";
+        String food_order_quantity="";
+       
+      
+        if(food_items_id_extractor.contains(Integer.parseInt(food_item_to_add)))
+        {
+               int indexToAdd=food_items_id_extractor.indexOf(Integer.parseInt(food_item_to_add));
+               food_items_quantity_extractor.set(indexToAdd, food_items_quantity_extractor.get(indexToAdd)+1);
+        }else{
+            food_items_id_extractor.add(Integer.parseInt(food_item_to_add));
+            food_items_quantity_extractor.add(1);
+        }
+       
        for(int j=0;j<food_items_id_extractor.size();j++)
        {
                food_items+=food_items_id_extractor.get(j)+",";
