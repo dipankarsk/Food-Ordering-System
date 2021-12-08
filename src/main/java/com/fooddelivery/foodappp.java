@@ -4,9 +4,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
-
-
 import com.fooddelivery.Authentication.registrationDao;
 import com.fooddelivery.Authentication.loginDao;
 import com.fooddelivery.Database.DbHandler;
@@ -18,24 +15,24 @@ public final class foodappp {
     static double deliveryCharge = 0;
     static int flag20, flag50;
     static int listOfRestaurants;
-    static double calculatedEstimatedTime=0;
     static double actualTime=0;
     static double time=0;
-    static long tStamp=0;
+    static double originalEstimatedTime=0.0;
     static int lat=0;
     static int lon=0;
     static String resturant_id="";
-    static double originalEstimatedTime=0.0;
-    static boolean toCancel;
-
     static String food_items_split[];
     static String food_items_quantity_split[];
-    static List<String> food_items_id_extractor =null;// arraylist to store the food ids stored at any instance
-    static List<Integer> quantity = new ArrayList<Integer>(); // arraylist to store quantities of each food items inside the cart
+    static List<Integer> food_items_id_extractor =null;// arraylist to store the food ids stored at any instance
+    static List<Integer> food_items_quantity_extractor = null; // arraylist to store quantities of each food items inside the cart
     static DbHandler dbconnection=new DbHandler();
-    
     static List<resturantDao> resturantList;
     static List<foodDao> foodList;
+
+    public static void filler()
+    {
+        System.out.println("###############################");
+    }
     public void authenticationDisplay()
     {
         System.out.println("\n                               Welcome to Combida food Ordering system                              \n");
@@ -45,7 +42,6 @@ public final class foodappp {
         System.out.println("3. To Close the Apllication\n");
         System.out.println("                                      ####################                     ");
     }
-
     public void register (registrationDao reg)
     {
         dbconnection.insertUserData(reg);
@@ -76,148 +72,6 @@ public final class foodappp {
             System.out.println("Wrong Credentials\n");
         }
     }
-    public void paymentPage(BufferedReader reader, String email,Double originalEstimatedTime) throws NumberFormatException, IOException
-    {   
-        cartDao cartObject = new cartDao();
-        sessionHandler cacheObject=new sessionHandler();
-        cartObject.setEmail(email);
-        cartObject.setFinalPrice(finalPrice);
-        tStamp=  System.currentTimeMillis();
-        cartObject.setTimeStamp(tStamp);
-        String orderIdsInString = "";
-        for(int i = 0; i<food_items_id_extractor.size();i++)
-        {
-            foodDao f=(foodDao) foodList.get(Integer.parseInt(food_items_id_extractor.get(i)));
-            orderIdsInString = orderIdsInString + f.getFood_id();
-            if(i!=food_items_id_extractor.size()-1)
-            {
-                orderIdsInString = orderIdsInString + ",";
-            }
-        }
-        cartObject.setFoodId(orderIdsInString);
-        
-        int paymentModeOptions=Integer.parseInt(reader.readLine());
-        double price = 0;
-        if(finalPrice == 0)
-        {
-            price = totalPrice;
-        }
-        else{
-            price = finalPrice;
-        }
-        switch(paymentModeOptions)
-        {  
-            case 1: System.out.println("Enter your upi id");
-                    String upiID=reader.readLine();
-                    System.out.println("Payment Done.\nPaid: "+price+"\nPayment mode: UPI");
-                    toCancel= trackingPage(reader,originalEstimatedTime);
-                    break;
-            case 2: 
-                    System.out.println("Enter your Debit card Number");
-                    String debitCardNumber=reader.readLine();
-                    System.out.println("Enter your Debit card CVV");
-                    String debitCardCVV=reader.readLine();
-                    System.out.println("Payment Done.\nPaid: "+price+"\nPayment mode: Debit Card");
-                    toCancel= trackingPage(reader,originalEstimatedTime);
-                    break;
-            case 3: 
-                    System.out.println("Enter your Credit card Number");
-                    String creditCardNumber=reader.readLine();
-                    System.out.println("Enter your Credit card CVV");
-                    String creditCardCVV=reader.readLine();
-                    System.out.println("Payment Done.\nPaid: "+price+"\nPayment mode: Credit Card");
-                    toCancel= trackingPage(reader,originalEstimatedTime);
-                    break;
-            case 4: 
-                    System.out.println("Enter your netbanking id");
-                    String netbankingID=reader.readLine();
-                    System.out.println("Payment Done.\nPaid: "+price+"\nPayment mode: Net Banking");
-                    toCancel= trackingPage(reader,originalEstimatedTime);
-                    break;
-            case 5: System.exit(0);
-                    break;
-            default: System.out.println("Invalid Selection");
-                    break;
-        }
-        int flagOrderPlaced=0;
-        if(toCancel== false)
-        {
-            System.out.println("Current time has exceeded the estimated time by 10%, so do you wanna cancel the order? \n1. Yes\n2. No ");
-            int option= Integer.parseInt(reader.readLine());
-
-            switch(option)
-            {
-                case 1: System.out.println("Your order has been cancelled!!!!!");
-                        //System.exit(0);
-                        
-                        break;
-                case 2: 
-                      tracker(calculatedEstimatedTime);
-                      flagOrderPlaced=1;
-                      break;
-            }
-        }
-        else
-        {
-            tracker(calculatedEstimatedTime);
-            flagOrderPlaced=1;
-        }
-        if(flagOrderPlaced==1)
-        {
-            dbconnection.insertOrderDetails(cartObject);
-            System.out.println("Order Delivered");
-            System.out.println("Thank You for Ordering");
-            System.out.println("###############################");
-            System.out.println("Please rate the Application between 1 to 5");
-            int rating= Integer.parseInt(reader.readLine());
-            dbconnection.insertRating(rating, email);
-            cacheObject.addToCache("Y", email, "", "", "", "", "");
-            for(int i = 0; i<food_items_id_extractor.size();i++)
-            {
-                foodDao f=(foodDao) foodList.get(Integer.parseInt(food_items_id_extractor.get(i)));
-                f.getFood_id();
-            }  
-            food_items_split=null;  
-            food_items_id_extractor=null;
-        }   
-    }
-    public void tracker(Double EstimatedTime)
-    {
-         System.out.println(" ######### Tracking ###########");
-         System.out.println(EstimatedTime);
-         
-         long minutes=0l; 
-         long triggeredTimeStamp = System.currentTimeMillis();
-         while(minutes<EstimatedTime)
-         {
-           long endTime = System.currentTimeMillis();
-           minutes=(endTime-triggeredTimeStamp)/1000;
-           System.out.println("Estimated time of Delivery "+(EstimatedTime-minutes)+" Minutes");
-           try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            
-            e.printStackTrace();
-        }
-
-         }
-        
-    }
-    public boolean trackingPage(BufferedReader reader,Double originalEstimatedTime) throws NumberFormatException, IOException
-    {
-
-        boolean check = false;    
-        Random randomEstimate= new Random();
-        int x= Math.abs(randomEstimate.nextInt(10-0)+ 0);
-        calculatedEstimatedTime= x + originalEstimatedTime;
-        if(calculatedEstimatedTime<((0.1*originalEstimatedTime)+originalEstimatedTime))
-        {
-           return true;
-        }  
-        return check;
-    }
-
-
     public static void main(String[] args) throws IOException
     {
         foodappp foodapppObj=new foodappp();
@@ -240,6 +94,7 @@ public final class foodappp {
             String sessionLocation="";
             String food_items_id="";
             String food_items="";
+            String quantity_items="";
             String food_order_quantity="";
             
             resturantList = new ArrayList<resturantDao>();// to store array of objects for the resturants table
@@ -247,7 +102,6 @@ public final class foodappp {
            
             sessionHandler cacheHandlerOBJ=new sessionHandler();
             sessionDao  cacheDaoObj=cacheHandlerOBJ.readFromCache();
-            
                 
             if (cacheDaoObj.getCacheStatus().equals("Y"))
             {
@@ -261,19 +115,16 @@ public final class foodappp {
             }
             if(!cacheDaoObj.getCachefoodItems().equals(""))
             {
-                    System.out.println("Inside cache");
+                    //System.out.println("Inside cache");
                     food_items_id=cacheDaoObj.getCachefoodItems().toString();
                     food_order_quantity=cacheDaoObj.getCacheQuantity().toString();
                     flag_menu=false;
-
             }
             if(!cacheDaoObj.getCacheResturantId().equals(""))
             {
                     resturant_id=cacheDaoObj.getCacheResturantId().toString();
             }
             
-           
-           System.out.println("Food item begin"+food_items_id);
            if(flag_authentication)
            { //authentication flag
                   foodapppObj.authenticationDisplay();
@@ -379,8 +230,8 @@ public final class foodappp {
                                          lon=50;
                                     }else if(sessionLocation.equalsIgnoreCase("Bangalore"))
                                     {
-                                        lat=40;
-                                        lon=80;
+                                         lat=40;
+                                         lon=80;
                                     }
                                     else
                                     {
@@ -389,40 +240,40 @@ public final class foodappp {
                                     }
                                  resturantList=dbconnection.fetchResturantDetils(sessionLocation,lat,lon);
                                  resturantDaoObj.resturantDisplay(resturantList);
-                                 System.out.println("####################");
+                                 filler();
                                  System.out.println("Add a resturant of your choice by entering the resturant id in the left");
                                  String resturant_id=br.readLine(); 
-                                 System.out.println("####################");
+                                 filler();
                                  foodList=dbconnection.fetchFoodItems(Integer.parseInt(resturant_id));
                                  resturantDao r = (resturantDao) resturantList.get(Integer.parseInt(resturant_id)-1);
                                  distance = r.getResturant_distance();
                                  time = r.getEstimated_time();
                                  foodDaoObj.foodMenuDisplay(foodList);
-                                 System.out.println("####################");
+                                 filler();
                                  System.out.println("Add the food items from the menu to cart by entering Sl seperated by comma");
                                  food_items=br.readLine();
-                                 String food_items_id_temporary[]=food_items.split(",");
-            
-                                 quantity = cartDaoObj.quantityCount(food_items_id_temporary);
-                                 food_items_id_extractor=new ArrayList<String>();
-                                 for(int i=0; i<food_items_id_temporary.length;i++)
+                                 filler();
+                                 food_items_id_extractor=new ArrayList<Integer>();
+                                 food_items_quantity_extractor = new ArrayList<Integer>();
+                                 food_items_quantity_extractor = cartDaoObj.quantityCount(food_items.split(","));
+                                 for(int i=0; i<food_items.split(",").length;i++)
                                  {   
-                                    if(!food_items_id_extractor.contains(food_items_id_temporary[i]))
+                                    if(!food_items_id_extractor.contains(Integer.parseInt(food_items.split(",")[i])))
                                     {   
-                                        food_items_id_extractor.add(food_items_id_temporary[i]);
+                                        food_items_id_extractor.add(Integer.parseInt(food_items.split(",")[i]));
                                     }
                                  }
                                 food_items="";
-                                String quantity_items="";
+                                quantity_items="";
                                 for(int i=0;i<food_items_id_extractor.size();i++)
                                 {
                                     food_items+=food_items_id_extractor.get(i)+",";
                                 }
-                                for(int i=0;i<quantity.size();i++)
+                                for(int i=0;i<food_items_quantity_extractor.size();i++)
                                 {
-                                   quantity_items+=quantity.get(i)+",";
+                                    quantity_items+=food_items_quantity_extractor.get(i)+",";
                                 }
-                                System.out.println("####################\n");
+                                filler();
                                 cacheObject.addToCache("Y", sessionEmail,sessionLocation,food_items, resturant_id,"",quantity_items);
                                }
                                break;
@@ -434,102 +285,70 @@ public final class foodappp {
           {   //Code for part 3
                                  food_items_split=null;
                                  food_items_quantity_split=null;
+
                                  food_items_split=food_items_id.split(","); 
-                                 System.out.println("Food items"+food_items_id);
                                  food_items_quantity_split=food_order_quantity.split(","); 
+
                                  foodList=dbconnection.fetchFoodItems(Integer.parseInt(resturant_id));
-                                 food_items_id_extractor=new ArrayList<String>();
+                                 food_items_id_extractor=new ArrayList<Integer>();
+                                 food_items_quantity_extractor=new ArrayList<Integer>();
                                  for(int i=0; i<food_items_split.length;i++)
                                 {   
-                                  if(!food_items_id_extractor.contains(food_items_split[i]))
+                                  if(!food_items_id_extractor.contains(Integer.parseInt(food_items_split[i])))
                                      {   
-                                         food_items_id_extractor.add(food_items_split[i]);
+                                         food_items_id_extractor.add(Integer.parseInt(food_items_split[i]));
+                                         food_items_quantity_extractor.add(Integer.parseInt(food_order_quantity.split(",")[i]));
                                      }
                                 }
+                                
                                 while(food_items_split!=null)
                                 { 
-                                 cartDaoObj.cartDisplay(food_items_split, foodList, food_items_quantity_split);
+                                 cartDaoObj.cartDisplay(food_items_id_extractor, foodList, food_items_quantity_extractor);
                                  totalPrice=0.0;
-                                 for(int i=0; i<food_items_split.length;i++)
+                                 for(int i=0; i<food_items_id_extractor.size();i++)
                                 {
-                                if(food_items_split[i].equals(""))
-                                    {
-                                    continue;
-                                    }
-                                foodDao f2=foodList.get(Integer.parseInt(food_items_split[i]));
-                                totalPrice += f2.getFood_price() * Integer.parseInt(food_items_quantity_split[i]);
+                                foodDao f2=foodList.get(food_items_id_extractor.get(i));
+                                totalPrice += f2.getFood_price() * food_items_quantity_extractor.get(i);
                                 }
-                                System.out.println("####################");
-                                System.out.println("1. Close the application");
-                                System.out.println("2. Logout");
-                                System.out.println("3. Remove an item from cart");
-                                System.out.println("4. Remove all items from cart");
-                                System.out.println("5. change the resturant");
-                                System.out.println("6. Checkout");
-                                System.out.println("####################");
+                                cartDaoObj.cartOptions();
                                 int cart_choice=Integer.parseInt(br.readLine());
+                                cartDaoObj.setEmail(sessionEmail);
+                                cartDaoObj.setResturant_id(Integer.parseInt(resturant_id));
+                                cartDaoObj.setResturant_city(sessionLocation);
                                 switch(cart_choice)
                                 {
                                 case 1:
-                                      System.exit(0);
-                                      break;
+                                         System.exit(0);
+                                         break;
                                 case 2:
-                                      cacheObject.addToCache("N", "", "", "", "","","");
-                                      food_items_split=null;
-                                      break;
+                                         cacheObject.addToCache("N", "", "", "", "","","");
+                                         food_items_split=null;
+                                         break;
                                 case 3:
-                                      System.out.println("Enter the SL no of the items to be deleted");
-                                      String food_items_to_delete=br.readLine();
-                                      String food_items_to_delete_split[]=food_items_to_delete.split(",");
-                                      food_items="";
-                                      food_order_quantity="";
-                                      for(int i=0;i<food_items_to_delete_split.length;i++)
-                                      {
-                                      for(int j=0;j<food_items_split.length;j++)
-                                        {
-                                         if(food_items_split[j].equals(food_items_to_delete_split[i]))
-                                           {
-                                          food_items_split[j]="";
-                                          food_items_quantity_split[j]="";
-                                           }
-                                        }
-                                      }
-                                     for(int j=0;j<food_items_split.length;j++)
-                                     {
-                                        if(food_items_split[j].equals(""))
-                                          {
-                                           food_items_id_extractor.remove(j);
-                                           continue;
-                                          }
-                                       food_items+=food_items_split[j]+",";
-                                       food_order_quantity+=food_items_quantity_split[j]+",";
-                                     }
-                                     
-                                     cacheObject.addToCache("Y", sessionEmail, sessionLocation, food_items, resturant_id,"",food_order_quantity);
-                                     break;
+                                        List<List<Integer>> l1=new ArrayList<>();
+                                        l1=cartDaoObj.removeItems(br,cartDaoObj,food_items_id_extractor,food_items_quantity_extractor);
+                                        food_items_id_extractor=l1.get(0);
+                                        food_items_quantity_extractor=l1.get(1);
+                                        break;
                                 case 4:
-                                     cacheObject.addToCache("Y", sessionEmail, sessionLocation, "", "","","");
-                                     food_items_split=null;
-                                     food_items_id_extractor=null;
-                                     break;
-                                case 5:
-                                     cacheObject.addToCache("Y", sessionEmail, sessionLocation, "", "","","");
-                                     food_items_split=null;
-                                     food_items_id_extractor=null;
-                                     break;
+                                        cartDaoObj.removeAllItems(cartDaoObj);
+                                        food_items_split=null;
+                                        food_items_id_extractor=null;
+                                        break;
+                                case 5: 
+                                        cartDaoObj.changeResturant(cartDaoObj);
+                                        food_items_split=null;
+                                        food_items_id_extractor=null;
+                                        break;
                                 case 6:
                                       if(totalPrice>=100)
                                        {   
-                                       //code for part4 
+                                       //code for payment and tracking
                                        resturantList=null;
                                        resturantList=dbconnection.fetchResturantDetils(sessionLocation, lat, lon);
                                        resturantDao estimatedTimeObj=resturantList.get(Integer.parseInt(resturant_id)-1);
                                        originalEstimatedTime=estimatedTimeObj.getEstimated_time();
                                        deliveryCharge = 5 * estimatedTimeObj.getResturant_distance();
-                                       System.out.println(deliveryCharge);
-                                       System.out.println(originalEstimatedTime);
-                                       System.out.println(resturant_id);
-                                       resturantDaoObj.resturantDisplay(resturantList);
                                        if(sessionLocation.equalsIgnoreCase("kolkata"))
                                        {
                                          lat=10;
@@ -544,24 +363,30 @@ public final class foodappp {
                                        System.out.println("Your total cart value is: "+ totalPrice+"\nDelivery charges: "+deliveryCharge);
                                        System.out.println("1. Continue to the Payment page \n2. Apply a coupon\n3. Exit");
                                        int checkoutOptions=Integer.parseInt(br.readLine());
+                                       paymentDao p=new paymentDao();
+                                       p.setEmail(sessionEmail);
+                                       p.setOriginalEstimateTime(originalEstimatedTime);
                                        switch(checkoutOptions)
                                          {
                                             case 1:
-                                                  System.out.println("########################################"); 
-                                                  System.out.println("Choose a payment mode:\n1. UPI\n2. Debit Card\n3. Credit Card\n4. Net Banking\n5. Exit");
-                                                  foodapppObj.paymentPage(br, sessionEmail,originalEstimatedTime);
-                                                  
+                                                  filler(); 
+                                                  p.paymentOptions();
+                                                  p.setFinalPrice(finalPrice);
+                                                  food_items_id_extractor=p.paymentPage(br,food_items_id_extractor,foodList,p);
+                                                  if(food_items_id_extractor==null)
+                                                  {
+                                                    food_items_split=null;  
+                                                  }
                                                   break;
-
                                             case 2: 
                                                   loginDao log1 = new loginDao();
                                                   log1.setEmailId(sessionEmail);
                                                   foodapppObj.getFlags(log1);
                                                   String temp1 = flag20==1?"Applicable":"Not Applicable";
                                                   String temp2 = flag50==1?"Applicable":"Not Applicable";
-                                                  System.out.println("###################################");
+                                                  filler();
                                                   System.out.println("Select a coupon\n1. SAVE20: "+ temp1+"\n2. SAVE50: "+temp2);
-                                                  System.out.println("###################################");
+                                                  filler();
                                                   int couponSelector=Integer.parseInt(br.readLine());
                                                   switch(couponSelector)
                                                   {
@@ -576,13 +401,18 @@ public final class foodappp {
                                                         lg.setSave50(flag50);
                                                         lg.setEmailId(sessionEmail);
                                                         }
-                                                       System.out.println("###################################");
-                                                       System.out.println("Your total cart value is: "+ totalPrice+"\nCoupon Discount(SAVE20): "+discount+"\nDelivery Charges: "+deliveryCharge+"\nAmount to be paid: "+finalPrice);
-                                                       System.out.println("Choose a payment mode:\n1. UPI\n2. Debit Card\n3. Credit Card\n4. Net Banking\n5. Exit");
-                                                       System.out.println("###################################");
-                                                       foodapppObj.paymentPage(br, sessionEmail,originalEstimatedTime);
-                                                       dbconnection.insertFlags(lg);
-                                                       break;
+                                                        filler();
+                                                        System.out.println("Your total cart value is: "+ totalPrice+"\nCoupon Discount(SAVE20): "+discount+"\nDelivery Charges: "+deliveryCharge+"\nAmount to be paid: "+finalPrice);
+                                                        p.setFinalPrice(finalPrice);
+                                                        p.paymentOptions();
+                                                        filler();
+                                                        food_items_id_extractor=p.paymentPage(br,food_items_id_extractor,foodList,p);
+                                                        if(food_items_id_extractor==null)
+                                                        {
+                                                         food_items_split=null;  
+                                                        }
+                                                        dbconnection.insertFlags(lg);
+                                                        break;
                                                     case 2: 
                                                        loginDao lg1 = new loginDao();
                                                        if(flag50==1)
@@ -594,15 +424,19 @@ public final class foodappp {
                                                         lg1.setSave20(flag20);
                                                         lg1.setEmailId(sessionEmail);
                                                        }
-                                                       System.out.println("###################################");
-                                                       System.out.println("Your total cart value is: "+ totalPrice+"\nCoupon Discount(SAVE50): "+discount+"\nDelivery Charges: "+deliveryCharge+"\nAmount to be paid: "+finalPrice);
-                                                       System.out.println("Choose a payment mode:\n1. UPI\n2. Debit Card\n3. Credit Card\n4. Net Banking\n5. Exit");
-                                                       System.out.println("###################################");
-                                                       foodapppObj.paymentPage(br, sessionEmail,originalEstimatedTime);
-                                                       dbconnection.insertFlags(lg1);
-                                                       break;
+                                                        filler();
+                                                        System.out.println("Your total cart value is: "+ totalPrice+"\nCoupon Discount(SAVE50): "+discount+"\nDelivery Charges: "+deliveryCharge+"\nAmount to be paid: "+finalPrice);
+                                                        System.out.println("Choose a payment mode:\n1. UPI\n2. Debit Card\n3. Credit Card\n4. Net Banking\n5. Exit");
+                                                        filler();
+                                                        p.setFinalPrice(finalPrice);
+                                                        food_items_id_extractor=p.paymentPage(br,food_items_id_extractor,foodList,p);
+                                                        if(food_items_id_extractor==null)
+                                                        {
+                                                         food_items_split=null;  
+                                                        }
+                                                        dbconnection.insertFlags(lg1);
+                                                        break;
                                                   }
-                                                  
                                                   break;
                                             case 3: 
                                                   System.exit(0);
