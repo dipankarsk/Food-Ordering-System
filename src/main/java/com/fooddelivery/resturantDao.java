@@ -65,8 +65,8 @@ public class resturantDao extends Resturant {
     void display() {
 
         System.out.println("                   #############  The List of Available Resturants  #################"+"\n");
-        System.out.print("Resturant Id "+" "+"ResturantName"+" "
-        +"ResturantCity"+" "+"ResturantAddress"+" "+"Estimated Distance"+" "+"Estimated Time of Delivery"+"\n\n");
+        System.out.print("Resturant Id \t"+" "+"ResturantName \t"+" "
+        +"ResturantCity \t"+" "+"ResturantAddress \t"+" "+"Estimated Distance \t"+" "+"Estimated Time of Delivery \t"+"\n\n");
         System.out.println();
         
     }
@@ -77,7 +77,7 @@ public class resturantDao extends Resturant {
         {
             resturantDao r=(resturantDao) resturantList.get(i);
             System.out.print(r.getResturant_id()+"\t\t"+r.getResturant_name()+"\t\t"
-            +r.getResturant_city()+"\t\t"+r.getResturant_address()+"\t\t"+String.format("%.2f",r.getResturant_distance())+" Km "+String.format("%.2f",r.getEstimated_time())+" Minutes ");
+            +r.getResturant_city()+"\t\t"+r.getResturant_address()+"\t\t"+String.format("%.2f",r.getResturant_distance())+" Km "+"\t\t"+String.format("%.2f",r.getEstimated_time())+" Minutes ");
             System.out.println("\n");
         }
     }

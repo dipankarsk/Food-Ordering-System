@@ -16,7 +16,7 @@ import com.fooddelivery.Authentication.registrationDao;
 public class DbHandler extends Dboperation{
 
     /* class for handling the different database operations */
-    
+    @Override
     public List<foodDao> fetchFoodItems(int resturant_id)
     {
         List<foodDao> foodList = new ArrayList<foodDao>();
@@ -55,6 +55,7 @@ public class DbHandler extends Dboperation{
         }
         return foodList;
     }
+    @Override
     public List<resturantDao> fetchResturantDetils(String city,int lat,int lon)
     {
         List<resturantDao> resturantList = new ArrayList<resturantDao>();
@@ -268,4 +269,20 @@ public class DbHandler extends Dboperation{
         
     }
    
+    public void insertRating(int rating,String email)
+    {
+        String sql = "INSERT INTO AppRating(email,rating) VALUES(?,?)";
+
+        try (Connection con1 =  Dbconnection();
+             PreparedStatement ratingSt = con1.prepareStatement(sql))
+        {
+            ratingSt.setString(1, email);
+            ratingSt.setInt(2, rating);
+            
+            ratingSt.executeUpdate();
+        }
+        catch (SQLException e) {
+            System.out.println("Error due to insertion of Rating to AppRating table " + e.getMessage());
+        }
+    }
 }
