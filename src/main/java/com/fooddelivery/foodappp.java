@@ -30,10 +30,10 @@ public final class foodappp {
 
     static String food_items_split[];
     static String food_items_quantity_split[];
-    static List<String> food_items_id_extractor = new ArrayList<String>();// arraylist to store the food ids stored at any instance
+    static List<String> food_items_id_extractor =null;// arraylist to store the food ids stored at any instance
     static List<Integer> quantity = new ArrayList<Integer>(); // arraylist to store quantities of each food items inside the cart
     static DbHandler dbconnection=new DbHandler();
-    static sessionHandler cacheObject=new sessionHandler();
+    
     static List<resturantDao> resturantList;
     static List<foodDao> foodList;
     public void authenticationDisplay()
@@ -59,6 +59,7 @@ public final class foodappp {
     }
     public void login (loginDao log)
     {
+        sessionHandler cacheObject=new sessionHandler();
         boolean credentialStatus=dbconnection.logincheck(log);
         if(credentialStatus)
         {
@@ -78,6 +79,7 @@ public final class foodappp {
     public void paymentPage(BufferedReader reader, String email,Double originalEstimatedTime) throws NumberFormatException, IOException
     {   
         cartDao cartObject = new cartDao();
+        sessionHandler cacheObject=new sessionHandler();
         cartObject.setEmail(email);
         cartObject.setFinalPrice(finalPrice);
         tStamp=  System.currentTimeMillis();
@@ -170,12 +172,18 @@ public final class foodappp {
             int rating= Integer.parseInt(reader.readLine());
             dbconnection.insertRating(rating, email);
             cacheObject.addToCache("Y", email, "", "", "", "", "");
-            food_items_split=null;   
+            for(int i = 0; i<food_items_id_extractor.size();i++)
+            {
+                foodDao f=(foodDao) foodList.get(Integer.parseInt(food_items_id_extractor.get(i)));
+                f.getFood_id();
+            }  
+            food_items_split=null;  
+            food_items_id_extractor=null;
         }   
     }
     public void tracker(Double EstimatedTime)
     {
-         System.out.println(" Tracking ");
+         System.out.println(" ######### Tracking ###########");
          System.out.println(EstimatedTime);
          
          long minutes=0l; 
@@ -202,14 +210,11 @@ public final class foodappp {
         Random randomEstimate= new Random();
         int x= Math.abs(randomEstimate.nextInt(10-0)+ 0);
         calculatedEstimatedTime= x + originalEstimatedTime;
-                   
-            
         if(calculatedEstimatedTime<((0.1*originalEstimatedTime)+originalEstimatedTime))
         {
            return true;
         }  
         return check;
-
     }
 
 
@@ -219,6 +224,7 @@ public final class foodappp {
         resturantDao resturantDaoObj=new resturantDao();
         cartDao cartDaoObj=new cartDao();
         foodDao foodDaoObj=new foodDao();
+        sessionHandler cacheObject=new sessionHandler();
         InputStreamReader ir =  new InputStreamReader(System.in);
         BufferedReader br = new BufferedReader(ir);
        
@@ -255,6 +261,7 @@ public final class foodappp {
             }
             if(!cacheDaoObj.getCachefoodItems().equals(""))
             {
+                    System.out.println("Inside cache");
                     food_items_id=cacheDaoObj.getCachefoodItems().toString();
                     food_order_quantity=cacheDaoObj.getCacheQuantity().toString();
                     flag_menu=false;
@@ -266,7 +273,7 @@ public final class foodappp {
             }
             
            
-           
+           System.out.println("Food item begin"+food_items_id);
            if(flag_authentication)
            { //authentication flag
                   foodapppObj.authenticationDisplay();
@@ -348,11 +355,12 @@ public final class foodappp {
                                    
                                     if(cityChoice.equalsIgnoreCase("kolkata"))
                                     {
-                                    lat=10;
-                                    lon=50;
+                                        lat=10;
+                                        lon=50;
                                     }else if(cityChoice.equalsIgnoreCase("Bangalore"))
                                     {
-                                    //
+                                        lat=10;
+                                        lon=50;
                                     }
                                     else
                                     {
@@ -382,7 +390,7 @@ public final class foodappp {
                                  resturantList=dbconnection.fetchResturantDetils(sessionLocation,lat,lon);
                                  resturantDaoObj.resturantDisplay(resturantList);
                                  System.out.println("####################");
-                                 System.out.println("Choose a resturant of your choice by entering the resturant id in the left");
+                                 System.out.println("Add a resturant of your choice by entering the resturant id in the left");
                                  String resturant_id=br.readLine(); 
                                  System.out.println("####################");
                                  foodList=dbconnection.fetchFoodItems(Integer.parseInt(resturant_id));
@@ -391,11 +399,12 @@ public final class foodappp {
                                  time = r.getEstimated_time();
                                  foodDaoObj.foodMenuDisplay(foodList);
                                  System.out.println("####################");
-                                 System.out.println("Choose the food items from the menu to cart by entering Sl seperated by comma");
+                                 System.out.println("Add the food items from the menu to cart by entering Sl seperated by comma");
                                  food_items=br.readLine();
                                  String food_items_id_temporary[]=food_items.split(",");
             
                                  quantity = cartDaoObj.quantityCount(food_items_id_temporary);
+                                 food_items_id_extractor=new ArrayList<String>();
                                  for(int i=0; i<food_items_id_temporary.length;i++)
                                  {   
                                     if(!food_items_id_extractor.contains(food_items_id_temporary[i]))
@@ -426,8 +435,10 @@ public final class foodappp {
                                  food_items_split=null;
                                  food_items_quantity_split=null;
                                  food_items_split=food_items_id.split(","); 
+                                 System.out.println("Food items"+food_items_id);
                                  food_items_quantity_split=food_order_quantity.split(","); 
                                  foodList=dbconnection.fetchFoodItems(Integer.parseInt(resturant_id));
+                                 food_items_id_extractor=new ArrayList<String>();
                                  for(int i=0; i<food_items_split.length;i++)
                                 {   
                                   if(!food_items_id_extractor.contains(food_items_split[i]))
@@ -497,18 +508,28 @@ public final class foodappp {
                                      cacheObject.addToCache("Y", sessionEmail, sessionLocation, food_items, resturant_id,"",food_order_quantity);
                                      break;
                                 case 4:
-                                     cacheObject.addToCache("Y", sessionEmail, sessionLocation, "", resturant_id,"","");
+                                     cacheObject.addToCache("Y", sessionEmail, sessionLocation, "", "","","");
                                      food_items_split=null;
+                                     food_items_id_extractor=null;
                                      break;
                                 case 5:
-                                     cacheObject.addToCache("Y", sessionEmail, sessionLocation, "", resturant_id,"","");
+                                     cacheObject.addToCache("Y", sessionEmail, sessionLocation, "", "","","");
                                      food_items_split=null;
+                                     food_items_id_extractor=null;
                                      break;
                                 case 6:
                                       if(totalPrice>=100)
                                        {   
                                        //code for part4 
-                                       deliveryCharge = 5 * distance;
+                                       resturantList=null;
+                                       resturantList=dbconnection.fetchResturantDetils(sessionLocation, lat, lon);
+                                       resturantDao estimatedTimeObj=resturantList.get(Integer.parseInt(resturant_id)-1);
+                                       originalEstimatedTime=estimatedTimeObj.getEstimated_time();
+                                       deliveryCharge = 5 * estimatedTimeObj.getResturant_distance();
+                                       System.out.println(deliveryCharge);
+                                       System.out.println(originalEstimatedTime);
+                                       System.out.println(resturant_id);
+                                       resturantDaoObj.resturantDisplay(resturantList);
                                        if(sessionLocation.equalsIgnoreCase("kolkata"))
                                        {
                                          lat=10;
@@ -518,9 +539,7 @@ public final class foodappp {
                                          lat=40;
                                          lon=80;
                                        }
-                                       resturantList=dbconnection.fetchResturantDetils(sessionLocation, lat, lon);
-                                       resturantDao estimatedTimeObj=resturantList.get(Integer.parseInt(resturant_id)-1);
-                                       originalEstimatedTime=estimatedTimeObj.getEstimated_time();
+                                       
                                        finalPrice = totalPrice + deliveryCharge;
                                        System.out.println("Your total cart value is: "+ totalPrice+"\nDelivery charges: "+deliveryCharge);
                                        System.out.println("1. Continue to the Payment page \n2. Apply a coupon\n3. Exit");
