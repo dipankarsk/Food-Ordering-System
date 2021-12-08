@@ -2,7 +2,12 @@ package com.fooddelivery;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import com.fooddelivery.Authentication.registrationDao;
@@ -19,11 +24,16 @@ public final class foodappp {
     static double estimatedTime=0;
     static double actualTime=0;
     static double time=0;
-    static long tStamp=0;
+    static String tStamp;
     static int lat=0;
     static int lon=0;
+    static long timeElp=0;
     static String resturant_id="";
     static boolean toCancel;
+    static int appRating=0;
+    static int foodRating[];
+    static int deliveryTime=0;
+    static long estimatedTimeInMilli=0;
     static List<String> food_items_id_extractor = new ArrayList<String>();// arraylist to store the food ids stored at any instance
     static List<Integer> quantity = new ArrayList<Integer>(); // arraylist to store quantities of each food items inside the cart
     static DbHandler dbconnection=new DbHandler();
@@ -72,8 +82,13 @@ public final class foodappp {
         cartDao cartObject = new cartDao();
         cartObject.setEmail(email);
         cartObject.setFinalPrice(finalPrice);
-        tStamp=  System.currentTimeMillis();
+
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+        LocalDateTime now = LocalDateTime.now();
+       // tStamp=  System.currentTimeMillis();
+        tStamp= dtf.format(now);
         cartObject.setTimeStamp(tStamp);
+
         String orderIdsInString = "";
         for(int i = 0; i<food_items_id_extractor.size();i++)
         {
@@ -94,19 +109,20 @@ public final class foodappp {
         else{
             price = finalPrice;
         }
+        
         switch(paymentModeOptions)
         {  
             case 1: System.out.println("Payment Done.\nPaid: "+price+"\nPayment mode: UPI");
-                    toCancel= trackingPage(reader);
+                    toCancel= trackingPage(reader, email);
                     break;
             case 2: System.out.println("Payment Done.\nPaid: "+price+"\nPayment mode: Debit Card");
-                    toCancel= trackingPage(reader);
+                    toCancel= trackingPage(reader, email);
                     break;
             case 3: System.out.println("Payment Done.\nPaid: "+price+"\nPayment mode: Credit Card");
-                    toCancel= trackingPage(reader);
+                    toCancel= trackingPage(reader, email);
                     break;
             case 4: System.out.println("Payment Done.\nPaid: "+price+"\nPayment mode: Net Banking");
-                    toCancel= trackingPage(reader);
+                    toCancel= trackingPage(reader, email);
                     break;
             case 5: System.exit(0);
                     break;
@@ -120,42 +136,84 @@ public final class foodappp {
             switch(option){
                 case 1: System.out.println("Your order has been cancelled!!!!!");
                         System.exit(0);
-                case 2: toCancel= trackingPage(reader);
+                case 2: toCancel= trackingPage(reader, email);
                         break;
             }
-
+        
         }
         dbconnection.insertOrderDetails(cartObject);
     }
 
-    public static boolean trackingPage(BufferedReader reader) throws NumberFormatException, IOException{
+    public static boolean trackingPage(BufferedReader reader, String email) throws NumberFormatException, IOException{
+        boolean check= false;
+        Random randomNo= new Random();
+        int x= Math.abs(randomNo.nextInt(40-5)+ 5);
+        estimatedTime= Math.abs(estimatedTime);
+        //int high= (int)(estimatedTime+estimatedTime*0.15);
+        //int low= (int)(estimatedTime*0.5);
+        //deliveryTime= Math.abs(randomNo.nextInt(high-low)+ low);
+        deliveryTime= 60;
+        if(deliveryTime*60000<= timeElp){
+            System.out.println("Your order has been delivered.\nRate our app");
 
-        long timeElp=0;
-        boolean check = false;
+            cartDao cart2= new cartDao();
+            cart2.setEmail(email);
+
+            cartDao c = dbconnection.fetchOrderDetails(cart2);
+
+            String foodIDs= c.getFoodId();
+            String foodArray[]= foodIDs.split(",");
+            appRating= Integer.parseInt(reader.readLine());
+
+            System.out.println("Rate the food");
+
+            for(int i=0; i<foodArray.length; i++){
+                foodRating[i]= Integer.parseInt(reader.readLine());
+        }             
+             
+        }
+        while(check== false){
+        check = false;
         
         System.out.println("1. Track your order" + "\n2. Exit");
         
         int option= Integer.parseInt(reader.readLine());
 
         switch(option){
-            case 1: Random randomNo= new Random();
-                    int x= Math.abs(randomNo.nextInt(40-5)+ 5);
-                    estimatedTime= x + time;
-                    System.out.println("Estimated time for your order is: "+ estimatedTime + " minutes.");
+            case 1: estimatedTime= x + time;
+                    System.out.println("Estimated time for your order is: "+ (estimatedTime-(timeElp/60000)) + " minutes.");
                     
-                    long estimatedTimeInMilli= (long)estimatedTime*60000;
-                    timeElp= System.currentTimeMillis()- tStamp;
-                    
-                    if(estimatedTimeInMilli*0.1< Math.abs(estimatedTimeInMilli-timeElp)){
-                        return true;
-                    }
-                    return false;
+                    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+                    LocalDateTime now = LocalDateTime.now();
+                    estimatedTimeInMilli= (long)estimatedTime*60000;
+                    /*timeElp= System.currentTimeMillis()- tStamp;
+                    System.out.println(timeElp);*/
+                    String currDate= dtf.format(now);
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
+                    try{
+                        Date date1= (Date) sdf.parse(tStamp);
+                        Date date2= (Date) sdf.parse(currDate);
+
+                        timeElp= ((date2.getTime()- date1.getTime())/1000)%60;
+                        timeElp= timeElp*1000; 
+                    }catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    
+                    //if(estimatedTimeInMilli*0.1< Math.abs(estimatedTimeInMilli-timeElp)){
+                    if(estimatedTimeInMilli*0.1 + estimatedTimeInMilli<= timeElp){
+                        check= true;
+                        //return true;
+                    }
+                   // return false;
+                    break;
             case 2: System.exit(0);
                     break;
         }
+    }
         return check;
-
+        
     }
 
 

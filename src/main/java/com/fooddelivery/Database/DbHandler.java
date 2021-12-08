@@ -231,6 +231,44 @@ public class DbHandler extends Dboperation{
             }
         }
     }
+
+    public cartDao fetchOrderDetails(cartDao cart)
+    {   
+        cartDao cart1= new cartDao();
+        String sql1 = "SELECT * " + "FROM Orders WHERE Email = ?";
+        Connection con =  Dbconnection();
+        try{
+        PreparedStatement pstmt1  = con.prepareStatement(sql1);
+        pstmt1.setString(1, cart.getEmail());
+        ResultSet rs1  = pstmt1.executeQuery();    
+        if(rs1==null)
+        {
+            return null;
+        }
+        while (rs1.next()) {
+          
+                cart1.setFoodId(rs1.getString(3));
+                
+            }
+        }catch(SQLException e)
+        {
+            System.out.println("Error due select query for Login " + e.getMessage());
+        }
+        finally
+        {
+            if(con!=null)
+            {
+                try {
+                    con.close();
+                } catch (SQLException e) {
+                    
+                    e.printStackTrace();
+                }
+            }
+        }
+        return cart1;
+    }
+    
     @Override
     public Connection Dbconnection()
      {
@@ -259,7 +297,7 @@ public class DbHandler extends Dboperation{
             usri.setString(1, cartObject.getEmail());
             usri.setString(2, cartObject.getFoodId());
             usri.setDouble(3, cartObject.getFinalPrice());
-            usri.setLong(4, cartObject.getTimeStamp());
+            usri.setString(4, cartObject.getTimeStamp());
             usri.executeUpdate();
         }
         catch (SQLException e) {

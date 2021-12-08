@@ -11,7 +11,7 @@ public class cartDao extends foodDao {
     private String foodId;
     private String email;
     private double finalPrice;
-    private long timeStamp;
+    private String timeStamp;
     public void setOrderId(int orderId)
     {
         this.orderId = orderId;
@@ -45,11 +45,11 @@ public class cartDao extends foodDao {
         return finalPrice;
     }
 
-    public void setTimeStamp(long timeStamp){
-        this.timeStamp= timeStamp;
+    public void setTimeStamp(String tStamp){
+        this.timeStamp= tStamp;
     }
 
-    public long getTimeStamp(){
+    public String getTimeStamp(){
         return timeStamp;
     }
     @Override
