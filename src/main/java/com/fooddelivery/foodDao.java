@@ -36,7 +36,8 @@ public class foodDao extends resturantDao {
     }
     public void foodMenuDisplay(List foodList)
     {
-                    display();
+                    foodDao fd=new foodDao();
+                    fd.display();
                     for(int i=0;i<foodList.size();i++)
                     {
                         foodDao f=(foodDao) foodList.get(i);

@@ -72,7 +72,8 @@ public class resturantDao extends Resturant {
     }
     public void resturantDisplay(List resturantList)
     {   
-        display();
+        resturantDao rd=new resturantDao();
+        rd.display();
         for(int i=0;i<resturantList.size();i++)
         {
             resturantDao r=(resturantDao) resturantList.get(i);

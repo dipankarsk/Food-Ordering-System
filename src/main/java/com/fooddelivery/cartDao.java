@@ -63,13 +63,10 @@ public class cartDao extends foodDao {
     }
     public void cartDisplay(List <Integer> food_items_id_extractor,List<foodDao> foodList,List<Integer> food_items_quantity_extractor)
     {
-        display();
+        cartDao cd=new cartDao();
+        cd.display();
         for(int i=0;i<food_items_id_extractor.size();i++)
         {
-           /* if(food_items_split[i].equals(""))
-           {
-            continue;
-           }*/
            foodDao f=(foodDao) foodList.get(food_items_id_extractor.get(i));
            System.out.print(food_items_id_extractor.get(i)+"\t\t"+f.getFood_name()+"\t\t"+f.getFood_price()+"  in Rs"+"\t\t"+food_items_quantity_extractor.get(i));
            System.out.println("\n");
@@ -153,6 +150,7 @@ public class cartDao extends foodDao {
     public List < List <Integer> > addItems(BufferedReader br,cartDao c, List <Integer> food_items_id_extractor,List<Integer> food_items_quantity_extractor,List <foodDao> foodList) throws IOException
     {
         sessionHandler cacheObject=new sessionHandler();
+        
         foodMenuDisplay(foodList); // using inherited method from foodDao class
         System.out.println("Enter the SL no of the item to be inserted");
         String food_item_to_add=br.readLine();

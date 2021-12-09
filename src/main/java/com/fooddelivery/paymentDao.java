@@ -39,7 +39,8 @@ public class paymentDao extends cartDao{
     }
     public void paymentOptions()
     {
-         display();
+        paymentDao pd=new paymentDao();
+        pd.display();
     }
     public void tracker(Double EstimatedTime)
     {
@@ -52,7 +53,8 @@ public class paymentDao extends cartDao{
          {
            long endTime = System.currentTimeMillis();
            minutes=(endTime-triggeredTimeStamp)/1000;
-           System.out.println("Estimated time of Delivery "+(EstimatedTime-minutes)+" Minutes");
+           if(minutes>0)
+           System.out.println("Order reaches in  :"+(EstimatedTime-minutes)+" Minutes");
            try {
             Thread.sleep(5000);
         } catch (InterruptedException e) {
