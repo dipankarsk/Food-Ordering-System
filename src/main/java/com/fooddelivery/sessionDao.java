@@ -9,7 +9,7 @@ public class sessionDao {
     private String cacheLocation;
     private String cachefoodItems;
     private String cacheResturantId;
-    private String cacheTotalPrice;
+    private String cacheWhishList;
     private String cacheQuantity;
 
     public sessionDao()
@@ -19,7 +19,7 @@ public class sessionDao {
       this.cacheQuantity="";
       this.cacheStatus="N";
       this.cacheResturantId="";
-      this.cacheTotalPrice="";
+      this.cacheWhishList="";
       this.cachefoodItems="";
     }
 
@@ -38,8 +38,8 @@ public class sessionDao {
     public void setCacheStatus(String cacheStatus) {
         this.cacheStatus = cacheStatus;
     }
-    public void setCacheTotalPrice(String cacheTotalPrice) {
-        this.cacheTotalPrice = cacheTotalPrice;
+    public void setCacheWhishList(String cacheWhishList) {
+        this.cacheWhishList = cacheWhishList;
     }
     public void setCachefoodItems(String cachefoodItems) {
         this.cachefoodItems = cachefoodItems;
@@ -59,8 +59,8 @@ public class sessionDao {
     public String getCacheStatus() {
         return cacheStatus;
     }
-    public String getCacheTotalPrice() {
-        return cacheTotalPrice;
+    public String getcacheWhishList() {
+        return cacheWhishList;
     }
     public String getCachefoodItems() {
         return cachefoodItems;

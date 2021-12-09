@@ -94,8 +94,10 @@ public final class foodappp {
             String sessionLocation="";
             String food_items_id="";
             String food_items="";
+            String food_items_whishlist="";
             String quantity_items="";
             String food_order_quantity="";
+            String sessionWhishList="";
             
             resturantList = new ArrayList<resturantDao>();// to store array of objects for the resturants table
             foodList = new ArrayList<foodDao>();// to store array of objects for food database table
@@ -110,7 +112,7 @@ public final class foodappp {
             }
             if(!cacheDaoObj.getCacheLocation().equals(""))
             {
-                     System.out.println("Inside ");
+                    //System.out.println("Inside ");
                     sessionLocation=cacheDaoObj.getCacheLocation().toString();
                     flag_view=false;
             }
@@ -124,6 +126,10 @@ public final class foodappp {
             if(!cacheDaoObj.getCacheResturantId().equals(""))
             {
                     resturant_id=cacheDaoObj.getCacheResturantId().toString();
+            }
+            if(!cacheDaoObj.getcacheWhishList().equals(""))
+            {
+                    sessionWhishList=cacheDaoObj.getcacheWhishList().toString();
             }
             
            if(flag_authentication)
@@ -276,6 +282,46 @@ public final class foodappp {
                                 }
                                 filler();
                                 cacheObject.addToCache("Y", sessionEmail,sessionLocation,food_items, resturant_id,"",quantity_items);
+                                //wishlist
+                                System.out.println("##################### WhisList Option #########################");
+                                System.out.println("1.WishList\n2.continue with cart");
+                                filler();
+                                int whishListChoice=Integer.parseInt(br.readLine());
+                                switch(whishListChoice)
+                                {
+                                    case 1:
+                                           //check if list exist 
+                                           String food_item_whislist_combined="";
+                                           wishlistDao wd=new wishlistDao();
+                                           wd.setEmail(sessionEmail);
+                                           food_item_whislist_combined=wd.wishListConfigurator(wd);
+                                           //display list if exist else message no items
+                                           filler();
+                                           System.out.println("1.to add to the list from food menu above\n2.continue with cart\n");
+                                           filler();
+                                           int whishListChoiceToAdd=Integer.parseInt(br.readLine());
+                                           if(whishListChoiceToAdd==2)
+                                           {
+                                             // do nothing
+                                           }else{
+                                            System.out.println("Add the food items from the menu to wishlist by entering Sl seperated by comma");
+                                            food_items_whishlist=br.readLine();
+                                            for(int i=0;i<food_items_whishlist.split(",").length;i++)
+                                            {
+                                                //System.out.println(foodList.get(Integer.parseInt(food_items_whishlist.split(",")[i])).getFood_id());
+                                                 food_item_whislist_combined+=foodList.get(Integer.parseInt(food_items_whishlist.split(",")[i])).getFood_id()+",";
+                                            }
+                                            wd.setFoodId(food_item_whislist_combined);
+                                            //System.out.println(food_item_whislist_combined);
+                                            wd.addToWishList(wd);
+
+                                           }
+                                           break;
+                                    case  2:
+                                           break;
+                                    default:
+                                            break;
+                                }
                                }
                                break;
                         default:

@@ -55,13 +55,15 @@ public class paymentDao extends cartDao{
            minutes=(endTime-triggeredTimeStamp)/1000;
            if(minutes>0)
            System.out.println("Order reaches in  :"+(EstimatedTime-minutes)+" Minutes");
-           try {
+           try 
+           {
             Thread.sleep(5000);
-        } catch (InterruptedException e) {
+           } 
+           catch (InterruptedException e) 
+           {
             
-            e.printStackTrace();
-        }
-
+            System.out.println("Error due to thread during payment trackng");
+           }
          }
         
     }

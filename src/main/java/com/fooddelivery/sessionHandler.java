@@ -12,14 +12,14 @@ public class sessionHandler extends Session{
     /* Class to handle Session related operations read and write */
     @Override
     void addToCache(String cacheStatus, String cacheEmail, String cacheLocation, String cachefoodItems,
-            String cacheResturantId, String cacheTotalPrice, String cacheQuantity) {
+            String cacheResturantId, String cacheWhishlist, String cacheQuantity) {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("Active", cacheStatus);
                 jsonObject.put("Email", cacheEmail);
                 jsonObject.put("Location", cacheLocation);
                 jsonObject.put("Resturant_id", cacheResturantId);
                 jsonObject.put("food_items", cachefoodItems);
-                jsonObject.put("total_price", cacheTotalPrice);
+                jsonObject.put("whishlist", cacheWhishlist);
                 jsonObject.put("quantity", cacheQuantity);
                 try 
                 {
@@ -48,7 +48,7 @@ public class sessionHandler extends Session{
             cacheDaoObj.setCacheQuantity(sessionList1.get("quantity").toString());
             cacheDaoObj.setCachefoodItems(sessionList1.get("food_items").toString());
             cacheDaoObj.setCacheResturantId(sessionList1.get("Resturant_id").toString());
-            cacheDaoObj.setCacheTotalPrice(sessionList1.get("total_price").toString());
+            cacheDaoObj.setCacheWhishList(sessionList1.get("whishlist").toString());
         } 
         catch (IOException e) 
         {

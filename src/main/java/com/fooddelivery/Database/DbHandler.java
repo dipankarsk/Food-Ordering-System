@@ -11,6 +11,7 @@ import com.fooddelivery.cartDao;
 import com.fooddelivery.foodDao;
 import com.fooddelivery.paymentDao;
 import com.fooddelivery.resturantDao;
+import com.fooddelivery.wishlistDao;
 import com.fooddelivery.Authentication.loginDao;
 import com.fooddelivery.Authentication.registrationDao;
 
@@ -300,6 +301,91 @@ public class DbHandler extends Dboperation{
         }
         catch (SQLException e) {
             System.out.println("Error due to insertion of food to FoodRating table " + e.getMessage());
+        }
+    }
+    public wishlistDao fetchWishList(wishlistDao w)
+    {
+        String sql = "SELECT wishlist " + "FROM User WHERE Email = ?";
+        Connection con =  Dbconnection();
+        try
+        {
+        PreparedStatement pstmt  = con.prepareStatement(sql);
+        pstmt.setString(1, w.getEmail());
+        ResultSet rs  = pstmt.executeQuery();    
+        
+        
+        while (rs.next()) {
+                w.setFoodId(rs.getString(1));
+            }
+        }catch(SQLException e)
+        {
+            System.out.println("Error due select query for wishlist " + e.getMessage());
+        }
+        finally
+        {
+            if(con!=null)
+            {
+                try {
+                    con.close();
+                } catch (SQLException e) {
+                    
+                    e.printStackTrace();
+                }
+            }
+        }
+        return w;
+    }
+    public List<foodDao> fetchFoodItemsWishList()
+    {
+        List<foodDao> foodList = new ArrayList<foodDao>();
+        String sql = "SELECT * " + "FROM Food";
+        Connection con =  Dbconnection();
+        try{
+        PreparedStatement pstmt  = con.prepareStatement(sql);
+        
+        ResultSet rs  = pstmt.executeQuery();
+        if(rs==null)
+        {
+            return foodList;
+        }
+        while (rs.next()) {
+                foodDao f= new foodDao();
+                f.setFood_id(rs.getInt(1));
+                f.setFood_name(rs.getString(2));
+                f.setFood_price(rs.getInt(3));
+                foodList.add(f);
+            }
+        }catch(SQLException e)
+        {
+            System.out.println("Error due select query for fetching food for wishlist" + e.getMessage());
+        }
+        finally
+        {
+            if(con!=null)
+            {
+                try {
+                    con.close();
+                } catch (SQLException e) {
+                    
+                    e.printStackTrace();
+                }
+            }
+        }
+        return foodList;
+    }
+    public void insertToWishList(wishlistDao w)
+    {
+        String sql = "UPDATE User SET wishlist = ? WHERE Email = ?";
+
+        try (Connection con1 =  Dbconnection();
+             PreparedStatement wishlistp = con1.prepareStatement(sql))
+        {
+            wishlistp.setString(1, w.getFoodId());
+            wishlistp.setString(2, w.getEmail());
+            wishlistp.executeUpdate();
+        }
+        catch (SQLException e) {
+            System.out.println("Error due to insertion of food to wishlist " + e.getMessage());
         }
     }
 }
