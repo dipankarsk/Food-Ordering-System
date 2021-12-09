@@ -110,6 +110,7 @@ public final class foodappp {
             }
             if(!cacheDaoObj.getCacheLocation().equals(""))
             {
+                     System.out.println("Inside ");
                     sessionLocation=cacheDaoObj.getCacheLocation().toString();
                     flag_view=false;
             }
@@ -292,6 +293,7 @@ public final class foodappp {
                                  foodList=dbconnection.fetchFoodItems(Integer.parseInt(resturant_id));
                                  food_items_id_extractor=new ArrayList<Integer>();
                                  food_items_quantity_extractor=new ArrayList<Integer>();
+                                 
                                  for(int i=0; i<food_items_split.length;i++)
                                 {   
                                   if(!food_items_id_extractor.contains(Integer.parseInt(food_items_split[i])))
@@ -300,7 +302,16 @@ public final class foodappp {
                                          food_items_quantity_extractor.add(Integer.parseInt(food_order_quantity.split(",")[i]));
                                      }
                                 }
-                                
+                                if(sessionLocation.equalsIgnoreCase("kolkata"))
+                                {
+                                         lat=10;
+                                         lon=50;
+                                }
+                                else if(sessionLocation.equalsIgnoreCase("Bangalore"))
+                                {
+                                         lat=40;
+                                         lon=80;
+                                }
                                 while(food_items_split!=null)
                                 { 
                                  cartDaoObj.cartDisplay(food_items_id_extractor, foodList, food_items_quantity_extractor);
@@ -350,6 +361,7 @@ public final class foodappp {
                                       if(totalPrice>=100)
                                        {   
                                        //code for payment and tracking
+                                       //System.out.println(lat+" "+lon);
                                        resturantList=null;
                                        resturantList=dbconnection.fetchResturantDetils(sessionLocation, lat, lon);
                                        resturantDao estimatedTimeObj=resturantList.get(Integer.parseInt(resturant_id)-1);
@@ -364,7 +376,6 @@ public final class foodappp {
                                          lat=40;
                                          lon=80;
                                        }
-                                       
                                        finalPrice = totalPrice + deliveryCharge;
                                        System.out.println("Your total cart value is: "+ totalPrice+"\nDelivery charges: "+deliveryCharge);
                                        System.out.println("1. Continue to the Payment page \n2. Apply a coupon\n3. Exit");

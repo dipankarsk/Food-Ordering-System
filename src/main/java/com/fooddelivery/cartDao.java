@@ -144,7 +144,7 @@ public class cartDao extends foodDao {
                food_items+=food_items_id_extractor.get(j)+",";
                food_order_quantity+=food_items_quantity_extractor.get(j)+",";
        }
-       cacheObject.addToCache("Y", c.getEmail(), c.getResturant_address(), food_items, c.getResturant_id()+"","",food_order_quantity);
+       cacheObject.addToCache("Y", c.getEmail(), c.getResturant_city(), food_items, c.getResturant_id()+"","",food_order_quantity);
        List<List<Integer>> l1=new ArrayList<>();
        l1.add(food_items_id_extractor);
        l1.add(food_items_quantity_extractor);
@@ -153,7 +153,7 @@ public class cartDao extends foodDao {
     public List < List <Integer> > addItems(BufferedReader br,cartDao c, List <Integer> food_items_id_extractor,List<Integer> food_items_quantity_extractor,List <foodDao> foodList) throws IOException
     {
         sessionHandler cacheObject=new sessionHandler();
-        //foodMenuDisplay(foodList); // using inherited method from foodDao class
+        foodMenuDisplay(foodList); // using inherited method from foodDao class
         System.out.println("Enter the SL no of the item to be inserted");
         String food_item_to_add=br.readLine();
         
@@ -175,7 +175,7 @@ public class cartDao extends foodDao {
                food_items+=food_items_id_extractor.get(j)+",";
                food_order_quantity+=food_items_quantity_extractor.get(j)+",";
        }
-       cacheObject.addToCache("Y", c.getEmail(), c.getResturant_address(), food_items, c.getResturant_id()+"","",food_order_quantity);
+       cacheObject.addToCache("Y", c.getEmail(), c.getResturant_city(), food_items, c.getResturant_id()+"","",food_order_quantity);
        List<List<Integer>> l1=new ArrayList<>();
        l1.add(food_items_id_extractor);
        l1.add(food_items_quantity_extractor);
