@@ -35,10 +35,10 @@ We are allowing the session storage also which is implemented through JSON where
   - Java HotSpot(TM) 64-Bit Server VM (build 17.0.1+12-LTS-39, mixed mode, sharing)
   - IDE Visual Studio Code Version: 1.62.3
   - Maveen v0.34.1
+  - DB Browser for SQLite Version 3.12.2
+  - IntelliJ IDEA 2021.3 (Ultimate Edition
 
 
-
- 
 # How to Install the Project
 
  1. Add Maven Dependency to Pom.xml
