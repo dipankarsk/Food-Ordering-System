@@ -26,6 +26,8 @@ The following features of the Application
    - Tracking the order time with the original estimated time and if order time exceeds than cancelation available.
    - Rating the food and the application as a whole.
 
+We are allowing the session storage also which is implemented through JSON where only one user is allowed at a time and will lose all session details if he logsout aprt from whishlist. Exit is another option provided to users but since all data icluding payment progress is auto saved.
+
 # Pre-Requisites
 
   - java 17.0.1
@@ -67,4 +69,11 @@ The following features of the Application
 # Running the Project
 
 - Using the jar file
+```
+$ java -jar fooddelivery.jar
+```
 - Directly using the console with main method
+
+```
+<img src="resources/1.jpg" width="128"/>
+```
