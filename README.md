@@ -88,3 +88,21 @@ $ java -jar fooddelivery.jar
  Currently we are having only two locations Kolkata and Bangalore
 
  <img src="/resources/3.png"/>
+
+- Resturant View
+  
+  Resturants are shown based on distance calculated from the latitude longitude of user in a city
+
+ <img src="/resources/4.png"/>
+
+- Food Menu
+
+ Food Menu is shown of the resturant selected
+
+ <img src="/resources/5.png"/>
+
+- Your cart
+
+Once items added is shown in food cart
+
+<img src="/resources/6.png"/>
