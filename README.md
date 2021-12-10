@@ -47,22 +47,22 @@ The following features of the Application
    <version>3.15.1
    </version>
   </dependency>
-  ```
-  ``` 
+ ```
+ ``` 
   <dependency>
 	<groupId>com.googlecode.json-simple</groupId>
 	<artifactId>json-simple</artifactId>
 	<version>1.1.1</version>
   </dependency>
-  ```
+ ```
  2. Create and Change Directory to foodordering
  ```
  $ mkdir foodordering
- $cd foodordering
+ $ cd foodordering
  ```
  3. Clone the git Repository
  ```
- $git clone https://github.com/dipankarsk/oopd_project_2021.git
+ $ git clone https://github.com/dipankarsk/oopd_project_2021.git
 ```
 # Running the Project
 
