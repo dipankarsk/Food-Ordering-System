@@ -80,7 +80,7 @@ public class DbHandler extends Dboperation{
     {
         
         
-        String sql = "INSERT INTO User(UserName,Email,Password,save20,save50) VALUES(?,?,?,?,?)";
+        String sql = "INSERT INTO User(UserName,Email,Password,save20,save50,wishlist) VALUES(?,?,?,?,?,?)";
 
         try (Connection con1 =  Dbconnection();
              PreparedStatement usri = con1.prepareStatement(sql))
@@ -90,6 +90,7 @@ public class DbHandler extends Dboperation{
             usri.setString(3, reg.getPassword());
             usri.setInt(4, reg.getSave20());
             usri.setInt(5, reg.getSave50());
+            usri.setString(6, reg.getWishList());
             usri.executeUpdate();
             
             System.out.println("Registration Successful.......");
@@ -133,7 +134,7 @@ public class DbHandler extends Dboperation{
             }
         }
     }   
-   
+   /* Using different signature to overload the functions */
     public List<resturantDao> fetchUserData(String city,int lat,int lon)
     {
         List<resturantDao> resturantList = new ArrayList<resturantDao>();

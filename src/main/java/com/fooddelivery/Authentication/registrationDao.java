@@ -10,6 +10,8 @@ public class registrationDao
     private String emailId="";
     private int flag20 = 1;
     private int flag50 = 1;
+    private String wishList="";
+
     public void setUserName(String userName) 
     {
         this.userName = userName;
@@ -50,6 +52,11 @@ public class registrationDao
     {
         return flag50;
     }
-  
+   public String getWishList() {
+       return wishList;
+   }
+   public void setWishList(String wishList) {
+       this.wishList = wishList;
+   }
 
 }

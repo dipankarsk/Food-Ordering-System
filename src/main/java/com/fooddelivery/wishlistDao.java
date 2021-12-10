@@ -47,9 +47,10 @@ public class wishlistDao extends foodDao{
     {
         DbHandler dbHandler=new DbHandler();
         w=dbHandler.fetchUserData(w);
-        if(w.getFoodId()==null)
+        if(w.getFoodId().equals(""))
         {
             System.out.println("No Item to Show");
+           
         }
         else
         {
