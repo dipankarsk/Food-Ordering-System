@@ -251,7 +251,17 @@ public final class foodappp {
                                  String resturant_id=br.readLine(); 
                                  filler();
                                  foodList=dbconnection.fetchUserData(Integer.parseInt(resturant_id));
-                                 resturantDao r = (resturantDao) resturantList.get(Integer.parseInt(resturant_id)-1);
+                                 //change
+                                 String maskResId="";
+                                 for(int i=0;i<resturantList.size();i++)
+                                 {
+                                     if(resturantList.get(i).getResturant_id()==Integer.parseInt(resturant_id))
+                                     {
+                                        maskResId=i+"";
+                                     }
+                                 }
+                                 //resturantDao r = (resturantDao) resturantList.get(Integer.parseInt(resturant_id)-1);
+                                 resturantDao r = (resturantDao) resturantList.get(Integer.parseInt(maskResId));
                                  distance = r.getResturant_distance();
                                  time = r.getEstimated_time();
                                  foodDaoObj.foodMenuDisplay(foodList);
@@ -409,7 +419,17 @@ public final class foodappp {
                                        //System.out.println(lat+" "+lon);
                                        resturantList=null;
                                        resturantList=dbconnection.fetchUserData(sessionLocation, lat, lon);
-                                       resturantDao estimatedTimeObj=resturantList.get(Integer.parseInt(resturant_id)-1);
+                                       //change
+                                       String maskResId="";
+                                       for(int i=0;i<resturantList.size();i++)
+                                       {
+                                       if(resturantList.get(i).getResturant_id()==Integer.parseInt(resturant_id))
+                                        {
+                                        maskResId=i+"";
+                                        }
+                                       }
+                                       //resturantDao estimatedTimeObj=resturantList.get(Integer.parseInt(resturant_id)-1);
+                                       resturantDao estimatedTimeObj=resturantList.get(Integer.parseInt(maskResId));
                                        originalEstimatedTime=estimatedTimeObj.getEstimated_time();
                                        deliveryCharge = 5 * estimatedTimeObj.getResturant_distance();
                                        if(sessionLocation.equalsIgnoreCase("kolkata"))
