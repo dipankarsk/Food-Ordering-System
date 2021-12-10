@@ -39,14 +39,14 @@ The following features of the Application
  
 # How to Install the Project
 
- - add Maven Dependency
+ 1. Add Maven Dependency to Pom.xml
  ```
- <dependency>
-        <groupId>org.xerial</groupId>
-        <artifactId>sqlite-jdbc</artifactId>
-        <version>3.15.1
-        </version>
-    </dependency>
+  <dependency>
+   <groupId>org.xerial</groupId>
+   <artifactId>sqlite-jdbc</artifactId>
+   <version>3.15.1
+   </version>
+  </dependency>
   ```
   ``` 
   <dependency>
@@ -55,9 +55,15 @@ The following features of the Application
 	<version>1.1.1</version>
   </dependency>
   ```
- - cd foodordering
- - git clone https://github.com/dipankarsk/oopd_project_2021.git
-
+ 2. Create and Change Directory to foodordering
+ ```
+ mkdir foodordering
+ cd foodordering
+ ```
+ 3. Clone the git Repository
+ ```
+ git clone https://github.com/dipankarsk/oopd_project_2021.git
+```
 # Running the Project
 
 - Using the jar file
