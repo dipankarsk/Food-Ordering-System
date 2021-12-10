@@ -120,3 +120,16 @@ Once items added is shown in food cart
 - Deleting item from cart
 
 <img src="/resources/9.png"/>
+
+- Payment
+
+<img src="/resources/10.png"/>
+
+- Tracking
+
+<img src="/resources/11.png"/>
+
+- Rating of food and the App
+
+<img src="/resources/12.png"/>
+
