@@ -166,13 +166,13 @@ public class paymentDao extends cartDao{
         }
         if(flagOrderPlaced==1)
         {
-            dbconnection.insertOrderDetails(p);
+            dbconnection.insertUserData(p);
             System.out.println("Order Delivered");
             System.out.println("Thank You for Ordering");
             System.out.println("###############################");
             System.out.println("Please rate the Application between 1 to 5");
             int rating= Integer.parseInt(reader.readLine());
-            dbconnection.insertRating(rating, p.getEmail());
+            dbconnection.insertUserData(rating, p.getEmail());
             cacheObject.addToCache("Y", p.getEmail(), "", "", "", "", "");
             
             String foodRating="";

@@ -19,7 +19,7 @@ public class DbHandler extends Dboperation{
 
     /* class for handling the different database operations */
     @Override
-    public List<foodDao> fetchFoodItems(int resturant_id)
+    public List<foodDao> fetchUserData(int resturant_id)
     {
         List<foodDao> foodList = new ArrayList<foodDao>();
         String sql = "SELECT * " + "FROM Food WHERE resturant_id = ?";
@@ -58,7 +58,83 @@ public class DbHandler extends Dboperation{
         return foodList;
     }
     @Override
-    public List<resturantDao> fetchResturantDetils(String city,int lat,int lon)
+    public Connection Dbconnection()
+     {
+        Connection connect=null;
+        try 
+        {
+             connect = DriverManager.getConnection(dbPath);
+            if (connect != null) {
+                
+                return connect;
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error"+e.getMessage());
+        }
+       
+        return null ;
+    }
+    @Override
+    public void insertUserData (registrationDao reg)
+    {
+        
+        
+        String sql = "INSERT INTO User(UserName,Email,Password,save20,save50) VALUES(?,?,?,?,?)";
+
+        try (Connection con1 =  Dbconnection();
+             PreparedStatement usri = con1.prepareStatement(sql))
+        {
+            usri.setString(1, reg.getUserName());
+            usri.setString(2, reg.getEmailId());
+            usri.setString(3, reg.getPassword());
+            usri.setInt(4, reg.getSave20());
+            usri.setInt(5, reg.getSave50());
+            usri.executeUpdate();
+            
+            System.out.println("Registration Successful.......");
+        }
+        catch (SQLException e) {
+            System.out.println("Error due to insertion " + e.getMessage());
+        }
+        
+    }
+    @Override
+    public void updateUserData (loginDao loginObject)
+    {
+        Connection con =  Dbconnection();
+        
+        //String sql = "INSERT INTO User(save20,save50) VALUES(?,?)";
+        String sql = "UPDATE User SET save20 = ?, save50 = ? WHERE Email = ?";
+
+        try {
+            PreparedStatement usri = con.prepareStatement(sql);
+            usri.setInt(1, loginObject.getSave20());
+            usri.setInt(2, loginObject.getSave50());
+            usri.setString(3, loginObject.getEmailId());
+            usri.executeUpdate();
+            
+            //System.out.println("Registration Successful.......");
+           
+        }
+        catch (SQLException e) {
+            System.out.println("Error due to Updation " + e.getMessage());
+        }
+        finally
+        {
+            if(con!=null)
+            {
+                try {
+                    con.close();
+                } catch (SQLException e) {
+                    
+                    e.printStackTrace();
+                }
+            }
+        }
+    }   
+   
+    public List<resturantDao> fetchUserData(String city,int lat,int lon)
     {
         List<resturantDao> resturantList = new ArrayList<resturantDao>();
         String sql = "SELECT * " + "FROM Resturants WHERE resturant_city = ?";
@@ -102,7 +178,6 @@ public class DbHandler extends Dboperation{
         }
         return resturantList;
     }
-    @Override
     public boolean logincheck(loginDao log)
     {
         String sql = "SELECT Password " + "FROM User WHERE Email = ?";
@@ -140,7 +215,7 @@ public class DbHandler extends Dboperation{
         }
         return false;
     }
-    public loginDao fetchFlags(loginDao log)
+    public loginDao fetchUserData(loginDao log)
     {   
         loginDao loginObject = new loginDao();
         String sql1 = "SELECT * " + "FROM User WHERE Email = ?";
@@ -177,82 +252,7 @@ public class DbHandler extends Dboperation{
         }
         return loginObject;
     }
-    @Override
-    public void insertUserData (registrationDao reg)
-    {
-        
-        
-        String sql = "INSERT INTO User(UserName,Email,Password,save20,save50) VALUES(?,?,?,?,?)";
-
-        try (Connection con1 =  Dbconnection();
-             PreparedStatement usri = con1.prepareStatement(sql))
-        {
-            usri.setString(1, reg.getUserName());
-            usri.setString(2, reg.getEmailId());
-            usri.setString(3, reg.getPassword());
-            usri.setInt(4, reg.getSave20());
-            usri.setInt(5, reg.getSave50());
-            usri.executeUpdate();
-            
-            System.out.println("Registration Successful.......");
-        }
-        catch (SQLException e) {
-            System.out.println("Error due to insertion " + e.getMessage());
-        }
-        
-    }
-    public void insertFlags (loginDao loginObject)
-    {
-        Connection con =  Dbconnection();
-        
-        //String sql = "INSERT INTO User(save20,save50) VALUES(?,?)";
-        String sql = "UPDATE User SET save20 = ?, save50 = ? WHERE Email = ?";
-
-        try {
-            PreparedStatement usri = con.prepareStatement(sql);
-            usri.setInt(1, loginObject.getSave20());
-            usri.setInt(2, loginObject.getSave50());
-            usri.setString(3, loginObject.getEmailId());
-            usri.executeUpdate();
-            
-            //System.out.println("Registration Successful.......");
-           
-        }
-        catch (SQLException e) {
-            System.out.println("Error due to Updation " + e.getMessage());
-        }
-        finally
-        {
-            if(con!=null)
-            {
-                try {
-                    con.close();
-                } catch (SQLException e) {
-                    
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-    @Override
-    public Connection Dbconnection()
-     {
-        Connection connect=null;
-        try 
-        {
-             connect = DriverManager.getConnection(dbPath);
-            if (connect != null) {
-                
-                return connect;
-            }
-
-        } catch (SQLException e) {
-            System.out.println("Error"+e.getMessage());
-        }
-       
-        return null ;
-    }
-    public void insertOrderDetails (cartDao cartObject)
+    public void insertUserData (cartDao cartObject)
     {
         String sql = "INSERT INTO Orders(Email, FoodId, FinalPrice, TimeStamp) VALUES(?,?,?,?)";
 
@@ -269,9 +269,8 @@ public class DbHandler extends Dboperation{
             System.out.println("Error due to insertion " + e.getMessage());
         }
         
-    }
-   
-    public void insertRating(int rating,String email)
+    }  
+    public void insertUserData(int rating,String email)
     {
         String sql = "INSERT INTO AppRating(email,rating) VALUES(?,?)";
 
@@ -303,7 +302,7 @@ public class DbHandler extends Dboperation{
             System.out.println("Error due to insertion of food to FoodRating table " + e.getMessage());
         }
     }
-    public wishlistDao fetchWishList(wishlistDao w)
+    public wishlistDao fetchUserData(wishlistDao w)
     {
         String sql = "SELECT wishlist " + "FROM User WHERE Email = ?";
         Connection con =  Dbconnection();
@@ -335,7 +334,7 @@ public class DbHandler extends Dboperation{
         }
         return w;
     }
-    public List<foodDao> fetchFoodItemsWishList()
+    public List<foodDao> fetchUserData()
     {
         List<foodDao> foodList = new ArrayList<foodDao>();
         String sql = "SELECT * " + "FROM Food";
@@ -373,7 +372,7 @@ public class DbHandler extends Dboperation{
         }
         return foodList;
     }
-    public void insertToWishList(wishlistDao w)
+    public void updateUserData(wishlistDao w)
     {
         String sql = "UPDATE User SET wishlist = ? WHERE Email = ?";
 

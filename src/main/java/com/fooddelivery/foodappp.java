@@ -49,7 +49,7 @@ public final class foodappp {
     }
     public void getFlags(loginDao log)
     {
-            loginDao l = dbconnection.fetchFlags(log);
+            loginDao l = dbconnection.fetchUserData(log);
             flag20 = l.getSave20();
             flag50 = l.getSave50();
     }
@@ -225,7 +225,7 @@ public final class foodappp {
                                         System.out.println("Sorry we will reach your destination shortly!!!!!!!");
                                         continue;
                                     }
-                                    resturantList=dbconnection.fetchResturantDetils(cityChoice,lat,lon);
+                                    resturantList=dbconnection.fetchUserData(cityChoice,lat,lon);
                                     cacheObject.addToCache("Y", sessionEmail, cityChoice, "", "","","");
                                }
                                else
@@ -245,13 +245,13 @@ public final class foodappp {
                                          System.out.println("Sorry, we are not there yet!!!!!!!");
                                          continue;
                                     }
-                                 resturantList=dbconnection.fetchResturantDetils(sessionLocation,lat,lon);
+                                 resturantList=dbconnection.fetchUserData(sessionLocation,lat,lon);
                                  resturantDaoObj.resturantDisplay(resturantList);
                                  filler();
                                  System.out.println("Add a resturant of your choice by entering the resturant id in the left");
                                  String resturant_id=br.readLine(); 
                                  filler();
-                                 foodList=dbconnection.fetchFoodItems(Integer.parseInt(resturant_id));
+                                 foodList=dbconnection.fetchUserData(Integer.parseInt(resturant_id));
                                  resturantDao r = (resturantDao) resturantList.get(Integer.parseInt(resturant_id)-1);
                                  distance = r.getResturant_distance();
                                  time = r.getEstimated_time();
@@ -336,7 +336,7 @@ public final class foodappp {
                                  food_items_split=food_items_id.split(","); 
                                  food_items_quantity_split=food_order_quantity.split(","); 
 
-                                 foodList=dbconnection.fetchFoodItems(Integer.parseInt(resturant_id));
+                                 foodList=dbconnection.fetchUserData(Integer.parseInt(resturant_id));
                                  food_items_id_extractor=new ArrayList<Integer>();
                                  food_items_quantity_extractor=new ArrayList<Integer>();
                                  
@@ -409,7 +409,7 @@ public final class foodappp {
                                        //code for payment and tracking
                                        //System.out.println(lat+" "+lon);
                                        resturantList=null;
-                                       resturantList=dbconnection.fetchResturantDetils(sessionLocation, lat, lon);
+                                       resturantList=dbconnection.fetchUserData(sessionLocation, lat, lon);
                                        resturantDao estimatedTimeObj=resturantList.get(Integer.parseInt(resturant_id)-1);
                                        originalEstimatedTime=estimatedTimeObj.getEstimated_time();
                                        deliveryCharge = 5 * estimatedTimeObj.getResturant_distance();
@@ -474,7 +474,7 @@ public final class foodappp {
                                                         {
                                                          food_items_split=null;  
                                                         }
-                                                        dbconnection.insertFlags(lg);
+                                                        dbconnection.updateUserData(lg);
                                                         break;
                                                     case 2: 
                                                        loginDao lg1 = new loginDao();
@@ -497,7 +497,7 @@ public final class foodappp {
                                                         {
                                                          food_items_split=null;  
                                                         }
-                                                        dbconnection.insertFlags(lg1);
+                                                        dbconnection.updateUserData(lg1);
                                                         break;
                                                   }
                                                   break;

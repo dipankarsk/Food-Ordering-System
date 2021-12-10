@@ -46,7 +46,7 @@ public class wishlistDao extends foodDao{
     public String wishListConfigurator(wishlistDao w)
     {
         DbHandler dbHandler=new DbHandler();
-        w=dbHandler.fetchWishList(w);
+        w=dbHandler.fetchUserData(w);
         if(w.getFoodId()==null)
         {
             System.out.println("No Item to Show");
@@ -55,7 +55,7 @@ public class wishlistDao extends foodDao{
         {
             String foodId=w.getFoodId();
             List <foodDao> f=null;
-            f=dbHandler.fetchFoodItemsWishList();
+            f=dbHandler.fetchUserData();
             List <Integer> whishlist_food_items_id_extractor=new ArrayList<Integer>();
             for(int i=0;i<foodId.split(",").length;i++){
                 whishlist_food_items_id_extractor.add(Integer.parseInt(foodId.split(",")[i]));
@@ -67,6 +67,6 @@ public class wishlistDao extends foodDao{
     public void addToWishList(wishlistDao w)
     {
         DbHandler dbHandler=new DbHandler();
-        dbHandler.insertToWishList(w);
+        dbHandler.updateUserData(w);
     }
 }
