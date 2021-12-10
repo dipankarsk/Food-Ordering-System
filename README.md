@@ -30,7 +30,7 @@ We are allowing the session storage also which is implemented through JSON where
 
 # Pre-Requisites
 
-  - java 17.0.1
+  - Java 17.0.1
   - Java(TM) SE Runtime Environment (build 17.0.1+12-LTS-39)
   - Java HotSpot(TM) 64-Bit Server VM (build 17.0.1+12-LTS-39, mixed mode, sharing)
   - IDE Visual Studio Code Version: 1.62.3
@@ -76,3 +76,15 @@ $ java -jar fooddelivery.jar
 
 
 <img src="/resources/1.png"/>
+
+# Implementation of Different Modules
+
+- Authentication
+ 
+ <img src="/resources/2.png"/>
+
+- Location update by user ( We have fixed the latitude and longitude for a partivular location )
+
+ Currently we are having only two locations Kolkata and Bangalore
+
+ <img src="/resources/3.png"/>
