@@ -112,3 +112,11 @@ Once items added is shown in food cart
 Once items added is shown in food cart
 
 <img src="/resources/7.png"/>
+
+- Adding item to cart
+
+<img src="/resources/8.png"/>
+
+- Deleting item from cart
+
+<img src="/resources/9.png"/>
