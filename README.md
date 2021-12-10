@@ -40,18 +40,21 @@ The following features of the Application
 # How to Install the Project
 
  - add Maven Dependency
+ ```
  <dependency>
         <groupId>org.xerial</groupId>
         <artifactId>sqlite-jdbc</artifactId>
         <version>3.15.1
         </version>
     </dependency>
-   
+  ```
+  ``` 
   <dependency>
 	<groupId>com.googlecode.json-simple</groupId>
 	<artifactId>json-simple</artifactId>
 	<version>1.1.1</version>
   </dependency>
+  ```
  - cd foodordering
  - git clone https://github.com/dipankarsk/oopd_project_2021.git
 
