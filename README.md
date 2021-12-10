@@ -74,6 +74,5 @@ $ java -jar fooddelivery.jar
 ```
 - Directly using the console with main method
 
-```
-<img src="resources/1.jpg" width="128"/>
-```
+
+<img src="/resources/1.jpg" width="128"/>
