@@ -7,6 +7,11 @@ import java.util.List;
 import com.fooddelivery.Authentication.registrationDao;
 import com.fooddelivery.Authentication.loginDao;
 import com.fooddelivery.Database.DbHandler;
+
+/**  
+ * The main class 
+*/
+
 public final class foodappp {
     static double totalPrice = 0;
     static double discount = 0;
@@ -23,17 +28,17 @@ public final class foodappp {
     static String resturant_id="";
     static String food_items_split[];
     static String food_items_quantity_split[];
-    static List<Integer> food_items_id_extractor =null;// arraylist to store the food ids stored at any instance
-    static List<Integer> food_items_quantity_extractor = null; // arraylist to store quantities of each food items inside the cart
+    static List<Integer> food_items_id_extractor =null;//!< arraylist to store the food ids stored at any instance
+    static List<Integer> food_items_quantity_extractor = null; //!< arraylist to store quantities of each food items inside the cart
     static DbHandler dbconnection=new DbHandler();
     static List<resturantDao> resturantList;
     static List<foodDao> foodList;
 
-    public static void filler()
+    public static void filler()//!Filler for output pattern
     {
         System.out.println("###############################");
     }
-    public void authenticationDisplay()
+    public void authenticationDisplay()//!Display's the Authentication page
     {
         System.out.println("\n                               Welcome to Combida food Ordering system                              \n");
         System.out.println("                  #################### Authentication ########################                    \n");
@@ -42,18 +47,18 @@ public final class foodappp {
         System.out.println("3. To Close the Apllication\n");
         System.out.println("                                      ####################                     ");
     }
-    public void register (registrationDao reg)
+    public void register (registrationDao reg)//!To put registration data to database
     {
         dbconnection.insertUserData(reg);
 
     }
-    public void getFlags(loginDao log)
+    public void getFlags(loginDao log)//!To Fetch the flags
     {
             loginDao l = dbconnection.fetchUserData(log);
             flag20 = l.getSave20();
             flag50 = l.getSave50();
     }
-    public void login (loginDao log)
+    public void login (loginDao log)//!Checking if the login is sucessfull or not
     {
         sessionHandler cacheObject=new sessionHandler();
         boolean credentialStatus=dbconnection.logincheck(log);
@@ -61,12 +66,6 @@ public final class foodappp {
         {
            System.out.println("Login Successful....\n");
            System.out.println("Welcome "+log.getEmailId()+"\n");
-           /*flag20 = log.getSave20();
-           flag50 = log.getSave50();
-           System.out.println(flag20+" "+flag50);*/
-           /*int flags[] = dbconnection.fetchFlags(log);
-           flag20 = flags[0];
-           flag50 = flags[1];*/
            cacheObject.addToCache("Y", log.getEmailId(), "", "", "","","");
         }else{
             System.out.println("Wrong Credentials\n");
@@ -84,13 +83,13 @@ public final class foodappp {
        
         while(true)
         {
-            /* The below variabes are used as flags for visuals */
-            boolean flag_view=true;
+            
+            boolean flag_view=true; /*! an integer value */
             boolean flag_authentication=true;
             boolean flag_menu=true;
 
             /* The below variables are session variables for storing progress */
-            String sessionEmail="";
+            String sessionEmail=""; 
             String sessionLocation="";
             String food_items_id="";
             String food_items="";

@@ -1,12 +1,12 @@
 package com.fooddelivery;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.List;
 import java.util.Random;
-
 import com.fooddelivery.Database.DbHandler;
-
+/**
+ * The class implements the concept of encapsulation and inherits cartDao for payments and checkouts
+ */
 public class paymentDao extends cartDao{
     private Double toatlPrice=0.0;
     private Double originalEstimateTime=0.0;
@@ -42,6 +42,10 @@ public class paymentDao extends cartDao{
         paymentDao pd=new paymentDao();
         pd.display();
     }
+    /**
+     * For Tracker System
+     * @param EstimatedTime
+     */
     public void tracker(Double EstimatedTime)
     {
          System.out.println(" ######### Tracking ###########");
@@ -67,6 +71,13 @@ public class paymentDao extends cartDao{
          }
         
     }
+    /**
+     * It checks if the estimated time is exceeding by 10%
+     * @param reader
+     * @param originalEstimatedTime
+     * @return
+     * @throws NumberFormatException
+     */
     public boolean trackingPage(BufferedReader reader,Double originalEstimatedTime) throws NumberFormatException
     {
 
@@ -80,7 +91,16 @@ public class paymentDao extends cartDao{
         }  
         return check;
     }
-
+    /**
+     * For making payments with different payment modes
+     * @param reader
+     * @param food_items_id_extractor
+     * @param foodList
+     * @param p
+     * @return
+     * @throws NumberFormatException
+     * @throws IOException
+     */
     public List<Integer> paymentPage(BufferedReader reader,List <Integer> food_items_id_extractor,List <foodDao> foodList,paymentDao p) throws NumberFormatException, IOException
     {   DbHandler dbconnection=new DbHandler();
         long tStamp=0l;

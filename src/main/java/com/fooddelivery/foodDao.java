@@ -1,7 +1,9 @@
 package com.fooddelivery;
 
 import java.util.List;
-
+/**  
+ * The class implements Encapsulation and inherits resturantDao class also overides display method
+*/
 public class foodDao extends resturantDao {
     private int food_id=0;
     private String food_name="";
@@ -34,6 +36,10 @@ public class foodDao extends resturantDao {
         System.out.println();        
                     
     }
+   /**
+    * To display the food menu
+    * @param foodList
+    */
     public void foodMenuDisplay(List foodList)
     {
                     foodDao fd=new foodDao();

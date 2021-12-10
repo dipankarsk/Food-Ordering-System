@@ -1,7 +1,9 @@
 package com.fooddelivery;
 
 import java.util.List;
-
+/**  
+ * The class implements the concept of Encapsulation and inherits Resturant class also overides abstract method display 
+*/
 public class resturantDao extends Resturant {
     private int resturant_id=0;
     private String resturant_name="";
@@ -70,6 +72,10 @@ public class resturantDao extends Resturant {
         System.out.println();
         
     }
+    /**
+     * To Display the resturants in a particular location
+     * @param resturantList
+     */
     public void resturantDisplay(List resturantList)
     {   
         resturantDao rd=new resturantDao();

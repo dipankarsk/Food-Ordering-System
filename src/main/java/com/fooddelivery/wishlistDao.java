@@ -1,10 +1,11 @@
 package com.fooddelivery;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import com.fooddelivery.Database.DbHandler;
 
+/**
+ * The class implements the concept of encapsulation and inherits foodDao for wishlist
+ */
 public class wishlistDao extends foodDao{
   
     private String foodId;
@@ -32,6 +33,11 @@ public class wishlistDao extends foodDao{
         System.out.print("Sl"+"\t\t"+"Food Name"+"\t\t"+"Food Price"+"\t\t"+"\n\n");
         System.out.println();
     }
+    /**
+     * To display wishlist
+     * @param whishlist_food_items_id_extractor
+     * @param foodList
+     */
     public void wishListDisplay(List <Integer> whishlist_food_items_id_extractor,List<foodDao> foodList)
     {
         wishlistDao wd=new wishlistDao();
@@ -43,6 +49,7 @@ public class wishlistDao extends foodDao{
            System.out.println("\n");
         }
     }
+    
     public String wishListConfigurator(wishlistDao w)
     {
         DbHandler dbHandler=new DbHandler();
@@ -65,6 +72,10 @@ public class wishlistDao extends foodDao{
         }
         return w.getFoodId();
     }
+    /**
+     * To add to wishlist items from food menu
+     * @param w
+     */
     public void addToWishList(wishlistDao w)
     {
         DbHandler dbHandler=new DbHandler();

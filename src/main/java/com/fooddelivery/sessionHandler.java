@@ -2,11 +2,13 @@ package com.fooddelivery;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+/**
+ * The class implements the concept of encapsulation and inherits Session for session Management
+ */
 public class sessionHandler extends Session{
 
     /* Class to handle Session related operations read and write */

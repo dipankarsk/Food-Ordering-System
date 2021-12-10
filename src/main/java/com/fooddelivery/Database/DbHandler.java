@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
 import com.fooddelivery.cartDao;
 import com.fooddelivery.foodDao;
 import com.fooddelivery.paymentDao;
@@ -14,10 +13,12 @@ import com.fooddelivery.resturantDao;
 import com.fooddelivery.wishlistDao;
 import com.fooddelivery.Authentication.loginDao;
 import com.fooddelivery.Authentication.registrationDao;
-
+/**  
+*This class inherits the Dboperation class and overides the abstract methods and implements method overloading using different signatures
+*/
 public class DbHandler extends Dboperation{
 
-    /* class for handling the different database operations */
+    
     @Override
     public List<foodDao> fetchUserData(int resturant_id)
     {
@@ -134,7 +135,13 @@ public class DbHandler extends Dboperation{
             }
         }
     }   
-   /* Using different signature to overload the functions */
+    /**
+     * Fetching resturant details based on location
+     * @param city
+     * @param lat
+     * @param lon
+     * @return
+     */
     public List<resturantDao> fetchUserData(String city,int lat,int lon)
     {
         List<resturantDao> resturantList = new ArrayList<resturantDao>();
@@ -179,6 +186,11 @@ public class DbHandler extends Dboperation{
         }
         return resturantList;
     }
+    /**
+     * Checking for correct credential during login
+     * @param log
+     * @return
+     */
     public boolean logincheck(loginDao log)
     {
         String sql = "SELECT Password " + "FROM User WHERE Email = ?";
@@ -216,6 +228,11 @@ public class DbHandler extends Dboperation{
         }
         return false;
     }
+    /**
+     * Fetching Login Data from database
+     * @param log
+     * @return
+     */
     public loginDao fetchUserData(loginDao log)
     {   
         loginDao loginObject = new loginDao();
@@ -253,6 +270,10 @@ public class DbHandler extends Dboperation{
         }
         return loginObject;
     }
+    /**
+     * Inserting order details in databse after delivery
+     * @param cartObject
+     */
     public void insertUserData (cartDao cartObject)
     {
         String sql = "INSERT INTO Orders(Email, FoodId, FinalPrice, TimeStamp) VALUES(?,?,?,?)";
@@ -271,6 +292,11 @@ public class DbHandler extends Dboperation{
         }
         
     }  
+    /**
+     * Inserting rating of App
+     * @param rating
+     * @param email
+     */
     public void insertUserData(int rating,String email)
     {
         String sql = "INSERT INTO AppRating(email,rating) VALUES(?,?)";
@@ -287,6 +313,10 @@ public class DbHandler extends Dboperation{
             System.out.println("Error due to insertion of Rating to AppRating table " + e.getMessage());
         }
     }
+    /**
+     * Inserting payment details and also food rating
+     * @param p
+     */
     public void insertFoodRating(paymentDao p)
     {
         String sql = "INSERT INTO FoodRating(email,foodID,foodRating) VALUES(?,?,?)";
@@ -303,6 +333,11 @@ public class DbHandler extends Dboperation{
             System.out.println("Error due to insertion of food to FoodRating table " + e.getMessage());
         }
     }
+    /**
+     * Fetch wishlist details to display
+     * @param w
+     * @return
+     */
     public wishlistDao fetchUserData(wishlistDao w)
     {
         String sql = "SELECT wishlist " + "FROM User WHERE Email = ?";
@@ -335,6 +370,10 @@ public class DbHandler extends Dboperation{
         }
         return w;
     }
+    /**
+     * Fetching all food id 
+     * @return
+     */
     public List<foodDao> fetchUserData()
     {
         List<foodDao> foodList = new ArrayList<foodDao>();
@@ -373,6 +412,10 @@ public class DbHandler extends Dboperation{
         }
         return foodList;
     }
+    /**
+     *  Update wishlist
+     * @param w
+     */
     public void updateUserData(wishlistDao w)
     {
         String sql = "UPDATE User SET wishlist = ? WHERE Email = ?";

@@ -1,9 +1,8 @@
 package com.fooddelivery;
-
-public class sessionDao {
-
-    /* Encapsulation for Session Data Read and write */
-    
+/**
+ * Encapsulation for Session Data Read and write
+ */
+public class sessionDao {  
     private String cacheStatus;
     private String cacheEmail;
     private String cacheLocation;

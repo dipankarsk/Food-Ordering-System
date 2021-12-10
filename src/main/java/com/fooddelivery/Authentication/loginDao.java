@@ -1,13 +1,18 @@
 package com.fooddelivery.Authentication;
+/** 
+ * This class implements the concept of Encapsulation by creating getter setter methods to access its private members 
+  */
 public class loginDao 
 {
-
-    /* Using Encapsulation for login data */
-    
+    //! the email attribute of User table
     private String emailId="";
-    private String password="";
+    //! the password attribute of User table
+    private String password=""; 
+    //! the coupon save20 attribute of User table
     private int flag20;
     private int flag50;
+    //! the wishlist attribute of User table
+    private String wishlist;
     public void setPassword(String password) 
     {
         this.password = password;
@@ -39,5 +44,11 @@ public class loginDao
     public int getSave50() 
     {
         return flag50;
+    }
+    public String getWishlist() {
+        return wishlist;
+    }
+    public void setWishlist(String wishlist) {
+        this.wishlist = wishlist;
     }
 }

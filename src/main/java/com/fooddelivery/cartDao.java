@@ -1,12 +1,13 @@
 package com.fooddelivery;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-
+/**
+ * The class implements the concept of encapsulation and inherits foodDao for cart 
+ */
 
 public class cartDao extends foodDao {
     private int orderId;
@@ -61,6 +62,12 @@ public class cartDao extends foodDao {
         System.out.print("Sl"+"\t\t"+"Food Name"+"\t\t"+"Food Price"+"\t\t"+"Quantity"+"\n\n");
         System.out.println();
     }
+    /**
+     * To display the user cart
+     * @param food_items_id_extractor
+     * @param foodList
+     * @param food_items_quantity_extractor
+     */
     public void cartDisplay(List <Integer> food_items_id_extractor,List<foodDao> foodList,List<Integer> food_items_quantity_extractor)
     {
         cartDao cd=new cartDao();
@@ -106,18 +113,35 @@ public class cartDao extends foodDao {
         }
     return finalCount;
     }
+    /**
+     * Remove all items from cart
+     * @param c
+     */
     public void removeAllItems(cartDao c)
     {
         sessionHandler cacheObject=new sessionHandler();
         cacheObject.addToCache("Y", c.getEmail(), c.getResturant_city(),"", c.getResturant_id()+"","","");
         
     }
+    /**
+     * To change the resturant and discard the cart
+     * @param c
+     */
     public void changeResturant(cartDao c)
     {
         sessionHandler cacheObject=new sessionHandler();
         cacheObject.addToCache("Y", c.getEmail(), c.getResturant_city(),"", "","","");
         
     }
+    /**
+     * to remove a single item from cart
+     * @param br
+     * @param c
+     * @param food_items_id_extractor
+     * @param food_items_quantity_extractor
+     * @return
+     * @throws IOException
+     */
     public List < List <Integer> > removeItems(BufferedReader br,cartDao c, List <Integer> food_items_id_extractor,List<Integer> food_items_quantity_extractor) throws IOException
     {
         sessionHandler cacheObject=new sessionHandler();
@@ -147,6 +171,16 @@ public class cartDao extends foodDao {
        l1.add(food_items_quantity_extractor);
        return l1;
     }
+    /**
+     * To add an item to the cart
+     * @param br
+     * @param c
+     * @param food_items_id_extractor
+     * @param food_items_quantity_extractor
+     * @param foodList
+     * @return
+     * @throws IOException
+     */
     public List < List <Integer> > addItems(BufferedReader br,cartDao c, List <Integer> food_items_id_extractor,List<Integer> food_items_quantity_extractor,List <foodDao> foodList) throws IOException
     {
         sessionHandler cacheObject=new sessionHandler();

@@ -1,10 +1,10 @@
 package com.fooddelivery.Authentication;
-
+/**  
+*This class implements the concept of Encapsulation by creating getter setter methods to access its private members 
+*/
 public class registrationDao 
 {
-
-    /* Using Encapsulation for registration data */
-    
+    //! the username attribute of User table
     private String userName="";
     private String password="";
     private String emailId="";

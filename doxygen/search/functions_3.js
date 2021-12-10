@@ -1,0 +1,6 @@
+var searchData=
+[
+  ['fetchuserdata_0',['fetchUserData',['../classcom_1_1fooddelivery_1_1_database_1_1_db_handler.html#a5694c37408c7d30b69f180e852437573',1,'com.fooddelivery.Database.DbHandler.fetchUserData(int resturant_id)'],['../classcom_1_1fooddelivery_1_1_database_1_1_db_handler.html#a2c68f6b6e7012898823c663a5deadcef',1,'com.fooddelivery.Database.DbHandler.fetchUserData(String city, int lat, int lon)'],['../classcom_1_1fooddelivery_1_1_database_1_1_db_handler.html#aabf4e9a63f924072a2d84c035f923672',1,'com.fooddelivery.Database.DbHandler.fetchUserData(loginDao log)'],['../classcom_1_1fooddelivery_1_1_database_1_1_db_handler.html#a4f80136551b867d6a6cbec6b7ea238f8',1,'com.fooddelivery.Database.DbHandler.fetchUserData(wishlistDao w)'],['../classcom_1_1fooddelivery_1_1_database_1_1_db_handler.html#a6cc9f2361feda9cdf489f186f87462dd',1,'com.fooddelivery.Database.DbHandler.fetchUserData()'],['../classcom_1_1fooddelivery_1_1_database_1_1_dboperation.html#a46580182eadc9e4c96da2004da87ab31',1,'com.fooddelivery.Database.Dboperation.fetchUserData()']]],
+  ['filler_1',['filler',['../classcom_1_1fooddelivery_1_1foodappp.html#a4a9023087e775ae281b59bf2b108dd7f',1,'com::fooddelivery::foodappp']]],
+  ['foodmenudisplay_2',['foodMenuDisplay',['../classcom_1_1fooddelivery_1_1food_dao.html#aef0da5ceddbaf42dcf3775fd350c4b1c',1,'com::fooddelivery::foodDao']]]
+];
