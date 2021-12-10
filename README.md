@@ -57,12 +57,12 @@ The following features of the Application
   ```
  2. Create and Change Directory to foodordering
  ```
- mkdir foodordering
- cd foodordering
+ $ mkdir foodordering
+ $cd foodordering
  ```
  3. Clone the git Repository
  ```
- git clone https://github.com/dipankarsk/oopd_project_2021.git
+ $git clone https://github.com/dipankarsk/oopd_project_2021.git
 ```
 # Running the Project
 
