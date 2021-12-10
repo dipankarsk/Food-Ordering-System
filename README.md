@@ -12,17 +12,19 @@ The following features of the Application
 1. Authentication
    - Login
    - SignUp
-2. Orders
-   - View
+2. Orders Based on Location of User
+   - Resturant View
+   - Food Menu
    - Food Cart
-   - Whishlist
+   - Whishlist (Additional)
 3. Payments
-   - base bill of atleast 100 rs ensured
+   - Base bill of atleast 100 rs ensured
    - Offer Discounts SAVE20 and SAVE50 only one time per user
    - Deliver charges based on distance calculated
+   - Various Method of payment used like Upi ,Debit/Credit Card and Net Banking.
 4. Tracking and Rating
-   - Tracking the order time with the origibnal estimated time and if order time exceeds than cancelation available.
-   -  Rating the food and the app.
+   - Tracking the order time with the original estimated time and if order time exceeds than cancelation available.
+   - Rating the food and the application as a whole.
 
 # Pre-Requisites
 
@@ -31,9 +33,29 @@ The following features of the Application
   - Java HotSpot(TM) 64-Bit Server VM (build 17.0.1+12-LTS-39, mixed mode, sharing)
   - IDE Visual Studio Code Version: 1.62.3
   - Maveen v0.34.1
+
+
+
+ 
 # How to Install the Project
 
-
+ - add Maven Dependency
+ <dependency>
+        <groupId>org.xerial</groupId>
+        <artifactId>sqlite-jdbc</artifactId>
+        <version>3.15.1
+        </version>
+    </dependency>
+   
+  <dependency>
+	<groupId>com.googlecode.json-simple</groupId>
+	<artifactId>json-simple</artifactId>
+	<version>1.1.1</version>
+  </dependency>
  - cd foodordering
  - git clone https://github.com/dipankarsk/oopd_project_2021.git
 
+# Running the Project
+
+- Using the jar file
+- Directly using the console with main method
