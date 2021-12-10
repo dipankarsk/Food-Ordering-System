@@ -133,3 +133,9 @@ Once items added is shown in food cart
 
 <img src="/resources/12.png"/>
 
+# Added Resources
+- Profiling
+- UML (class diagram)
+- oopd_project_2021.jar
+- doxygen
+- video recording of all member
