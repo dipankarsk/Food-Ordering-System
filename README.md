@@ -91,18 +91,24 @@ $ java -jar fooddelivery.jar
 
 - Resturant View
   
-  Resturants are shown based on distance calculated from the latitude longitude of user in a city
+Resturants are shown based on distance calculated from the latitude longitude of user in a city
 
  <img src="/resources/4.png"/>
 
 - Food Menu
 
- Food Menu is shown of the resturant selected
+Food Menu is shown of the resturant selected
 
  <img src="/resources/5.png"/>
+
+ - Your wishlist (Additional Feature can be ignored)
+
+Once items added is shown in food cart
+
+<img src="/resources/6.png"/>
 
 - Your cart
 
 Once items added is shown in food cart
 
-<img src="/resources/6.png"/>
+<img src="/resources/7.png"/>
